@@ -14,10 +14,10 @@ class MojProfilScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ContainerHeader(title: 'Moj profil'),
-            WelcomeUser(),
+            WelcomeUser(),            
           ],
         ),
-        ProfileContainer(),
+        ProfileContainer(isEditable: true,),
       ],
     );
   }

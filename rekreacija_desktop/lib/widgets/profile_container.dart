@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rekreacija_desktop/widgets/profile_parts.dart';
 
 class ProfileContainer extends StatefulWidget {
-  const ProfileContainer({super.key});
+    final bool isEditable;
+  const ProfileContainer({super.key,required this.isEditable});
 
   @override
   State<ProfileContainer> createState() => _ProfileContainer();
@@ -19,18 +20,19 @@ class _ProfileContainer extends State<ProfileContainer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(width: 60),
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    print("Edit podataka");
-                  },
-                ),
-              ],
-            ),
+            if(widget.isEditable)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 60),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      print("Edit podataka");
+                    },
+                  ),
+                ],
+              ),
             const SizedBox(height: 10),
             Center(
               child: CircleAvatar(

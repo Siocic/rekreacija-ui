@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/screens/home_page.dart';
+import 'package:rekreacija_desktop/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -115,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 50,
                     child: TextButton(
                       onPressed: () {
-                        print('Login');
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomePageScreen()));
                       },
                       child: Text('LOGIN'),
                       style: TextButton.styleFrom(
@@ -134,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Don\'t have an account? '), // Note the space after the question mark
                       GestureDetector(
                         onTap: () {
-                          print('Register');
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterScreen()));
                         },
                         child: const Text(
                           'Register',

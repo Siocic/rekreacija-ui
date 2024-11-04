@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/widgets/edit_profile.dart';
 import 'package:rekreacija_desktop/widgets/profile_parts.dart';
 
 class ProfileContainer extends StatefulWidget {
@@ -28,7 +29,9 @@ class _ProfileContainer extends State<ProfileContainer> {
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
-                      print("Edit podataka");
+                      showDialog(context: context, builder: (BuildContext context){
+                        return  EditProfile();
+                      },);
                     },
                   ),
                 ],

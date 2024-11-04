@@ -109,7 +109,7 @@ class _EditProfile extends State<EditProfile> {
           children: [
             const Text('Edit Profile'),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: 400,
               child: Column(
                 children: [
@@ -117,9 +117,9 @@ class _EditProfile extends State<EditProfile> {
                     controller: widget._firstNameController,
                     decoration: InputDecoration(
                       labelText: 'FirstName',
-                      prefixIcon: Icon(Icons.perm_identity),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.perm_identity),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      border: const OutlineInputBorder(),
                       errorText: _firstNameColor == Colors.red
                           ? 'The firstName is invalid. The firstName can have min 2 and max 50 letters'
                           : null,
@@ -134,9 +134,9 @@ class _EditProfile extends State<EditProfile> {
                     controller: widget._lastNameController,
                     decoration: InputDecoration(
                       labelText: 'LastName',
-                      prefixIcon: Icon(Icons.perm_identity),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.perm_identity),
+                      contentPadding:const EdgeInsets.symmetric(horizontal: 10.0),
+                      border: const OutlineInputBorder(),
                       errorText: _lastNameColor == Colors.red
                           ? 'The lastName is invalid. The lastName can have min 2 and max 50 letters'
                           : null,
@@ -191,9 +191,9 @@ class _EditProfile extends State<EditProfile> {
                     controller: widget._phoneController,
                     decoration:  InputDecoration(
                       labelText: 'Broj telefona',
-                      prefixIcon: Icon(Icons.phone),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.phone),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      border: const OutlineInputBorder(),
                        errorText: _phoneColor == Colors.red
                           ? 'Phone only can have numbers'
                           : null,

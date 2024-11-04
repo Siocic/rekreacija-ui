@@ -119,13 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomePageScreen()));
                       },
-                      child: Text('LOGIN'),
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.grey,
                           foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero,
                           )),
+                      child: const Text('LOGIN'),
                     ),
                   ),
                   const SizedBox(height: 20),

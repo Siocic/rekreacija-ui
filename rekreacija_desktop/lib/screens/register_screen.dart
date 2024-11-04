@@ -141,9 +141,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: widget._firstNameController,
                       decoration: InputDecoration(
                         labelText: 'FirstName',
-                        prefixIcon: Icon(Icons.perm_identity),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                        border: OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.perm_identity),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 10.0),
+                        border: const OutlineInputBorder(),
                         errorText: _firstNameColor == Colors.red
                             ? 'The firstName is invalid. The firstName can have min 2 and max 50 letters'
                             : null,
@@ -158,9 +159,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: widget._lastNameController,
                       decoration: InputDecoration(
                         labelText: 'LastName',
-                        prefixIcon: Icon(Icons.perm_identity),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                        border: OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.perm_identity),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 10.0),
+                        border: const OutlineInputBorder(),
                         errorText: _lastNameColor == Colors.red
                             ? 'The lastName is invalid. The lastName can have min 2 and max 50 letters'
                             : null,
@@ -215,9 +217,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: widget._phoneController,
                       decoration: InputDecoration(
                         labelText: 'Broj telefona',
-                        prefixIcon: Icon(Icons.phone),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                        border: OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.phone),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 10.0),
+                        border: const OutlineInputBorder(),
                         errorText: _phoneColor == Colors.red
                             ? 'Phone only can have numbers'
                             : null,
@@ -298,13 +301,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           print('Register');
                         },
-                        child: Text('REGISTER'),
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero,
                             )),
+                        child: const Text('REGISTER'),
                       ),
                     ),
                     const SizedBox(height: 20),

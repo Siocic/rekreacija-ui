@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/screens/role_selection_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -138,7 +139,7 @@ class _LoginScreen extends State<LoginScreen> {
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const RoleSelectionScreen()));
                   print('registriraj se ovjde');
                 },
                 child: Text(

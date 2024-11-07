@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/screens/homepage_screen.dart';
 import 'package:rekreacija_mobile/screens/role_selection_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -114,8 +115,7 @@ class _LoginScreen extends State<LoginScreen> {
                 height: 50,
                 child: TextButton(
                   onPressed: () {
-                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomePageScreen()));
-                    print('Prijavi se');
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.black,

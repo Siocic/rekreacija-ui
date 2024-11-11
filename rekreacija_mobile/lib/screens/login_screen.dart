@@ -75,14 +75,14 @@ class _LoginScreen extends State<LoginScreen> {
                 obscureText: !_showPassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: TextStyle(color: Colors.black, fontSize: 15),
-                  fillColor: Color.fromRGBO(255, 255, 255, 50),
+                  labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+                  fillColor: const Color.fromRGBO(255, 255, 255, 50),
                   filled: true,
-                  prefixIcon: const Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock,color: Colors.black,),
                   suffixIcon: IconButton(
                     icon: Icon(_showPassword
                         ? Icons.visibility
-                        : Icons.visibility_off),
+                        : Icons.visibility_off,color: Colors.black,),
                     onPressed: () {
                       setState(() {
                         _showPassword = !_showPassword;

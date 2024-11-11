@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_mobile/screens/homepage_screen.dart';
 import 'package:rekreacija_mobile/screens/role_selection_screen.dart';
+import 'package:rekreacija_mobile/screens/tabs_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -115,7 +115,7 @@ class _LoginScreen extends State<LoginScreen> {
                 height: 50,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const TabsScreen()));
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.black,

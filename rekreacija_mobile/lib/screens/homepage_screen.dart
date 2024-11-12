@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rekreacija_mobile/screens/notifications_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
   HomePageScreen({super.key});
@@ -16,18 +17,36 @@ class _HomePageScreen extends State<HomePageScreen> {
       height: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [           
-              Color.fromARGB(225, 19, 19, 19),
+          colors: [
+            Color.fromARGB(225, 19, 19, 19),
             Color.fromARGB(225, 49, 49, 49),
           ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
       ),
-      child: const Center(
-        child: Text(
-          'Your Content Here',
-          style: TextStyle(color: Colors.white),
+      child:  Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 55.0),
+            Row(
+              children: [
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.notifications_none),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationsScreen()));
+                    },
+                    
+                  ),
+                  
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );

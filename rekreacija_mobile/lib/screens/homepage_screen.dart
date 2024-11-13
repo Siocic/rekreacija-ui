@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rekreacija_mobile/screens/messages_screen.dart';
 import 'package:rekreacija_mobile/screens/notifications_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _HomePageScreen extends State<HomePageScreen> {
           end: Alignment.bottomLeft,
         ),
       ),
-      child:  Center(
+      child: Center(
         child: Column(
           children: [
             const SizedBox(height: 55.0),
@@ -33,16 +34,32 @@ class _HomePageScreen extends State<HomePageScreen> {
               children: [
                 const Spacer(),
                 Padding(
+                  padding: const EdgeInsets.only(right:0.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.message),
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const MessagesScreen()));
+                    },
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: IconButton(
                     icon: const Icon(Icons.notifications_none),
                     color: Colors.white,
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationsScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const NotificationsScreen()));
                     },
-                    
                   ),
-                  
                 )
               ],
             ),

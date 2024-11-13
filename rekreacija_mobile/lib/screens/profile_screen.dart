@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/widgets/setting_popup.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
@@ -43,10 +44,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                 const Spacer(),
                 const Padding(
                   padding: EdgeInsets.only(right: 10),
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                  ),
+                  child: SettingsPopupMenu()
                 )
               ],
             ),

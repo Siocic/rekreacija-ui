@@ -41,12 +41,21 @@ class _LoginScreen extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(14, 121, 115, 100),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Container(
-          width: 400,
-          height: 400,
+          width: double.infinity,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 200),
+              Text(
+                'Login here',
+                style: GoogleFonts.sora(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
               const SizedBox(height: 40),
               TextField(
                 controller: widget._emailController,
@@ -75,14 +84,19 @@ class _LoginScreen extends State<LoginScreen> {
                 obscureText: !_showPassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+                  labelStyle:
+                      const TextStyle(color: Colors.black, fontSize: 15),
                   fillColor: const Color.fromRGBO(255, 255, 255, 50),
                   filled: true,
-                  prefixIcon: const Icon(Icons.lock,color: Colors.black,),
+                  prefixIcon: const Icon(
+                    Icons.lock,
+                    color: Colors.black,
+                  ),
                   suffixIcon: IconButton(
-                    icon: Icon(_showPassword
-                        ? Icons.visibility
-                        : Icons.visibility_off,color: Colors.black,),
+                    icon: Icon(
+                      _showPassword ? Icons.visibility : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
                     onPressed: () {
                       setState(() {
                         _showPassword = !_showPassword;
@@ -115,7 +129,10 @@ class _LoginScreen extends State<LoginScreen> {
                 height: 50,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const TabsScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TabsScreen()));
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -139,7 +156,10 @@ class _LoginScreen extends State<LoginScreen> {
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const RoleSelectionScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RoleSelectionScreen()));
                   print('registriraj se ovjde');
                 },
                 child: Text(

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_mobile/screens/messages_screen.dart';
-import 'package:rekreacija_mobile/screens/notifications_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 class HomePageScreen extends StatefulWidget {
   HomePageScreen({super.key});
@@ -50,11 +49,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                     icon: const Icon(Icons.message),
                     color: Colors.white,
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const MessagesScreen()));
+                      Navigator.pushNamed(context, AppRoutes.messages);
                     },
                   ),
                 ),
@@ -64,13 +59,8 @@ class _HomePageScreen extends State<HomePageScreen> {
                     icon: const Icon(Icons.notifications_none),
                     color: Colors.white,
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const NotificationsScreen()));
+                      Navigator.pushNamed(context, AppRoutes.nottification);
                     },
-
                   ),
                 ),
               ],

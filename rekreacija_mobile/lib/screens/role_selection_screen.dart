@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_mobile/screens/fizickolice_screen.dart';
-import 'package:rekreacija_mobile/screens/pravnolice_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});
@@ -29,10 +28,7 @@ class RoleSelectionScreen extends StatelessWidget {
                   height: 50,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FizickoliceScreen()));
+                      Navigator.pushNamed(context, AppRoutes.fizickolice);
                     },
                     style: TextButton.styleFrom(
                         backgroundColor: Color.fromRGBO(255, 255, 255, 100),
@@ -54,10 +50,7 @@ class RoleSelectionScreen extends StatelessWidget {
                   height: 50,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PravnoliceScreen()));
+                      Navigator.pushNamed(context, AppRoutes.pravnolice);
                     },
                     style: TextButton.styleFrom(
                         backgroundColor: Color.fromRGBO(255, 255, 255, 100),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rekreacija_mobile/screens/login_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(14, 121, 115, 0)),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      initialRoute: AppRoutes.login,
+      routes: AppRoutes.getRoutes(),
       debugShowCheckedModeBanner: false,
        
     );

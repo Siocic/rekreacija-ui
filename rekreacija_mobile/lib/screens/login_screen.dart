@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_mobile/screens/role_selection_screen.dart';
-import 'package:rekreacija_mobile/screens/tabs_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -129,10 +128,7 @@ class _LoginScreen extends State<LoginScreen> {
                 height: 50,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TabsScreen()));
+                    Navigator.pushNamed(context, AppRoutes.tabsscreen);
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -156,11 +152,7 @@ class _LoginScreen extends State<LoginScreen> {
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RoleSelectionScreen()));
-                  print('registriraj se ovjde');
+                 Navigator.pushNamed(context, AppRoutes.roleselection);
                 },
                 child: Text(
                   'Register here',

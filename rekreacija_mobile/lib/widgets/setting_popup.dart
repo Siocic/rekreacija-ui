@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rekreacija_mobile/screens/login_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 class SettingsPopupMenu extends StatefulWidget {
   const SettingsPopupMenu({super.key});
@@ -32,8 +32,7 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
             print('Information selected');
             break;
           case 4:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => LoginScreen()));
+            Navigator.pushNamed(context, AppRoutes.login);
           default:
             print('Invalid');
         }

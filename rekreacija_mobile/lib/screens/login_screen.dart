@@ -128,7 +128,11 @@ class _LoginScreen extends State<LoginScreen> {
                 height: 50,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.tabsscreen);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/tabsscreen', 
+                      (route) => false,
+                    );
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -152,7 +156,8 @@ class _LoginScreen extends State<LoginScreen> {
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () {
-                 Navigator.pushNamed(context, AppRoutes.roleselection);
+                  Navigator.pushReplacementNamed(
+                      context, AppRoutes.roleselection);
                 },
                 child: Text(
                   'Register here',

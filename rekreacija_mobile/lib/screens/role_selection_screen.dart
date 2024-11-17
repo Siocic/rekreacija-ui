@@ -28,7 +28,8 @@ class RoleSelectionScreen extends StatelessWidget {
                   height: 50,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.fizickolice);
+                      Navigator.pushReplacementNamed(
+                          context, AppRoutes.fizickolice);
                     },
                     style: TextButton.styleFrom(
                         backgroundColor: Color.fromRGBO(255, 255, 255, 100),
@@ -50,7 +51,8 @@ class RoleSelectionScreen extends StatelessWidget {
                   height: 50,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.pravnolice);
+                      Navigator.pushReplacementNamed(
+                          context, AppRoutes.pravnolice);
                     },
                     style: TextButton.styleFrom(
                         backgroundColor: Color.fromRGBO(255, 255, 255, 100),

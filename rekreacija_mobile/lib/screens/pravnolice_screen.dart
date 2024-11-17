@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_mobile/screens/login_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 class PravnoliceScreen extends StatefulWidget {
   PravnoliceScreen({super.key});
@@ -82,7 +82,8 @@ class _PravnoliceScreen extends State<PravnoliceScreen> {
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
                     color: Colors.white),
-              ),  const SizedBox(height: 10),
+              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: widget._nazivUstanove,
                 decoration: InputDecoration(
@@ -125,7 +126,8 @@ class _PravnoliceScreen extends State<PravnoliceScreen> {
                 controller: widget._emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+                  labelStyle:
+                      const TextStyle(color: Colors.black, fontSize: 15),
                   fillColor: const Color.fromRGBO(255, 255, 255, 100),
                   filled: true,
                   prefixIcon: const Icon(
@@ -252,10 +254,7 @@ class _PravnoliceScreen extends State<PravnoliceScreen> {
                           color: Colors.white)),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                     child: Text(
                       'Login',
@@ -267,7 +266,7 @@ class _PravnoliceScreen extends State<PravnoliceScreen> {
                   ),
                 ],
               ),
-             ],
+            ],
           ),
         ),
       ),

@@ -32,7 +32,7 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
             print('Information selected');
             break;
           case 4:
-            Navigator.pushNamed(context, AppRoutes.login);
+            Navigator.pushReplacementNamed(context, AppRoutes.login);
           default:
             print('Invalid');
         }

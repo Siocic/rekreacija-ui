@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:rekreacija_mobile/screens/login_screen.dart';
+import 'package:rekreacija_mobile/routes.dart';
 
 class FizickoliceScreen extends StatefulWidget {
   FizickoliceScreen({super.key});
@@ -406,10 +406,7 @@ class _FizickoliceScreen extends State<FizickoliceScreen> {
                           color: Colors.white)),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                     child: Text(
                       'Login',

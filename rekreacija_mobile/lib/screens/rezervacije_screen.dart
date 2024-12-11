@@ -49,7 +49,8 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
               children: [
                 Card(
                   color: const Color.fromRGBO(49, 49, 49, 0.8),
-                  shape:const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero),
                   child: SizedBox(
                     width: 400.0,
                     child: Stack(

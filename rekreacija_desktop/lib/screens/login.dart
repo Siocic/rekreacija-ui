@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/colors.dart';
 import 'package:rekreacija_desktop/screens/home_page.dart';
 import 'package:rekreacija_desktop/screens/register_screen.dart';
 
@@ -14,24 +15,24 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _showPassword = false;
-  Color _emailColor = Colors.black;
+  Color _emailColor = AppColors.textBlack;
 
   bool emailValidation(TextEditingController controller) {
     final emailRegex = RegExp(
         r"[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+");
     if (controller.text.isEmpty) {
       setState(() {
-        _emailColor = Colors.red;
+        _emailColor = AppColors.errorColor;
       });
       return false;
     } else if (emailRegex.hasMatch(controller.text) == false) {
       setState(() {
-        _emailColor = Colors.red;
+        _emailColor = AppColors.errorColor;
       });
       return false;
     }
     setState(() {
-      _emailColor = Colors.black;
+      _emailColor = AppColors.textBlack;
     });
     return true;
   }
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 10.0),
                       border: const OutlineInputBorder(),
-                      errorText: _emailColor == Colors.red
+                      errorText: _emailColor == AppColors.errorColor
                           ? 'Email is invalid. Pattern: email@example.com'
                           : null,
                     ),
@@ -105,9 +106,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         'Forgot password?',
                         style: TextStyle(
-                            color: Colors.blue,
+                            color: AppColors.textBlue,
                             decoration: TextDecoration.underline,
-                            decorationColor: Colors.blue),
+                            decorationColor: AppColors.underlineBlue),
                       ),
                     ),
                   ),
@@ -140,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: const Text(
                           'Register',
-                          style: TextStyle(color: Colors.blue),
+                          style: TextStyle(color: AppColors.textBlue),
                         ),
                       ),
                     ],

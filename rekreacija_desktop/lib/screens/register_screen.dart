@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/colors.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,11 +18,11 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  Color _emailColor = Colors.black;
-  Color _firstNameColor = Colors.black;
-  Color _lastNameColor = Colors.black;
-  Color _phoneColor = Colors.black;
-  Color _passwordColor = Colors.black;
+  Color _emailColor = AppColors.textBlack;
+  Color _firstNameColor = AppColors.textBlack;
+  Color _lastNameColor = AppColors.textBlack;
+  Color _phoneColor = AppColors.textBlack;
+  Color _passwordColor = AppColors.textBlack;
   bool _showPassword = false;
   bool _showRepeatPassword = false;
 
@@ -30,17 +31,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         r"[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+");
     if (controller.text.isEmpty) {
       setState(() {
-        _emailColor = Colors.red;
+        _emailColor = AppColors.errorColor;
       });
       return false;
     } else if (emailRegex.hasMatch(controller.text) == false) {
       setState(() {
-        _emailColor = Colors.red;
+        _emailColor = AppColors.errorColor;
       });
       return false;
     }
     setState(() {
-      _emailColor = Colors.black;
+      _emailColor = AppColors.textBlack;
     });
     return true;
   }
@@ -49,35 +50,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController controller, bool isFirstName) {
     if (controller.text.isEmpty && isFirstName) {
       setState(() {
-        _firstNameColor = Colors.red;
+        _firstNameColor = AppColors.errorColor;
       });
       return false;
     }
     if (controller.text.isEmpty && !isFirstName) {
       setState(() {
-        _lastNameColor = Colors.red;
+        _lastNameColor = AppColors.errorColor;
       });
       return false;
     }
     if ((controller.text.length < 2 || controller.text.length > 50)) {
       if (isFirstName) {
         setState(() {
-          _firstNameColor = Colors.red;
+          _firstNameColor = AppColors.errorColor;
         });
       } else {
         setState(() {
-          _lastNameColor = Colors.red;
+          _lastNameColor = AppColors.errorColor;
         });
       }
       return false;
     }
     if (isFirstName) {
       setState(() {
-        _firstNameColor = Colors.black;
+        _firstNameColor = AppColors.textBlack;
       });
     } else {
       setState(() {
-        _lastNameColor = Colors.black;
+        _lastNameColor = AppColors.textBlack;
       });
     }
     return true;
@@ -88,17 +89,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (controller.text.isEmpty) {
       setState(() {
-        _phoneColor = Colors.red;
+        _phoneColor = AppColors.errorColor;
       });
       return false;
     } else if (!phoneRegex.hasMatch(controller.text)) {
       setState(() {
-        _phoneColor = Colors.red;
+        _phoneColor = AppColors.errorColor;
       });
       return false;
     }
     setState(() {
-      _phoneColor = Colors.black;
+      _phoneColor = AppColors.textBlack;
     });
     return true;
   }
@@ -107,12 +108,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController password, TextEditingController repeatPassword) {
     if ((password.text != repeatPassword.text) || password.text.isEmpty) {
       setState(() {
-        _passwordColor = Colors.red;
+        _passwordColor = AppColors.errorColor;
       });
       return false;
     }
     setState(() {
-      _passwordColor = Colors.black;
+      _passwordColor = AppColors.textBlack;
     });
     return true;
   }
@@ -145,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        errorText: _firstNameColor == Colors.red
+                        errorText: _firstNameColor == AppColors.errorColor
                             ? 'The firstName is invalid. The firstName can have min 2 and max 50 letters'
                             : null,
                       ),
@@ -163,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        errorText: _lastNameColor == Colors.red
+                        errorText: _lastNameColor == AppColors.errorColor
                             ? 'The lastName is invalid. The lastName can have min 2 and max 50 letters'
                             : null,
                       ),
@@ -192,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        errorText: _emailColor == Colors.red
+                        errorText: _emailColor == AppColors.errorColor
                             ? 'Email is invalid. Pattern: email@example.com'
                             : null,
                       ),
@@ -221,7 +222,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        errorText: _phoneColor == Colors.red
+                        errorText: _phoneColor == AppColors.errorColor
                             ? 'Phone only can have numbers'
                             : null,
                       ),
@@ -261,7 +262,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        errorText: _passwordColor == Colors.red
+                        errorText: _passwordColor == AppColors.errorColor
                             ? 'The passwords didn\t match'
                             : null,
                       ),
@@ -287,7 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 10.0),
                         border: const OutlineInputBorder(),
-                        errorText: _passwordColor == Colors.red
+                        errorText: _passwordColor == AppColors.errorColor
                             ? 'The passwords didn\t match'
                             : null,
                       ),
@@ -324,7 +325,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           child: const Text(
                             'Login',
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(color: AppColors.textBlue),
                           ),
                         ),
                       ],

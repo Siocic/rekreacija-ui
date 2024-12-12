@@ -1,45 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:rekreacija_desktop/screens/dashboard.dart';
-import 'package:rekreacija_desktop/screens/klijenti.dart';
-import 'package:rekreacija_desktop/screens/moj_profil.dart';
-import 'package:rekreacija_desktop/screens/poruke.dart';
-import 'package:rekreacija_desktop/screens/recenzije_obavijesti.dart';
-import 'package:rekreacija_desktop/screens/termini.dart';
-import 'package:rekreacija_desktop/screens/uplate.dart';
+import 'package:rekreacija_desktop/screens/appointment_screen.dart';
+import 'package:rekreacija_desktop/screens/clients_screen.dart';
+import 'package:rekreacija_desktop/screens/dashboard_screen.dart';
+import 'package:rekreacija_desktop/screens/messages_screen.dart';
+import 'package:rekreacija_desktop/screens/payment_screen.dart';
+import 'package:rekreacija_desktop/screens/profile_screen.dart';
+import 'package:rekreacija_desktop/screens/review_notification_screen.dart';
 import 'package:rekreacija_desktop/widgets/main_drawer.dart';
 
-class HomePageScreen extends StatefulWidget{
+class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() =>_HomePageState();
+  State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
-class _HomePageState extends State<HomePageScreen>{
-  int selectedIndex=0;
+class _HomePageScreenState extends State<HomePageScreen> {
+  int selectedIndex = 0;
 
- void onDrawerItemSelected(int index){
-  setState(() {
-    selectedIndex=index;
-  });
- }
+  void onItemSelected(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
 
   Widget getSelectedScreen() {
     switch (selectedIndex) {
       case 0:
-        return const DashboardScreen();  
+        return const DashboardScreen();
       case 1:
-        return const TerminiScreen();    
+        return const AppointmentScreen();
       case 2:
-        return const KlijentiScreen();
+        return const ClientsScreen();
       case 3:
-        return const UplateScren();
+        return const PaymentScreen();
       case 4:
-        return const PorukeScreen();
-      case 5: 
-        return const RecenzijeObavijestiScreen();
+        return const MessagesScreen();
+      case 5:
+        return const ReviewNotificationScreen();
       case 6:
-        return const MojProfilScreen();
+        return const ProfileScreen();
       default:
         return const Center(child: Text('Select a screen from the menu'));
     }
@@ -50,10 +50,11 @@ class _HomePageState extends State<HomePageScreen>{
     return Scaffold(
       body: Row(
         children: [
-          MainDrawer(onItemSelected: onDrawerItemSelected,selectedIndex: selectedIndex,),
+          MainDrawer(
+              onItemSelected: onItemSelected, selectedIndex: selectedIndex),
           Expanded(
             child: getSelectedScreen(),
-          ),
+          )
         ],
       ),
     );

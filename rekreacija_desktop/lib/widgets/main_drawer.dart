@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/colors.dart';
 
 class MainDrawer extends StatelessWidget {
   final Function(int) onItemSelected;
@@ -9,71 +10,92 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildNavItem({
+      required IconData icon,
+      required String title,
+      required bool isSelected,
+      required VoidCallback onTap,
+    }) {
+      return ListTile(
+        leading: Icon(icon,
+            color: isSelected ? AppColors.iconGreen : AppColors.iconBlack),
+        title: Text(
+          title,
+          style: TextStyle(
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              color: isSelected ? Colors.green : Colors.black),
+        ),
+        selected: isSelected,
+        onTap: onTap,
+      );
+    }
+
     return Container(
       width: 250,
-      color: Colors.grey[100],
+      color: Colors.grey[200],
       child: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(16.0),
             child: Row(
               children: [
                 Icon(Icons.sports, size: 50),
-                SizedBox(width: 18),
-                Text('Rekreacija', style: TextStyle(fontSize: 24)),
+                SizedBox(width: 16),
+                Text('Rekreacija',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.home, size: 30),
-            title: const Text('Dashboard'),
-            selected: selectedIndex == 0,
-            selectedColor: Colors.green,            
-            onTap: () => onItemSelected(0),
-          ),
-          ListTile(
-            leading: const Icon(Icons.list, size: 30),
-            title: const Text('Termini'),
-            selected: selectedIndex == 1,
-            selectedColor: Colors.green,    
-            onTap: () => onItemSelected(1),
-          ),
-          ListTile(
-            leading: const Icon(Icons.person, size: 30),
-            title: const Text('Klijenti'),
-            selected: selectedIndex == 2,
-            selectedColor: Colors.green,    
-            onTap: () => onItemSelected(2),
-          ),
-          ListTile(
-            leading: const Icon(Icons.payment, size: 30),
-            title: const Text('Uplate'),
-            selected: selectedIndex == 3,
-            selectedColor: Colors.green,    
-            onTap: () => onItemSelected(3),
-          ),
-          ListTile(
-            leading: const Icon(Icons.message, size: 30),
-            title: const Text('Poruke'),
-            selected: selectedIndex == 4,
-            selectedColor: Colors.green,    
-            onTap: () => onItemSelected(4),
-          ),
-          ListTile(
-            leading: const Icon(Icons.notifications, size: 30),
-            title: const Text('Recenzije i obavijesti'),
-            selected: selectedIndex == 5,
-            selectedColor: Colors.green,    
-            onTap: () => onItemSelected(5),
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_box, size: 30),
-            title: const Text('Moj profil'),
-            selected: selectedIndex == 6,
-            selectedColor: Colors.green,    
-            onTap: () => onItemSelected(6),
-          ),
+          Expanded(
+            child: ListView(
+              children: [
+                _buildNavItem(
+                  icon: Icons.home,
+                  title: 'Dashboard',
+                  isSelected: selectedIndex == 0,
+                  onTap: () => onItemSelected(0),
+                ),
+                _buildNavItem(
+                  icon: Icons.calendar_month,
+                  title: 'Appointments',
+                  isSelected: selectedIndex == 1,
+                  onTap: () => onItemSelected(1),
+                ),
+                _buildNavItem(
+                  icon: Icons.people,
+                  title: 'Clients',
+                  isSelected: selectedIndex == 2,
+                  onTap: () => onItemSelected(2),
+                ),
+                _buildNavItem(
+                  icon: Icons.payment,
+                  title: 'Payments',
+                  isSelected: selectedIndex == 3,
+                  onTap: () => onItemSelected(3),
+                ),
+                _buildNavItem(
+                  icon: Icons.message,
+                  title: 'Messages',
+                  isSelected: selectedIndex == 4,
+                  onTap: () => onItemSelected(4),
+                ),
+                _buildNavItem(
+                  icon: Icons.notifications,
+                  title: 'Reviews & notifications',
+                  isSelected: selectedIndex == 5,
+                  onTap: () => onItemSelected(5),
+                ),
+                _buildNavItem(
+                  icon: Icons.notifications,
+                  title: 'My Profile',
+                  isSelected: selectedIndex == 6,
+                  onTap: () => onItemSelected(6),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

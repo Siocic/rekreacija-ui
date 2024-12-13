@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ObavijestiModal extends StatefulWidget {
-  const ObavijestiModal({super.key});
+class NotificationModal extends StatefulWidget {
+  const NotificationModal({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ObavijestiModalState();
+  State<StatefulWidget> createState() => _NotificationModalState();
 }
 
-class _ObavijestiModalState extends State<ObavijestiModal> {
+class _NotificationModalState extends State<NotificationModal> {
   @override
   Widget build(BuildContext context) {
     return Dialog(

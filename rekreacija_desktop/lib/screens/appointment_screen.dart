@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_desktop/colors.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
+import 'package:rekreacija_desktop/widgets/appointment_card.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 
-class AppointmentScreen extends StatelessWidget {
+class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
+  @override
+  State<StatefulWidget> createState() => _AppointmentScreenState();
+}
 
+class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,7 +27,121 @@ class AppointmentScreen extends StatelessWidget {
             },
           ),
         ),
+        const SizedBox(height: 20.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 30.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'New appointment requests',
+                style: GoogleFonts.suezOne(fontSize: 18),
+              ),
+              const SizedBox(height: 5.0),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: scrollLeft,
+                    style: TextButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      backgroundColor: Colors.grey[300],
+                      padding: const EdgeInsets.all(8),
+                    ),
+                    child: const Icon(
+                      Icons.keyboard_arrow_left_sharp,
+                      color: Color.fromRGBO(14, 119, 62, 1),
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(width: 5.0),
+                  TextButton(
+                    onPressed: scrollRight,
+                    style: TextButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      backgroundColor: Colors.grey[300],
+                      padding: const EdgeInsets.all(8),
+                    ),
+                    child: const Icon(
+                      Icons.keyboard_arrow_right_sharp,
+                      color: Color.fromRGBO(14, 119, 62, 1),
+                      size: 32,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 5.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: SizedBox(
+            height: 160.0,
+            width: 1590.0,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: AppointmentCard(
+                    customer: 'Person Name',
+                    date: '12.12.2024',
+                    time: '15:00',
+                    approveAppointment: approveAppointment,
+                    declineAppointment: declineAppointment,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  void approveAppointment() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'You approved appointment for .....',
+        style: GoogleFonts.suezOne(),
+      ),
+      backgroundColor: AppColors.buttonGreen,
+      duration: Durations.extralong4,
+    ));
+  }
+
+  void declineAppointment() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'You declined appointment for .....',
+        style: GoogleFonts.suezOne(),
+      ),
+      backgroundColor: AppColors.buttonRed,
+      duration: Durations.extralong4,
+    ));
+  }
+
+  final ScrollController _scrollController = ScrollController();
+
+  void scrollLeft() {
+    _scrollController.animateTo(
+      _scrollController.offset - 200,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void scrollRight() {
+    _scrollController.animateTo(
+      _scrollController.offset + 200,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 }

@@ -23,6 +23,7 @@ class AppColors {
   static const Color iconYellow = Colors.yellow;
   static const Color iconGreen = Colors.green;
   static const Color iconBlack = Colors.black;
+  static const Color iconRed = Colors.red;
 
   //Underline Color
   static const Color underlineBlue = Colors.blue;

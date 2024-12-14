@@ -30,6 +30,60 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         const SizedBox(height: 20.0),
         Padding(
           padding: const EdgeInsets.only(left: 30.0),
+          child: Row(
+            children: [
+              Text(
+                'Work time: ',
+                style: GoogleFonts.suezOne(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(width: 10.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                onPressed: () => _setTime(context, true),
+                child: Text(
+                  startTime != null ? formatTime24Hours(startTime!) : 'start',
+                  style:
+                      GoogleFonts.suezOne(fontSize: 20.0, color: Colors.black),
+                ),
+              ),
+              const SizedBox(width: 5.0),
+              Text('-',
+                  style:
+                      GoogleFonts.suezOne(fontSize: 20.0, color: Colors.black)),
+              const SizedBox(width: 5.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                onPressed:
+                    startTime != null ? () => _setTime(context, false) : null,
+                child: Text(
+                  endTime != null ? formatTime24Hours(endTime!) : 'end',
+                  style:
+                      GoogleFonts.suezOne(fontSize: 20.0, color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -103,6 +157,64 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       ],
     );
+  }
+
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
+
+  Future<void> _setTime(BuildContext context, bool isStartTime) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: isStartTime
+          ? (startTime ?? TimeOfDay.now())
+          : (endTime ?? TimeOfDay.now()),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+          ),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!,
+          ),
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        if (isStartTime) {
+          startTime = pickedTime;
+          if (endTime != null &&
+              (endTime!.hour < startTime!.hour ||
+                  (endTime!.hour == startTime!.hour &&
+                      endTime!.minute == startTime!.minute))) {
+            endTime = null;
+          }
+        } else {
+          if (startTime == null ||
+              pickedTime.hour > startTime!.hour ||
+              (pickedTime.hour == startTime!.hour &&
+                  pickedTime.minute == startTime!.minute)) {
+            endTime = pickedTime;
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                'End time must be later than start time',
+                style: GoogleFonts.suezOne(),
+              ),
+              backgroundColor: Colors.red,
+            ));
+          }
+        }
+      });
+    }
+  }
+
+  String formatTime24Hours(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minutes';
   }
 
   void approveAppointment() {

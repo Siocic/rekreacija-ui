@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/screens/client_profile_screen.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 
@@ -7,6 +8,8 @@ class ClientsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final dataSource = MyDataSource(context: context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -59,7 +62,6 @@ class ClientsScreen extends StatelessWidget {
               source: dataSource,
               rowsPerPage: 5,
               showEmptyRows: false,
-              
             ),
           ),
         ),
@@ -68,9 +70,10 @@ class ClientsScreen extends StatelessWidget {
   }
 }
 
-final DataTableSource dataSource = MyDataSource();
+//final DataTableSource dataSource = MyDataSource(context);
 
 class MyDataSource extends DataTableSource {
+  final BuildContext context;
   final List<List<String>> dummyData = [
     [
       'Admin Admin',
@@ -162,12 +165,14 @@ class MyDataSource extends DataTableSource {
     ],
   ];
 
+
+  MyDataSource({required this.context});
   @override
   DataRow? getRow(int index) {
     if (index >= dummyData.length) return null;
 
     final row = dummyData[index];
-      final isActive = row[5] == 'Active';
+    final isActive = row[5] == 'Active';
     return DataRow(cells: [
       DataCell(Text(row[0])),
       DataCell(Text(row[1])),
@@ -176,27 +181,30 @@ class MyDataSource extends DataTableSource {
       DataCell(Text(row[4])),
       DataCell(
         Container(
-            decoration: BoxDecoration(
-              color: isActive?Colors.green[100]:Colors.red[100],
-              border: Border.all(
-                color: isActive?Colors.green:Colors.red
-              ),
-              borderRadius: BorderRadius.circular(4.0)
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 4.0),
-            child: Text(
-              row[5],
-              style: TextStyle(
-                  color: isActive?Colors.green[900]:Colors.red[900],
-                  fontWeight: FontWeight.bold
-              ),
-            ),
+          decoration: BoxDecoration(
+              color: isActive ? Colors.green[100] : Colors.red[100],
+              border: Border.all(color: isActive ? Colors.green : Colors.red),
+              borderRadius: BorderRadius.circular(4.0)),
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+          child: Text(
+            row[5],
+            style: TextStyle(
+                color: isActive ? Colors.green[900] : Colors.red[900],
+                fontWeight: FontWeight.bold),
+          ),
         ),
       ),
-      DataCell(IconButton(
-        icon: const Icon(Icons.open_in_new),
-        onPressed: () {},
-      ))
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.open_in_new),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ClientProfileScreen()));
+          },
+        ),
+      ),
     ]);
   }
 

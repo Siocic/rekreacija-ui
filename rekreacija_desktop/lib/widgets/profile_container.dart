@@ -3,8 +3,8 @@ import 'package:rekreacija_desktop/widgets/edit_profile.dart';
 import 'package:rekreacija_desktop/widgets/profile_parts.dart';
 
 class ProfileContainer extends StatefulWidget {
-    final bool isEditable;
-  const ProfileContainer({super.key,required this.isEditable});
+  final bool isEditable;
+  const ProfileContainer({super.key, required this.isEditable});
 
   @override
   State<ProfileContainer> createState() => _ProfileContainer();
@@ -16,12 +16,13 @@ class _ProfileContainer extends State<ProfileContainer> {
     return Center(
       child: Container(
         width: 900,
+        height: 780,
         padding: const EdgeInsets.all(15.0),
         color: Colors.grey[200],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if(widget.isEditable)
+            if (widget.isEditable)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -29,9 +30,12 @@ class _ProfileContainer extends State<ProfileContainer> {
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
-                      showDialog(context: context, builder: (BuildContext context){
-                        return  EditProfile();
-                      },);
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return EditProfile();
+                        },
+                      );
                     },
                   ),
                 ],
@@ -54,18 +58,20 @@ class _ProfileContainer extends State<ProfileContainer> {
             const SizedBox(height: 15),
             const ProfileParts(labelText: 'Email:', inputText: 'Email'),
             const SizedBox(height: 15),
-            const ProfileParts(
-                labelText: 'Datum rodjenja:', inputText: '1/1/2001'),
+            const ProfileParts(labelText: 'Birthday:', inputText: '1/1/2001'),
             const SizedBox(height: 15),
             const ProfileParts(
-                labelText: 'Broj telefona:', inputText: '123/456-789'),
+                labelText: 'Phone number:', inputText: '123/456-789'),
             const SizedBox(height: 15),
-            const ProfileParts(labelText: 'Grad:', inputText: 'Grad'),
+            const ProfileParts(labelText: 'City:', inputText: 'Grad'),
             const SizedBox(height: 15),
-            const ProfileParts(labelText: 'Clan od: ', inputText: '1/1/2025'),
+            const ProfileParts(
+                labelText: 'Member since: ', inputText: '1/1/2025'),
             const SizedBox(height: 15),
-            const ProfileParts(labelText: 'Status:', inputText: 'Status'),
-            const SizedBox(height: 15),
+            if (!widget.isEditable) ...[
+              const ProfileParts(labelText: 'Status:', inputText: 'Status'),
+              const SizedBox(height: 15),
+            ],
           ],
         ),
       ),

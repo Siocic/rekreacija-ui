@@ -4,6 +4,7 @@ import 'package:rekreacija_desktop/colors.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/appointment_card.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
@@ -12,6 +13,13 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
+  List<Appointment> appointments = [];
+  @override
+  void initState() {
+    super.initState();
+    appointments = getDummyAppointments();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -155,8 +163,65 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             ),
           ),
         ),
+        const SizedBox(height: 20.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 30.0),
+          child: SizedBox(
+            width: 1560.0,
+            height: 600.0,
+            child: SfCalendar(
+              view: CalendarView.month,
+              dataSource: MeetingDataSource(appointments),
+              monthViewSettings: const MonthViewSettings(
+                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+                dayFormat: 'EEEE',
+              ),
+              todayHighlightColor: Colors.blue[300],
+              viewHeaderHeight: 30.0,
+              showNavigationArrow: true,
+              showTodayButton: true,
+              headerStyle: CalendarHeaderStyle(
+                backgroundColor: Colors.grey[300],
+                textStyle:
+                    GoogleFonts.suezOne(color: Colors.black, fontSize: 20.0),
+              ),
+              appointmentTextStyle: GoogleFonts.suezOne(
+                  fontSize: 20.0, color: Colors.white, height: 1),
+              onLongPress: (calendarTapDetails) {
+                if (calendarTapDetails.targetElement ==
+                    CalendarElement.calendarCell) {
+                  _showAddHolidayDialog(calendarTapDetails.date!);
+                }
+              },
+              
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  List<Appointment> getDummyAppointments() {
+    return <Appointment>[
+      Appointment(
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        subject: 'Team Meeting',
+        color: Colors.blue,
+      ),
+      Appointment(
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)),
+        subject: 'Team Meeting',
+        color: Colors.red,
+      ),
+      Appointment(
+        startTime: DateTime.now().add(const Duration(days: 2)),
+        endTime: DateTime.now().add(const Duration(days: 2, hours: 1)),
+        subject: 'Project Kickoff',
+        color: Colors.green,
+      ),
+    ];
   }
 
   TimeOfDay? startTime;
@@ -255,5 +320,49 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  List<DateTime> holidays = [];
+
+  void _addHoliday(DateTime date) {
+    setState(() {
+      holidays.add(date);
+      appointments.add(Appointment(
+        startTime: date,
+        endTime: date.add(const Duration(hours: 1)),
+        subject: 'Holiday',
+        color: Colors.redAccent,
+        isAllDay: true,
+      ));
+    });
+  }
+
+  void _showAddHolidayDialog(DateTime date) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Set Holiday'),
+        content: Text('Do you want to mark ${date.toLocal()} as a holiday?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _addHoliday(date);
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MeetingDataSource extends CalendarDataSource {
+  MeetingDataSource(List<Appointment> source) {
+    appointments = source;
   }
 }

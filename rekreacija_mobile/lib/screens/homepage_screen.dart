@@ -120,10 +120,13 @@ class _HomePageScreen extends State<HomePageScreen> {
                     ),
                     SizedBox(
                       height: 250.0,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: mostPopularHalls.length,
-                        itemBuilder: (context, index) {
+                      child: PageView.builder(
+                        controller: PageController(
+                          viewportFraction: 1.0,
+                          initialPage: 0,
+                        ),
+                        itemCount:mostPopularHalls.length,
+                          itemBuilder: (context, index) {
                           final popularHalls = mostPopularHalls[index];
                           return Padding(
                             padding:
@@ -139,7 +142,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                             ),
                           );
                         },
-                      ),
+                      ),                     
                     ),
                     const SizedBox(height: 15.0),
                     Row(
@@ -162,8 +165,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                     ),
                     SizedBox(
                       height: 250.0,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                      child: PageView.builder(
+                        controller: PageController(
+                          viewportFraction: 1.0,
+                          initialPage: 0,
+                        ),
                         itemCount: objectNearYou.length,
                         itemBuilder: (context, index) {
                           final nearYou = objectNearYou[index];
@@ -204,8 +210,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                     ),
                     SizedBox(
                       height: 250.0,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                      child: PageView.builder(
+                        controller: PageController(
+                          viewportFraction: 1.0,
+                          initialPage: 0,
+                        ),
                         itemCount: objectNearYou.length,
                         itemBuilder: (context, index) {
                           final nearYou = objectNearYou[index];

@@ -58,6 +58,12 @@ class MainDrawer extends StatelessWidget {
                   onTap: () => onItemSelected(0),
                 ),
                 _buildNavItem(
+                  icon: Icons.apartment,
+                  title: 'Objects',
+                  isSelected: selectedIndex == 7,
+                  onTap: () => onItemSelected(7),
+                ),
+                _buildNavItem(
                   icon: Icons.calendar_month,
                   title: 'Appointments',
                   isSelected: selectedIndex == 1,

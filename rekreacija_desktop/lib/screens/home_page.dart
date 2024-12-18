@@ -3,6 +3,7 @@ import 'package:rekreacija_desktop/screens/appointment_screen.dart';
 import 'package:rekreacija_desktop/screens/clients_screen.dart';
 import 'package:rekreacija_desktop/screens/dashboard_screen.dart';
 import 'package:rekreacija_desktop/screens/messages_screen.dart';
+import 'package:rekreacija_desktop/screens/object_screen.dart';
 import 'package:rekreacija_desktop/screens/payment_screen.dart';
 import 'package:rekreacija_desktop/screens/profile_screen.dart';
 import 'package:rekreacija_desktop/screens/review_notification_screen.dart';
@@ -40,6 +41,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
         return const ReviewNotificationScreen();
       case 6:
         return const ProfileScreen();
+      case 7:
+        return const ObjectScreen();
       default:
         return const Center(child: Text('Select a screen from the menu'));
     }

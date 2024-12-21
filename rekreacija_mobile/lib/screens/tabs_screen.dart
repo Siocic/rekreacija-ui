@@ -22,17 +22,13 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     Widget activePage = HomePageScreen();
-    var activePageTitle = '';
 
     if (_selectedPageIndex == 1) {
-      activePage = ObjektiScreen();
-      activePageTitle = 'Objekti';
+      activePage = const ObjektiScreen();
     } else if (_selectedPageIndex == 2) {
-      activePage = RezervacijeScreen();
-      activePageTitle = 'Rezervacije';
+      activePage = const RezervacijeScreen();
     } else if (_selectedPageIndex == 3) {
       activePage = ProfileScreen();
-      activePageTitle = 'Profil';
     }
 
     return Scaffold(
@@ -47,7 +43,7 @@ class _TabsScreenState extends State<TabsScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.location_on_outlined), label: 'Objekti'),
+              icon: Icon(Icons.location_on_outlined), label: 'Objects'),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month), label: 'Reservation'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),

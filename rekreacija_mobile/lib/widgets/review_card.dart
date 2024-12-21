@@ -12,11 +12,11 @@ class ReviewCard extends StatefulWidget {
       required this.personName,
       required this.comment});
 
+  @override
   State<StatefulWidget> createState() => _ReviewCardState();
 }
 
 class _ReviewCardState extends State<ReviewCard> {
-  bool _isCommentExapnded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,28 +67,11 @@ class _ReviewCardState extends State<ReviewCard> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: _isCommentExapnded
-                                ? widget.comment
-                                : widget.comment.substring(0, 30) + "...",
+                            text:  widget.comment,
+                               
                             style: GoogleFonts.suezOne(
                               color: Colors.white,
                               fontSize: 15.0,
-                            ),
-                          ),
-                          WidgetSpan(
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _isCommentExapnded = !_isCommentExapnded;
-                                });
-                              },
-                              child: Text(
-                                _isCommentExapnded ? "Show Less" : "Show More",
-                                style: const TextStyle(
-                                    color: Color.fromRGBO(198, 124, 78, 1.0),
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
                             ),
                           ),
                         ],

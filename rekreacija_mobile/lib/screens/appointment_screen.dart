@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AppointmentScreen extends StatefulWidget {
@@ -10,66 +11,6 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
-  DateTime? selectedDate;
-
-  TimeOfDay? startTime;
-  TimeOfDay? endTime;
-
-  Future<void> _setTime(BuildContext context, bool isStartTime) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: isStartTime
-          ? (startTime ?? TimeOfDay.now())
-          : (endTime ?? TimeOfDay.now()),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            materialTapTargetSize: MaterialTapTargetSize.padded,
-          ),
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          ),
-        );
-      },
-    );
-
-    if (pickedTime != null) {
-      setState(() {
-        if (isStartTime) {
-          startTime = pickedTime;
-          if (endTime != null &&
-              (endTime!.hour < startTime!.hour ||
-                  (endTime!.hour == startTime!.hour &&
-                      endTime!.minute == startTime!.minute))) {
-            endTime = null;
-          }
-        } else {
-          if (startTime == null ||
-              pickedTime.hour > startTime!.hour ||
-              (pickedTime.hour == startTime!.hour &&
-                  pickedTime!.minute == startTime!.minute)) {
-            endTime = pickedTime;
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'End time must be later than start time',
-                style: GoogleFonts.suezOne(),
-              ),
-              backgroundColor: Colors.red,
-            ));
-          }
-        }
-      });
-    }
-  }
-
-  String formatTime24Hours(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minutes = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minutes';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,12 +18,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Color.fromARGB(225, 19, 19, 19),
-              Color.fromARGB(225, 49, 49, 49),
-            ], begin: Alignment.topRight, end: Alignment.bottomLeft),
-          ),
+          decoration: customDecoration,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -192,5 +128,67 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             ),
           )),
     );
+  }
+
+  DateTime? selectedDate;
+
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
+
+  Future<void> _setTime(BuildContext context, bool isStartTime) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: isStartTime
+          ? (startTime ?? TimeOfDay.now())
+          : (endTime ?? TimeOfDay.now()),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+          ),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!,
+          ),
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        final adjustedTime = TimeOfDay(hour: pickedTime.hour, minute: 0);
+
+        if (isStartTime) {
+          startTime = adjustedTime;
+          if (endTime != null &&
+              (endTime!.hour < startTime!.hour ||
+                  (endTime!.hour == startTime!.hour &&
+                      endTime!.minute == startTime!.minute))) {
+            endTime = null;
+          }
+        } else {
+          if (startTime == null ||
+              adjustedTime.hour > startTime!.hour ||
+              (adjustedTime.hour == startTime!.hour &&
+                  adjustedTime.minute == startTime!.minute)) {
+            endTime = adjustedTime;
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                'End time must be later than start time',
+                style: GoogleFonts.suezOne(),
+              ),
+              backgroundColor: Colors.red,
+            ));
+          }
+        }
+      });
+    }
+  }
+
+  String formatTime24Hours(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minutes';
   }
 }

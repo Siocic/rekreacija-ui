@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 
 class HallReviewScreen extends StatefulWidget {
   const HallReviewScreen({super.key});
@@ -17,16 +18,7 @@ class _HallReviewScreenState extends State<HallReviewScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(225, 19, 19, 19),
-              Color.fromARGB(225, 49, 49, 49),
-            ],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
+        decoration: customDecoration,
         child: SingleChildScrollView(
           child: Padding(
               padding: const EdgeInsets.all(20.0),

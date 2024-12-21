@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/review_card.dart';
 
 class HallDetailsScreen extends StatefulWidget {
@@ -11,7 +12,6 @@ class HallDetailsScreen extends StatefulWidget {
 
 class _HallDetailsScreenState extends State<HallDetailsScreen> {
   bool _isExpanded = false;
-  final bool _isCommentExapnded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,7 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Color.fromARGB(225, 19, 19, 19),
-              Color.fromARGB(225, 49, 49, 49),
-            ], begin: Alignment.topRight, end: Alignment.bottomLeft),
-          ),
+          decoration: customDecoration,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -188,9 +183,12 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                     ),
                     const SizedBox(height: 5.0),
                     SizedBox(
-                      height: _isCommentExapnded ? 180.0 : 160.0,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                      height: 165.0 ,
+                      child: PageView.builder(
+                        controller: PageController(
+                          viewportFraction: 1.0,
+                          initialPage: 0
+                        ),
                         itemCount: 3,
                         itemBuilder: (context, index) {
                           return Padding(

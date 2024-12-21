@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 
 class RezervacijeScreen extends StatefulWidget {
   const RezervacijeScreen({super.key});
@@ -14,16 +15,7 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(225, 19, 19, 19),
-            Color.fromARGB(225, 49, 49, 49),
-          ],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-      ),
+      decoration: customDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,7 +25,7 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  'Rezervacije',
+                  'Reservations',
                   style: GoogleFonts.suezOne(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -42,7 +34,7 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 5.0),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(

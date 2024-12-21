@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/setting_popup.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,16 +16,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(225, 19, 19, 19),
-            Color.fromARGB(225, 49, 49, 49),
-          ],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-      ),
+      decoration:customDecoration,
       child: Center(
         child: Column(
           children: [

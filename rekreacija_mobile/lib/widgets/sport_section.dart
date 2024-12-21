@@ -20,7 +20,7 @@ class _SportSectionState extends State<SportSection> {
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromRGBO(49, 49, 49, 0.8),
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: SizedBox(
         height: 120.0,
         child: Row(

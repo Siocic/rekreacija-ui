@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/sport_section.dart';
 
 class ObjektiScreen extends StatefulWidget {
@@ -96,13 +97,13 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   @override
   void initState() {
     super.initState();
-    _filteredHalls = halls; 
+    _filteredHalls = halls;
   }
 
   void _filterHalls(String query) {
     setState(() {
       if (query.isEmpty) {
-        _filteredHalls = halls; 
+        _filteredHalls = halls;
       } else {
         _filteredHalls = halls
             .where((hall) =>
@@ -118,16 +119,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(225, 19, 19, 19),
-              Color.fromARGB(225, 49, 49, 49),
-            ],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
+        decoration: customDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -137,7 +129,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
               child: Row(
                 children: [
                   Text(
-                    'Objekti',
+                    'Objects',
                     style: GoogleFonts.suezOne(
                         color: Colors.white,
                         fontWeight: FontWeight.w400,
@@ -158,8 +150,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                 children: [
                   TextField(
                     controller: _searchController,
-                    onChanged:
-                        _filterHalls,
+                    onChanged: _filterHalls,
                     decoration: InputDecoration(
                       fillColor: const Color.fromRGBO(49, 49, 49, 0.8),
                       filled: true,
@@ -167,7 +158,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                         Icons.search,
                         color: Colors.white,
                       ),
-                      hintText: 'Search for a hall...',
+                      hintText: 'Search for a objects...',
                       hintStyle: const TextStyle(color: Colors.grey),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 10.0),
@@ -176,7 +167,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    style: const TextStyle(color: Colors.white), 
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -222,22 +213,24 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/hallDetails');
-                        },
-                        child: ListView.builder(
-                          itemCount: _filteredHalls.length,
-                          itemBuilder: (context, index) {
-                            final hall = _filteredHalls[index];
-                            return SportSection(
+                                           child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: _filteredHalls.length,
+                        itemBuilder: (context, index) {
+                          final hall = _filteredHalls[index];
+                          return InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/hallDetails');
+                            },
+                            child: SportSection(
                                 hallAdress: hall['name'] ?? '',
                                 hallName: hall['address'] ?? '',
-                                onFavoritePressed: () {});
-                          },
-                        ),
+                                onFavoritePressed: () {}),
+                          );
+                        },
                       ),
                     ),
+                    
                   ],
                 ),
               ),

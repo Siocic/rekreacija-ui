@@ -12,13 +12,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(        
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(14, 121, 115, 0)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(14, 121, 115, 0)),
         useMaterial3: true,
       ),
       initialRoute: AppRoutes.login,
       routes: AppRoutes.getRoutes(),
       debugShowCheckedModeBanner: false,
-       
     );
   }
 }

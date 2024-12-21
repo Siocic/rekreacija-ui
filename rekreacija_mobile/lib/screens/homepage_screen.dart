@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_mobile/routes.dart';
+import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/hall_card.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -45,16 +46,7 @@ class _HomePageScreen extends State<HomePageScreen> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(225, 19, 19, 19),
-            Color.fromARGB(225, 49, 49, 49),
-          ],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-      ),
+      decoration: customDecoration,
       child: Center(
         child: Column(
           children: [

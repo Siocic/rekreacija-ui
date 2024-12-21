@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                          'Don\'t have an account? '), // Note the space after the question mark
+                          'Don\'t have an account? '), 
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterScreen()));

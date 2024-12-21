@@ -24,7 +24,7 @@ class _NotificationCardState extends State<NotificationCard> {
       color: AppColors.cardColor,
       child: Padding(
         padding: const EdgeInsets.only(left: 10.0, top: 10.0),
-        child: Container(
+        child: SizedBox(
           width: 400.0,
           height: 250.0,
           child: Column(

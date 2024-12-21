@@ -10,7 +10,7 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildNavItem({
+    Widget buildNavItem({
       required IconData icon,
       required String title,
       required bool isSelected,
@@ -51,49 +51,49 @@ class MainDrawer extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.home,
                   title: 'Dashboard',
                   isSelected: selectedIndex == 0,
                   onTap: () => onItemSelected(0),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.apartment,
                   title: 'Objects',
                   isSelected: selectedIndex == 7,
                   onTap: () => onItemSelected(7),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.calendar_month,
                   title: 'Appointments',
                   isSelected: selectedIndex == 1,
                   onTap: () => onItemSelected(1),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.people,
                   title: 'Clients',
                   isSelected: selectedIndex == 2,
                   onTap: () => onItemSelected(2),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.payment,
                   title: 'Payments',
                   isSelected: selectedIndex == 3,
                   onTap: () => onItemSelected(3),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.message,
                   title: 'Messages',
                   isSelected: selectedIndex == 4,
                   onTap: () => onItemSelected(4),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.notifications,
                   title: 'Reviews & notifications',
                   isSelected: selectedIndex == 5,
                   onTap: () => onItemSelected(5),
                 ),
-                _buildNavItem(
+                buildNavItem(
                   icon: Icons.person,
                   title: 'My Profile',
                   isSelected: selectedIndex == 6,

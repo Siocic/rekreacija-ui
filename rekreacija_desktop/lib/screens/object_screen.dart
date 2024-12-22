@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/object_card.dart';
+import 'package:rekreacija_desktop/widgets/object_modal.dart';
 
 class ObjectScreen extends StatefulWidget {
   const ObjectScreen({super.key});
@@ -37,7 +38,13 @@ class _ObjectScreen extends State<ObjectScreen> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const ObjectModal();
+                  });
+            },
             child: Text(
               'Add new object',
               style: GoogleFonts.suezOne(
@@ -62,8 +69,19 @@ class _ObjectScreen extends State<ObjectScreen> {
               itemBuilder: (context, index) {
                 final ourObjects = objects[index];
                 return ObjectCard(
-                    objectName: ourObjects['ObjectName'] ?? '',
-                    objectAddress: ourObjects['ObjectAddress'] ?? '');
+                  objectName: ourObjects['ObjectName'] ?? '',
+                  objectAddress: ourObjects['ObjectAddress'] ?? '',
+                  deleteObject: () {
+                    _showDeleteDialog(index);
+                  },
+                  editObject: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const ObjectModal();
+                        });
+                  },
+                );
               },
             ),
           ),
@@ -71,6 +89,39 @@ class _ObjectScreen extends State<ObjectScreen> {
         const SizedBox(height: 25.0)
       ],
     );
+  }
+
+  void _showDeleteDialog(int index) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Confirm Deletion'),
+            content: const Text('Are you sure you want to delete this object?'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No')),
+              ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      objects.removeAt(index);
+                    });
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                        'You successfully deleted the object: ${objects[index]['ObjectName']}',
+                        style: GoogleFonts.suezOne(),
+                      ),
+                      backgroundColor: Colors.green,
+                    ));
+                  },
+                  child: const Text('Yes'))
+            ],
+          );
+        });
   }
 
   final List<Map<String, String>> objects = [

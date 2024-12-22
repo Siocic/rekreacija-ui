@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 class ObjectCard extends StatelessWidget {
   final String objectName;
   final String objectAddress;
+  final VoidCallback deleteObject;
+  final VoidCallback editObject;
   const ObjectCard(
-      {super.key, required this.objectName, required this.objectAddress});
+      {super.key, required this.objectName, required this.objectAddress,required this.deleteObject,required this.editObject});
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +64,11 @@ class ObjectCard extends StatelessWidget {
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () {},
+                      onPressed: editObject,
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {},
+                      onPressed: deleteObject,
                     ),
                   ],
                 )

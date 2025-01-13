@@ -32,7 +32,7 @@ class AuthProvider {
         final payload = JwtDecoder.decode(token);
 
         if (payload['Role'] != 'FizickoLice') {
-          var message = "Something went wrong";
+          var message = "Invalid email or password";
           throw message;
         }
         await _secureStorage.write(key: 'jwt_token', value: token);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/models/sport_category.dart';
+import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/sport_section.dart';
 
@@ -12,16 +14,10 @@ class ObjektiScreen extends StatefulWidget {
 
 class _ObjektiScreenState extends State<ObjektiScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  final List<String> sports = [
-    "Football",
-    "Basketball",
-    "Handball",
-    "Volleyball",
-    "Tennis"
-  ];
-  String selectedSport = "Football";
-
+  final SportCategoryProvider _sportCategoryProvider = SportCategoryProvider();
+  bool isLoadingSports = true;
+  List<SportCategory> sports = [];
+  SportCategory? selectedSport ;
   final List<Map<String, String>> halls = [
     {
       'name': 'Univerzitetska dvorana',
@@ -98,6 +94,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   void initState() {
     super.initState();
     _filteredHalls = halls;
+    _loadSports();
   }
 
   void _filterHalls(String query) {
@@ -111,6 +108,25 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
             .toList();
       }
     });
+  }
+
+  Future<void> _loadSports() async {
+    try {
+      final categories = await _sportCategoryProvider.get();
+      setState(() {
+        sports = categories;
+        if (sports.isNotEmpty) {
+          selectedSport = sports.first;         
+        }
+        isLoadingSports = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingSports = false;
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to load sports: $e')));
+    }
   }
 
   @override
@@ -198,7 +214,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                         ),
                       ),
                       child: Text(
-                        sport,
+                        sport.name??"",
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),
@@ -213,7 +229,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                                           child: ListView.builder(
+                      child: ListView.builder(
                         padding: EdgeInsets.zero,
                         itemCount: _filteredHalls.length,
                         itemBuilder: (context, index) {
@@ -230,7 +246,6 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                         },
                       ),
                     ),
-                    
                   ],
                 ),
               ),

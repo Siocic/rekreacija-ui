@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rekreacija_mobile/routes.dart';
 
 class SettingsPopupMenu extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
         color: Colors.white,
       ),
       color: const Color.fromARGB(225, 49, 49, 49),
-      onSelected: (int value) {
+      onSelected: (int value) async {
         switch (value) {
           case 0:
             print('Location selected');
@@ -32,7 +33,7 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
             print('Information selected');
             break;
           case 4:
-            Navigator.pushReplacementNamed(context, AppRoutes.login);
+            await _logout(context);
           default:
             print('Invalid');
         }
@@ -91,4 +92,15 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
       ],
     );
   }
+
+  Future<void> _logout(BuildContext context) async {
+  const secureStorage = FlutterSecureStorage();
+  
+  // Remove the JWT token
+  await secureStorage.delete(key: 'jwt_token');
+
+  // Navigate to the login screen
+  Navigator.pushReplacementNamed(context, AppRoutes.login);
+}
+
 }

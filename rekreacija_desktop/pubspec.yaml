@@ -38,6 +38,13 @@ dependencies:
   google_fonts: ^6.2.1
   syncfusion_flutter_datepicker: ^28.1.33
   syncfusion_flutter_calendar: ^28.1.33
+  http: ^1.2.2
+  json_annotation: ^4.9.0
+  flutter_form_builder: ^9.7.0
+  form_builder_validators: ^11.1.1
+  jwt_decoder: ^2.0.1
+  flutter_secure_storage: ^9.2.4
+
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +56,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  json_serializable: ^6.9.2
+  build_runner: ^2.4.14
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

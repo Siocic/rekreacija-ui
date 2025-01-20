@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:rekreacija_mobile/models/login_model.dart';
 import 'package:rekreacija_mobile/models/registration_model.dart';
+import 'package:rekreacija_mobile/models/user_model.dart';
 
 class AuthProvider {
   static String? _baseUrl;
@@ -59,6 +60,30 @@ class AuthProvider {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<UserModel> getUserProfile() async {
+    var url = "${_baseUrl}Auth/getUser";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (_isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      var result = UserModel.fromJson(data);
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
+
+  Future<Map<String, String>> getAuthHeaders() async {
+    const secureStorage = FlutterSecureStorage();
+    final token = await secureStorage.read(key: 'jwt_token');
+
+    return {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token",
+    };
   }
 
   bool _isValidResponse(http.Response response) {

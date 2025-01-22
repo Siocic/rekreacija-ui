@@ -76,6 +76,23 @@ class AuthProvider {
     }
   }
 
+  Future<void> editProfile(UserModel model) async{
+    var url = "${_baseUrl}Auth/editUser";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+     try {
+      final jsonRequest = jsonEncode(model.toJson());
+      final response = await http.post(
+        uri,
+        body: jsonRequest,
+        headers: headers
+      );
+      _isValidResponse(response);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<Map<String, String>> getAuthHeaders() async {
     const secureStorage = FlutterSecureStorage();
     final token = await secureStorage.read(key: 'jwt_token');

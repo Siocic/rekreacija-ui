@@ -10,10 +10,10 @@ class UserModel{
   String? email;
   String? address;
   String? city;
-  String? phone;
+  String? phoneNumber;
   String? profilePicture;
 
-  UserModel(this.firstName,this.lastName,this.email,this.address,this.city,this.phone,this.profilePicture);
+  UserModel(this.firstName,this.lastName,this.email,this.address,this.city,this.phoneNumber,this.profilePicture);
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);

@@ -1,242 +1,188 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:rekreacija_desktop/models/user_model.dart';
+import 'package:rekreacija_desktop/providers/auth_provider.dart';
 
 class EditProfile extends StatefulWidget {
-  EditProfile({super.key});
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController emailController;
+  final TextEditingController cityController;
+  final TextEditingController addressController;
+  final TextEditingController phoneController;
+  final ImageProvider currentImage;
 
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _usernameNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  const EditProfile(
+      {super.key,
+      required this.firstNameController,
+      required this.lastNameController,
+      required this.emailController,
+      required this.cityController,
+      required this.addressController,
+      required this.phoneController,
+      required this.currentImage});
 
   @override
   State<EditProfile> createState() => _EditProfile();
 }
 
 class _EditProfile extends State<EditProfile> {
-  Color _emailColor = Colors.black;
-  Color _firstNameColor = Colors.black;
-  Color _lastNameColor = Colors.black;
-  Color _phoneColor=Colors.black;
+  File? _selectedImage;
+  String? base64Image;
 
-  bool emailValidation(TextEditingController controller) {
-    final emailRegex = RegExp(
-        r"[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+");
-    if (controller.text.isEmpty) {
-      setState(() {
-        _emailColor = Colors.red;
-      });
-      return false;
-    } else if (emailRegex.hasMatch(controller.text) == false) {
-      setState(() {
-        _emailColor = Colors.red;
-      });
-      return false;
-    }
-    setState(() {
-      _emailColor = Colors.black;
-    });
-    return true;
-  }
+  Future<void> _pickImage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+      );
 
-  bool validateFirstOrLastName(
-      TextEditingController controller, bool isFirstName) {
-    if (controller.text.isEmpty && isFirstName) {
-      setState(() {
-        _firstNameColor = Colors.red;
-      });
-      return false;
-    }
-    if (controller.text.isEmpty && !isFirstName) {
-      setState(() {
-        _lastNameColor = Colors.red;
-      });
-      return false;
-    }
-    if ((controller.text.length < 2 || controller.text.length > 50)) {
-      if (isFirstName) {
+      if (result != null && result.files.single.path != null) {
+        final File file = File(result.files.single.path!);
+        final bytes = await file.readAsBytes();
+
         setState(() {
-          _firstNameColor = Colors.red;
-        });
-      } else {
-        setState(() {
-          _lastNameColor = Colors.red;
+          _selectedImage = file;
+          base64Image = base64Encode(bytes);
         });
       }
-      return false;
+    } catch (e) {
+      debugPrint('Error picking image: $e');
     }
-    if (isFirstName) {
-      setState(() {
-        _firstNameColor = Colors.black;
-      });
-    } else {
-      setState(() {
-        _lastNameColor = Colors.black;
-      });
-    }
-    return true;
-  }
-
-  bool phoneNumberValidation(TextEditingController controller)
-  {
-    final phoneRegex=RegExp(r"^\+?[0-9]*$");
-
-    if(controller.text.isEmpty){
-      setState(() {
-        _phoneColor=Colors.red;
-      });
-      return false;
-    }
-    else if(!phoneRegex.hasMatch(controller.text)){
-      setState(() {
-        _phoneColor=Colors.red;
-      });
-      return false;
-    }
-    setState(() {
-      _phoneColor=Colors.black;
-    });
-    return true;
   }
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
     return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Edit Profile'),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 400,
-              child: Column(
-                children: [
-                  TextField(
-                    controller: widget._firstNameController,
-                    decoration: InputDecoration(
-                      labelText: 'FirstName',
-                      prefixIcon: const Icon(Icons.perm_identity),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      border: const OutlineInputBorder(),
-                      errorText: _firstNameColor == Colors.red
-                          ? 'The firstName is invalid. The firstName can have min 2 and max 50 letters'
-                          : null,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 600,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: FormBuilder(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Edit Profile'),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: _selectedImage != null
+                        ? FileImage(_selectedImage!)
+                        : widget.currentImage,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                buildTextField(
+                    widget.firstNameController, 'FirstName', Icons.person),
+                const SizedBox(height: 10),
+                buildTextField(
+                    widget.lastNameController, 'LastName', Icons.person),
+                const SizedBox(height: 10),
+                buildTextField(widget.emailController, 'Email', Icons.email),
+                const SizedBox(height: 10),
+                buildTextField(
+                    widget.cityController, 'City', Icons.location_city),
+                const SizedBox(height: 10),
+                buildTextField(
+                    widget.addressController, 'Address', Icons.location_on),
+                const SizedBox(height: 10),
+                buildTextField(
+                    widget.phoneController, 'Phone', Icons.phone_android),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (formKey.currentState?.saveAndValidate() ?? false) {
+                          try {
+                            final formData = formKey.currentState!.fields;
+                            final firstName =
+                                formData['FirstName']?.value ?? '';
+                            final lastName = formData['LastName']?.value ?? '';
+                            final email = formData['Email']?.value ?? '';
+                            final city = formData['City']?.value ?? '';
+                            final address = formData['Address']?.value ?? '';
+                            final phone = formData['Phone']?.value ?? '';
+
+                            UserModel userModel = UserModel(firstName, lastName,
+                                email, address, city, phone, base64Image);
+                            final AuthProvider editProfile = AuthProvider();
+                            await editProfile.editProfile(userModel);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'You update profile successfully.',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.pop(context, true);
+                          } catch (e) {
+                            String errorMessage = e.toString();
+
+                            if (errorMessage.startsWith("Exception:")) {
+                              errorMessage = errorMessage
+                                  .replaceFirst("Exception:", "")
+                                  .trim();
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(errorMessage)),
+                            );
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text('Please fix the errors in the form.')),
+                          );
+                        }
+                      },
+                      child: const Text('Save'),
                     ),
-                    keyboardType: TextInputType.name,
-                    style: TextStyle(color: _firstNameColor),
-                    onChanged: (value) => validateFirstOrLastName(
-                        widget._firstNameController, true),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: widget._lastNameController,
-                    decoration: InputDecoration(
-                      labelText: 'LastName',
-                      prefixIcon: const Icon(Icons.perm_identity),
-                      contentPadding:const EdgeInsets.symmetric(horizontal: 10.0),
-                      border: const OutlineInputBorder(),
-                      errorText: _lastNameColor == Colors.red
-                          ? 'The lastName is invalid. The lastName can have min 2 and max 50 letters'
-                          : null,
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Close'),
                     ),
-                    keyboardType: TextInputType.name,
-                    style: TextStyle(color: _lastNameColor),
-                    onChanged: (value) => validateFirstOrLastName(
-                        widget._lastNameController, false),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: widget._usernameNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.perm_identity),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: widget._emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: const Icon(Icons.email),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 10.0),
-                      border: const OutlineInputBorder(),
-                      errorText: _emailColor == Colors.red
-                          ? 'Email is invalid. Pattern: email@example.com'
-                          : null,
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(color: _emailColor),
-                    onChanged: (value) =>
-                        emailValidation(widget._emailController),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: TextEditingController(),
-                    decoration: const InputDecoration(
-                      labelText: 'Datum rodjenja',
-                      prefixIcon: Icon(Icons.calendar_today),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.datetime,
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: widget._phoneController,
-                    decoration:  InputDecoration(
-                      labelText: 'Broj telefona',
-                      prefixIcon: const Icon(Icons.phone),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      border: const OutlineInputBorder(),
-                       errorText: _phoneColor == Colors.red
-                          ? 'Phone only can have numbers'
-                          : null,
-                    ),
-                    keyboardType: TextInputType.phone,
-                     style: TextStyle(color: _phoneColor),
-                    onChanged: (value) => phoneNumberValidation(
-                        widget._phoneController),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: TextEditingController(),
-                    decoration: const InputDecoration(
-                      labelText: 'Grad',
-                      prefixIcon: Icon(Icons.location_city),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.name,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Save'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Close'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                  ],
+                )
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
+}
+
+Widget buildTextField(
+    TextEditingController controller, String label, IconData icon) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0.0),
+    child: FormBuilderTextField(
+      name: label,
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+      ),
+      validator: FormBuilderValidators.compose([
+        FormBuilderValidators.required(errorText: "$label is required."),
+      ]),
+    ),
+  );
 }

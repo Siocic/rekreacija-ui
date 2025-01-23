@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ProfileParts extends StatefulWidget {
-  const ProfileParts(
+   ProfileParts(
       {super.key, required this.labelText, required this.inputText});
   final String labelText;
-  final String inputText;
+  TextEditingController inputText=TextEditingController();
 
   @override
   State<ProfileParts> createState() => _ProfileParts();
@@ -31,7 +31,7 @@ class _ProfileParts extends State<ProfileParts> {
         const SizedBox(width: 10),
         Expanded(
           child: TextField(
-            controller: TextEditingController(text: widget.inputText),
+            controller: widget.inputText,
             readOnly: true,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(

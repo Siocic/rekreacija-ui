@@ -16,7 +16,7 @@ class ClientProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const ProfileContainer(isEditable: false),
+             // const ProfileContainer(isEditable: false),
               const SizedBox(width: 20.0),
               Padding(
                 padding: const EdgeInsets.only(top: 100.0, left: 30.0),

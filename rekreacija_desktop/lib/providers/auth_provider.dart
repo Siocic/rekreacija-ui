@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:rekreacija_desktop/models/login_model.dart';
+import 'package:rekreacija_desktop/models/user_model.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 
 class AuthProvider {
   static String? _baseUrl;
@@ -44,6 +46,36 @@ class AuthProvider {
     }
   }
 
+    Future<UserModel> getUserProfile() async {
+    var url = "${_baseUrl}Auth/getUser";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (_isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      var result = UserModel.fromJson(data);
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
+  Future<void> editProfile(UserModel model) async{
+    var url = "${_baseUrl}Auth/editUser";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+     try {
+      final jsonRequest = jsonEncode(model.toJson());
+      final response = await http.post(
+        uri,
+        body: jsonRequest,
+        headers: headers
+      );
+      _isValidResponse(response);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   bool _isValidResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return true;
@@ -60,5 +92,5 @@ class AuthProvider {
       var expMessage = "Unexpected error. Please try again.";
       throw expMessage;
     }
-  }
+  }  
 }

@@ -33,8 +33,6 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   File? _selectedImage;
   String? base64Image;
-  ImageProvider _profileImage =
-      const AssetImage('assets/images/RekreacijaDefaultProfilePicture.png');
   Future<void> _pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -47,7 +45,6 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           _selectedImage = file;
           base64Image = base64Encode(bytes);
-          _profileImage = FileImage(file);
         });
       }
     } catch (e) {
@@ -90,11 +87,11 @@ class _EditProfileState extends State<EditProfile> {
                       widget.firstNameController, 'FirstName', Icons.person),
                   buildTextField(
                       widget.lastNameController, 'LastName', Icons.person),
-                  buildTextField(widget.emailController, 'Email', Icons.person),
-                  buildTextField(widget.cityController, 'City', Icons.person),
+                  buildTextField(widget.emailController, 'Email', Icons.email),
+                  buildTextField(widget.cityController, 'City', Icons.location_city),
                   buildTextField(
-                      widget.addressController, 'Address', Icons.person),
-                  buildTextField(widget.phoneController, 'Phone', Icons.person),
+                      widget.addressController, 'Address', Icons.location_on),
+                  buildTextField(widget.phoneController, 'Phone', Icons.phone_android_sharp),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

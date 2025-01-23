@@ -5,6 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:rekreacija_mobile/models/login_model.dart';
 import 'package:rekreacija_mobile/models/registration_model.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 
 class AuthProvider {
   static String? _baseUrl;
@@ -91,16 +92,6 @@ class AuthProvider {
     } catch (e) {
       throw Exception(e.toString());
     }
-  }
-
-  Future<Map<String, String>> getAuthHeaders() async {
-    const secureStorage = FlutterSecureStorage();
-    final token = await secureStorage.read(key: 'jwt_token');
-
-    return {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer $token",
-    };
   }
 
   bool _isValidResponse(http.Response response) {

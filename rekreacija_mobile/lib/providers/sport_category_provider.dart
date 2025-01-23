@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:rekreacija_mobile/models/sport_category.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 
 class SportCategoryProvider {
   static String? _baseUrl;
@@ -27,17 +27,7 @@ class SportCategoryProvider {
       throw new Exception("Unknow exception");
     }
   }
-
-  Future<Map<String, String>> getAuthHeaders() async {
-    const secureStorage = FlutterSecureStorage();
-    final token = await secureStorage.read(key: 'jwt_token');
-    
-    return {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer $token",
-    };
-  }
-
+  
   bool isValidResponse(Response response) {
     if (response.statusCode < 299) {
       return true;

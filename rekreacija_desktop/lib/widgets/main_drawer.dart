@@ -129,8 +129,8 @@ class MainDrawer extends StatelessWidget {
             buildNavItem(
               icon: Icons.lock,
               title: 'Security',
-              isSelected: selectedIndex == 7,
-              onTap: () => onItemSelected(7),
+              isSelected: selectedIndex == 9,
+              onTap: () => onItemSelected(9),
             ),
             buildNavItem(
               icon: Icons.logout,

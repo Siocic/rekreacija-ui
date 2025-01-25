@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:rekreacija_desktop/models/change_password_model.dart';
 import 'package:rekreacija_desktop/models/login_model.dart';
 import 'package:rekreacija_desktop/models/user_model.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
@@ -73,6 +74,21 @@ class AuthProvider {
       throw Exception(e.toString());
     }
   }
+   Future<void> changePassword(ChangePasswordModel model)async{
+    var url="${_baseUrl}Auth/change";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    try{
+      final jsonRequest = jsonEncode(model.toJson());
+      final response= await http.post(uri,body: jsonRequest,headers: headers);
+      _isValidResponse(response);
+    }
+    catch(e)
+    {
+      throw Exception(e.toString());
+    }
+  }
+
 
   bool _isValidResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {

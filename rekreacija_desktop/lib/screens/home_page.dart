@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/screens/appointment_screen.dart';
+import 'package:rekreacija_desktop/screens/change_password_screen.dart';
 import 'package:rekreacija_desktop/screens/clients_screen.dart';
 import 'package:rekreacija_desktop/screens/dashboard_screen.dart';
 import 'package:rekreacija_desktop/screens/messages_screen.dart';
@@ -24,7 +25,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserRole(); 
+    _loadUserRole();
   }
 
   void onItemSelected(int index) {
@@ -47,6 +48,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
           return const DashboardScreen();
         case 6:
           return const ProfileScreen();
+        case 9:
+          return  ChangePassword();
         default:
           return const Center(child: Text('Select a screen from the menu'));
       }
@@ -68,6 +71,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
           return const ProfileScreen();
         case 7:
           return const ObjectScreen();
+        case 9:
+          return  ChangePassword();
         default:
           return const Center(child: Text('Select a screen from the menu'));
       }

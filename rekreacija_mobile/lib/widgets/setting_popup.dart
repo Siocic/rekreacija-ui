@@ -20,19 +20,10 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
       color: const Color.fromARGB(225, 49, 49, 49),
       onSelected: (int value) async {
         switch (value) {
-          case 0:
-            print('Location selected');
+          case 0:           
+            Navigator.pushNamed(context, AppRoutes.changePassord);
             break;
-          case 1:
-            print('Security selected');
-            break;
-          case 2:
-            print('Help selected');
-            break;
-          case 3:
-            print('Information selected');
-            break;
-          case 4:
+          case 1:           
             await _logout(context);
           default:
             print('Invalid');
@@ -43,16 +34,6 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
           value: 0,
           child: Row(
             children: [
-              Icon(Icons.location_on_sharp, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Location', style: TextStyle(color: Colors.white)),
-            ],
-          ),
-        ),
-        const PopupMenuItem<int>(
-          value: 1,
-          child: Row(
-            children: [
               Icon(Icons.lock, color: Colors.white),
               SizedBox(width: 8),
               Text('Security', style: TextStyle(color: Colors.white)),
@@ -60,27 +41,7 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
           ),
         ),
         const PopupMenuItem<int>(
-          value: 2,
-          child: Row(
-            children: [
-              Icon(Icons.help, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Help', style: TextStyle(color: Colors.white)),
-            ],
-          ),
-        ),
-        const PopupMenuItem<int>(
-          value: 3,
-          child: Row(
-            children: [
-              Icon(Icons.info, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Information', style: TextStyle(color: Colors.white)),
-            ],
-          ),
-        ),
-        const PopupMenuItem<int>(
-          value: 4,
+          value: 1,
           child: Row(
             children: [
               Icon(Icons.logout, color: Colors.white),
@@ -94,13 +55,8 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
   }
 
   Future<void> _logout(BuildContext context) async {
-  const secureStorage = FlutterSecureStorage();
-  
-  // Remove the JWT token
-  await secureStorage.delete(key: 'jwt_token');
-
-  // Navigate to the login screen
-  Navigator.pushReplacementNamed(context, AppRoutes.login);
-}
-
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.delete(key: 'jwt_token');
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
+  }
 }

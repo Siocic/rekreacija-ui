@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:rekreacija_mobile/models/change_password_model.dart';
 import 'package:rekreacija_mobile/models/login_model.dart';
 import 'package:rekreacija_mobile/models/registration_model.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
@@ -77,23 +78,36 @@ class AuthProvider {
     }
   }
 
-  Future<void> editProfile(UserModel model) async{
+  Future<void> editProfile(UserModel model) async {
     var url = "${_baseUrl}Auth/editUser";
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
-     try {
+    try {
       final jsonRequest = jsonEncode(model.toJson());
-      final response = await http.post(
-        uri,
-        body: jsonRequest,
-        headers: headers
-      );
+      final response =
+          await http.post(uri, body: jsonRequest, headers: headers);
       _isValidResponse(response);
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
+  Future<void> changePassword(ChangePasswordModel model)async{
+    var url="${_baseUrl}Auth/change";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    try{
+      final jsonRequest = jsonEncode(model.toJson());
+      final response= await http.post(uri,body: jsonRequest,headers: headers);
+      _isValidResponse(response);
+    }
+    catch(e)
+    {
+      throw Exception(e.toString());
+    }
+  }
+
+ 
   bool _isValidResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return true;

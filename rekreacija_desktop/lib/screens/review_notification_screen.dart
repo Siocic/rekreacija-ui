@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/colors.dart';
-import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/notification_card.dart';
 import 'package:rekreacija_desktop/widgets/notification_modal.dart';
@@ -21,14 +20,9 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: ContentHeader(
-              title: 'Review & Notification',
-              onLogout: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              }),
+        const Padding(
+          padding: EdgeInsets.all(40.0),
+          child: ContentHeader(title: 'Review & Notification'),
         ),
         const SizedBox(height: 20.0),
         Padding(

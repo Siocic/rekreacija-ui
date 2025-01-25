@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/colors.dart';
-import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/appointment_card.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -25,15 +24,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: ContentHeader(
-            title: 'Appointment',
-            onLogout: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
-            },
-          ),
+        const Padding(
+          padding: EdgeInsets.all(40.0),
+          child: ContentHeader(title: 'Appointment'),
         ),
         const SizedBox(height: 20.0),
         Padding(
@@ -193,7 +186,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   _showAddHolidayDialog(calendarTapDetails.date!);
                 }
               },
-              
             ),
           ),
         ),

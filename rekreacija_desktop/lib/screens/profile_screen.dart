@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rekreacija_desktop/models/user_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
-import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/edit_profile.dart';
@@ -68,14 +67,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: ContentHeader(
-              title: 'Profile',
-              onLogout: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              }),
+        const Padding(
+          padding: EdgeInsets.all(40.0),
+          child:  ContentHeader(title: 'Profile'),
         ),
         Center(
           child: Container(
@@ -87,11 +81,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 80,
-                     backgroundImage: image != null
-                    ? image!.image
-                    : const AssetImage(
-                        'assets/images/RekreacijaDefaultProfilePicture.png'),
-                backgroundColor: Colors.grey,
+                    backgroundImage: image != null
+                        ? image!.image
+                        : const AssetImage(
+                            'assets/images/RekreacijaDefaultProfilePicture.png'),
+                    backgroundColor: Colors.grey,
                   ),
                   const SizedBox(height: 20),
                   ProfileParts(
@@ -123,22 +117,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return EditProfile(
-                                  firstNameController: controllers["firstName"]!,
+                                  firstNameController:
+                                      controllers["firstName"]!,
                                   lastNameController: controllers["lastName"]!,
                                   emailController: controllers["email"]!,
                                   cityController: controllers["city"]!,
                                   addressController: controllers["address"]!,
                                   phoneController: controllers["phone"]!,
-
                                   currentImage: image?.image ??
                                       const AssetImage(
                                           'assets/images/RekreacijaDefaultProfilePicture.png'),
                                 );
                               });
-                              if(result==true)
-                              {
-                                _loadUserProfile();
-                              }
+                          if (result == true) {
+                            _loadUserProfile();
+                          }
                         },
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.grey,

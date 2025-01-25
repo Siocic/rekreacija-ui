@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/object_card.dart';
 import 'package:rekreacija_desktop/widgets/object_modal.dart';
@@ -18,15 +17,9 @@ class _ObjectScreen extends State<ObjectScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: ContentHeader(
-            title: 'Our objects',
-            onLogout: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
-            },
-          ),
+        const Padding(
+          padding: EdgeInsets.all(40.0),
+          child: ContentHeader(title: 'Our objects'),
         ),
         const SizedBox(height: 20.0),
         Padding(

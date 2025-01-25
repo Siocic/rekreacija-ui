@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/screens/appointment_screen.dart';
 import 'package:rekreacija_desktop/screens/clients_screen.dart';
 import 'package:rekreacija_desktop/screens/dashboard_screen.dart';
@@ -18,6 +19,13 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   int selectedIndex = 0;
+  String userRole = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserRole(); 
+  }
 
   void onItemSelected(int index) {
     setState(() {
@@ -25,26 +33,46 @@ class _HomePageScreenState extends State<HomePageScreen> {
     });
   }
 
+  Future<void> _loadUserRole() async {
+    final role = await getUserRole();
+    setState(() {
+      userRole = role;
+    });
+  }
+
   Widget getSelectedScreen() {
-    switch (selectedIndex) {
-      case 0:
-        return const DashboardScreen();
-      case 1:
-        return const AppointmentScreen();
-      case 2:
-        return const ClientsScreen();
-      case 3:
-        return const PaymentScreen();
-      case 4:
-        return const MessagesScreen();
-      case 5:
-        return const ReviewNotificationScreen();
-      case 6:
-        return const ProfileScreen();
-      case 7:
-        return const ObjectScreen();
-      default:
-        return const Center(child: Text('Select a screen from the menu'));
+    if (userRole == 'SuperAdmin') {
+      switch (selectedIndex) {
+        case 0:
+          return const DashboardScreen();
+        case 6:
+          return const ProfileScreen();
+        default:
+          return const Center(child: Text('Select a screen from the menu'));
+      }
+    } else if (userRole == 'PravnoLice') {
+      switch (selectedIndex) {
+        case 0:
+          return const DashboardScreen();
+        case 1:
+          return const AppointmentScreen();
+        case 2:
+          return const ClientsScreen();
+        case 3:
+          return const PaymentScreen();
+        case 4:
+          return const MessagesScreen();
+        case 5:
+          return const ReviewNotificationScreen();
+        case 6:
+          return const ProfileScreen();
+        case 7:
+          return const ObjectScreen();
+        default:
+          return const Center(child: Text('Select a screen from the menu'));
+      }
+    } else {
+      return const Center(child: Text('Select a screen from the menu'));
     }
   }
 
@@ -54,7 +82,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
       body: Row(
         children: [
           MainDrawer(
-              onItemSelected: onItemSelected, selectedIndex: selectedIndex),
+              onItemSelected: onItemSelected,
+              selectedIndex: selectedIndex,
+              role: userRole),
           Expanded(
             child: getSelectedScreen(),
           )

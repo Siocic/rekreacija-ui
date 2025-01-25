@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rekreacija_desktop/screens/client_profile_screen.dart';
-import 'package:rekreacija_desktop/screens/login.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 
 class ClientsScreen extends StatelessWidget {
@@ -8,20 +7,14 @@ class ClientsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final dataSource = MyDataSource(context: context);
+    final dataSource = MyDataSource(context: context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: ContentHeader(
-            title: 'Clients',
-            onLogout: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
-            },
-          ),
+        const Padding(
+          padding: EdgeInsets.all(40.0),
+          child: ContentHeader(title: 'Clients'),
         ),
         const SizedBox(height: 20.0),
         Padding(
@@ -164,7 +157,6 @@ class MyDataSource extends DataTableSource {
       'Inactive'
     ],
   ];
-
 
   MyDataSource({required this.context});
   @override

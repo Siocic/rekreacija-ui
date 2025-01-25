@@ -46,7 +46,7 @@ class AuthProvider {
     }
   }
 
-    Future<UserModel> getUserProfile() async {
+  Future<UserModel> getUserProfile() async {
     var url = "${_baseUrl}Auth/getUser";
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
@@ -59,17 +59,15 @@ class AuthProvider {
       throw new Exception("Unknow exception");
     }
   }
-  Future<void> editProfile(UserModel model) async{
+
+  Future<void> editProfile(UserModel model) async {
     var url = "${_baseUrl}Auth/editUser";
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
-     try {
+    try {
       final jsonRequest = jsonEncode(model.toJson());
-      final response = await http.post(
-        uri,
-        body: jsonRequest,
-        headers: headers
-      );
+      final response =
+          await http.post(uri, body: jsonRequest, headers: headers);
       _isValidResponse(response);
     } catch (e) {
       throw Exception(e.toString());
@@ -92,5 +90,22 @@ class AuthProvider {
       var expMessage = "Unexpected error. Please try again.";
       throw expMessage;
     }
-  }  
+  }
+}
+
+Future<String> getUserRole() async {
+  const secureStorage = FlutterSecureStorage();
+  final token = await secureStorage.read(key: 'jwt_token');
+
+  if (token == null || JwtDecoder.isExpired(token)) {
+    return '';
+  }
+
+  try {
+    final payload = JwtDecoder.decode(token);
+    final role = payload['Role'] ?? '';
+    return role;
+  } catch (e) {
+    return '';
+  }
 }

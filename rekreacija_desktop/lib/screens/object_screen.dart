@@ -31,12 +31,16 @@ class _ObjectScreen extends State<ObjectScreen> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-            onPressed: () {
-              showDialog(
+            onPressed: () async {
+              final bool? result = await showDialog<bool>(
                   context: context,
                   builder: (BuildContext context) {
-                    return const ObjectModal();
+                    return  ObjectModal();
                   });
+                  if(result==true)
+                  {
+                    //todo osvjesiziti kada dodamo iscrtavanje objekata
+                  }
             },
             child: Text(
               'Add new object',
@@ -71,7 +75,7 @@ class _ObjectScreen extends State<ObjectScreen> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const ObjectModal();
+                          return  ObjectModal();
                         });
                   },
                 );

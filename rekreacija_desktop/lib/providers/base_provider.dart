@@ -23,14 +23,14 @@ abstract class BaseProvder<T> with ChangeNotifier {
     try {
       var response = await http.get(uri, headers: headers);
       isValidResponse(response);
-      var data=jsonDecode(response.body);
-      if(data is List)
-      {
-        //return data.map<T>((item)=>fromJson(data)).toList();
-        return data.map<T>((item) => fromJson(item as Map<String, dynamic>)).toList();
-      }else{
+      var data = jsonDecode(response.body);
+      if (data is List) {
+        return data
+            .map<T>((item) => fromJson(item as Map<String, dynamic>))
+            .toList();
+      } else {
         throw Exception("Unexpected response format");
-      }      
+      }
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -46,6 +46,22 @@ abstract class BaseProvder<T> with ChangeNotifier {
       isValidResponse(response);
       var data = jsonDecode(response.body);
       return fromJson(data);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> Delete(int id) async {
+    var url = "$_baseUrl$_endpoint/Delete/$id";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    try {
+      var response = await http.delete(uri, headers: headers);
+      if (isValidResponse(response)) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       throw Exception(e.toString());
     }

@@ -96,10 +96,9 @@ class _ObjectScreen extends State<ObjectScreen> {
                   objectAddress: ourObjects.address ?? '',
                   image: ourObjects.objectImage != null
                       ? imageFromString(ourObjects.objectImage!)
-                      : Image.asset(
-                          "assets/images/RekreacijaDefault.jpg"),
-                  deleteObject: () {
-                    _showDeleteDialog(index);
+                      : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                  deleteObject: () async {
+                    _showDeleteDialog(ourObjects.id!);
                   },
                   editObject: () {
                     showDialog(
@@ -118,7 +117,7 @@ class _ObjectScreen extends State<ObjectScreen> {
     );
   }
 
-  void _showDeleteDialog(int index) {
+  void _showDeleteDialog(int id) {
     showDialog(
         context: context,
         builder: (context) {
@@ -131,46 +130,34 @@ class _ObjectScreen extends State<ObjectScreen> {
                     Navigator.of(context).pop();
                   },
                   child: const Text('No')),
-              // ElevatedButton(
-              //     onPressed: () {
-              //       setState(() {
-              //        // objects.removeAt(index);
-              //       });
-              //       Navigator.of(context).pop();
-              //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              //         content: Text(
-              //           'You successfully deleted the object: ${objects[index]['ObjectName']}',
-              //           style: GoogleFonts.suezOne(),
-              //         ),
-              //         backgroundColor: Colors.green,
-              //       ));
-              //     },
-              //     child: const Text('Yes'))
+              ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      await _objectProvider.Delete(id);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                          'You successfully deleted the object',
+                          style: GoogleFonts.suezOne(),
+                        ),
+                        backgroundColor: Colors.green,
+                      ));
+                      Navigator.pop(context);
+                      _loadObjectOfUser();
+                    } catch (e) {
+                      String errorMessage = e.toString();
+
+                      if (errorMessage.startsWith("Exception:")) {
+                        errorMessage =
+                            errorMessage.replaceFirst("Exception:", "").trim();
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(errorMessage)),
+                      );
+                    }
+                  },
+                  child: const Text('Yes'))
             ],
           );
         });
   }
-
-  // final List<Map<String, String>> objects = [
-  //   {
-  //     'ObjectName': 'Object 1',
-  //     'ObjectAddress': 'Address 1',
-  //   },
-  //   {
-  //     'ObjectName': 'Object 2',
-  //     'ObjectAddress': 'Address 2',
-  //   },
-  //   {
-  //     'ObjectName': 'Object 3',
-  //     'ObjectAddress': 'Address 3',
-  //   },
-  //   {
-  //     'ObjectName': 'Object 4',
-  //     'ObjectAddress': 'Address 4',
-  //   },
-  //   {
-  //     'ObjectName': 'Object 5',
-  //     'ObjectAddress': 'Address 5',
-  //   },
-  // ];
 }

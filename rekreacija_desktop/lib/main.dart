@@ -4,17 +4,13 @@ import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/sport_category_provider.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
 
-void main() async{
+void main() async {
   runApp(
     MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_)=>ObjectProvider()),
-      ChangeNotifierProvider(create: (_)=>SportCategoryProvider()),
-    ],
-     child:const MyApp()
-    ),
-    
-   
-    );
+      ChangeNotifierProvider(create: (_) => ObjectProvider()),
+      ChangeNotifierProvider(create: (_) => SportCategoryProvider()),
+    ], child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {

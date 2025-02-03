@@ -4,10 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 class ObjectCard extends StatelessWidget {
   final String objectName;
   final String objectAddress;
+  final Image image;
   final VoidCallback deleteObject;
   final VoidCallback editObject;
   const ObjectCard(
-      {super.key, required this.objectName, required this.objectAddress,required this.deleteObject,required this.editObject});
+      {super.key,
+      required this.objectName,
+      required this.objectAddress,
+      required this.image,
+      required this.deleteObject,
+      required this.editObject});
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +34,9 @@ class ObjectCard extends StatelessWidget {
               width: double.infinity,
               height: 350.0,
               color: Colors.grey[300],
-              child: const Center(
-                child: Icon(
-                  Icons.image,
-                  size: 50.0,
-                  color: Colors.grey,
-                ),
+              child: Image(
+                image: image.image,
+                fit: BoxFit.fill,
               ),
             ),
           ),

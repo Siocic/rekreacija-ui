@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_desktop/models/object_model.dart';
+import 'package:rekreacija_desktop/providers/object_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/object_card.dart';
 import 'package:rekreacija_desktop/widgets/object_modal.dart';
@@ -12,6 +16,29 @@ class ObjectScreen extends StatefulWidget {
 }
 
 class _ObjectScreen extends State<ObjectScreen> {
+  late ObjectProvider _objectProvider;
+  List<ObjectModel>? objects;
+  Image? image;
+
+  @override
+  void initState() {
+    super.initState();
+    _objectProvider = context.read<ObjectProvider>();
+    _loadObjectOfUser();
+  }
+
+  Future<void> _loadObjectOfUser() async {
+    try {
+      final userObject = await _objectProvider.getObjectOfLoggedUser();
+      setState(() {
+        objects = userObject;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,12 +62,11 @@ class _ObjectScreen extends State<ObjectScreen> {
               final bool? result = await showDialog<bool>(
                   context: context,
                   builder: (BuildContext context) {
-                    return  ObjectModal();
+                    return ObjectModal();
                   });
-                  if(result==true)
-                  {
-                    //todo osvjesiziti kada dodamo iscrtavanje objekata
-                  }
+              if (result == true) {
+                _loadObjectOfUser();
+              }
             },
             child: Text(
               'Add new object',
@@ -62,12 +88,16 @@ class _ObjectScreen extends State<ObjectScreen> {
                 mainAxisSpacing: 20,
                 childAspectRatio: 5.3 / 3,
               ),
-              itemCount: objects.length,
+              itemCount: objects!.length,
               itemBuilder: (context, index) {
-                final ourObjects = objects[index];
+                final ourObjects = objects![index];
                 return ObjectCard(
-                  objectName: ourObjects['ObjectName'] ?? '',
-                  objectAddress: ourObjects['ObjectAddress'] ?? '',
+                  objectName: ourObjects.name ?? '',
+                  objectAddress: ourObjects.address ?? '',
+                  image: ourObjects.objectImage != null
+                      ? imageFromString(ourObjects.objectImage!)
+                      : Image.asset(
+                          "assets/images/RekreacijaDefault.jpg"),
                   deleteObject: () {
                     _showDeleteDialog(index);
                   },
@@ -75,7 +105,7 @@ class _ObjectScreen extends State<ObjectScreen> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return  ObjectModal();
+                          return ObjectModal();
                         });
                   },
                 );
@@ -101,46 +131,46 @@ class _ObjectScreen extends State<ObjectScreen> {
                     Navigator.of(context).pop();
                   },
                   child: const Text('No')),
-              ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      objects.removeAt(index);
-                    });
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                        'You successfully deleted the object: ${objects[index]['ObjectName']}',
-                        style: GoogleFonts.suezOne(),
-                      ),
-                      backgroundColor: Colors.green,
-                    ));
-                  },
-                  child: const Text('Yes'))
+              // ElevatedButton(
+              //     onPressed: () {
+              //       setState(() {
+              //        // objects.removeAt(index);
+              //       });
+              //       Navigator.of(context).pop();
+              //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //         content: Text(
+              //           'You successfully deleted the object: ${objects[index]['ObjectName']}',
+              //           style: GoogleFonts.suezOne(),
+              //         ),
+              //         backgroundColor: Colors.green,
+              //       ));
+              //     },
+              //     child: const Text('Yes'))
             ],
           );
         });
   }
 
-  final List<Map<String, String>> objects = [
-    {
-      'ObjectName': 'Object 1',
-      'ObjectAddress': 'Address 1',
-    },
-    {
-      'ObjectName': 'Object 2',
-      'ObjectAddress': 'Address 2',
-    },
-    {
-      'ObjectName': 'Object 3',
-      'ObjectAddress': 'Address 3',
-    },
-    {
-      'ObjectName': 'Object 4',
-      'ObjectAddress': 'Address 4',
-    },
-    {
-      'ObjectName': 'Object 5',
-      'ObjectAddress': 'Address 5',
-    },
-  ];
+  // final List<Map<String, String>> objects = [
+  //   {
+  //     'ObjectName': 'Object 1',
+  //     'ObjectAddress': 'Address 1',
+  //   },
+  //   {
+  //     'ObjectName': 'Object 2',
+  //     'ObjectAddress': 'Address 2',
+  //   },
+  //   {
+  //     'ObjectName': 'Object 3',
+  //     'ObjectAddress': 'Address 3',
+  //   },
+  //   {
+  //     'ObjectName': 'Object 4',
+  //     'ObjectAddress': 'Address 4',
+  //   },
+  //   {
+  //     'ObjectName': 'Object 5',
+  //     'ObjectAddress': 'Address 5',
+  //   },
+  // ];
 }

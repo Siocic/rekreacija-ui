@@ -51,6 +51,21 @@ abstract class BaseProvder<T> with ChangeNotifier {
     }
   }
 
+  Future<T> Update(int id,[dynamic request])async{
+     var url = "$_baseUrl$_endpoint/Update/$id";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    try {
+      var jsonRequest = jsonEncode(request);
+      var response = await http.put(uri, headers: headers, body: jsonRequest);
+      isValidResponse(response);
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<bool> Delete(int id) async {
     var url = "$_baseUrl$_endpoint/Delete/$id";
     var uri = Uri.parse(url);

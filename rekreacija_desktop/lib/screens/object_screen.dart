@@ -5,6 +5,7 @@ import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/edit_object_modal.dart';
 import 'package:rekreacija_desktop/widgets/object_card.dart';
 import 'package:rekreacija_desktop/widgets/object_modal.dart';
 
@@ -100,12 +101,18 @@ class _ObjectScreen extends State<ObjectScreen> {
                   deleteObject: () async {
                     _showDeleteDialog(ourObjects.id!);
                   },
-                  editObject: () {
-                    showDialog(
+                  editObject: () async {
+                    final bool? result = await showDialog<bool>(
                         context: context,
                         builder: (BuildContext context) {
-                          return ObjectModal();
+                          return EditObjectModal(
+                            object: ourObjects,
+                          );
                         });
+
+                    if (result == true) {
+                      _loadObjectOfUser();
+                    }
                   },
                 );
               },

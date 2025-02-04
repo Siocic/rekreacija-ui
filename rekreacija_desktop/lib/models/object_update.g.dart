@@ -1,17 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'object_model.dart';
+part of 'object_update.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ObjectModel _$ObjectModelFromJson(Map<String, dynamic> json) => ObjectModel(
-      (json['id'] as num?)?.toInt(),
+ObjectUpdate _$ObjectUpdateFromJson(Map<String, dynamic> json) => ObjectUpdate(
       json['name'] as String?,
-      json['created_date'] == null
-          ? null
-          : DateTime.parse(json['created_date'] as String),
       json['updated_date'] == null
           ? null
           : DateTime.parse(json['updated_date'] as String),
@@ -20,23 +16,21 @@ ObjectModel _$ObjectModelFromJson(Map<String, dynamic> json) => ObjectModel(
       json['description'] as String?,
       (json['price'] as num?)?.toDouble(),
       json['user_id'] as String?,
-      (json['sportsId'] as List<dynamic>?)
+      json['ObjectImage'] as String?,
+      (json['sportId'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
           .toList(),
-      json['objectImage'] as String?,
     );
 
-Map<String, dynamic> _$ObjectModelToJson(ObjectModel instance) =>
+Map<String, dynamic> _$ObjectUpdateToJson(ObjectUpdate instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'name': instance.name,
-      'created_date': instance.created_date?.toIso8601String(),
       'updated_date': instance.updated_date?.toIso8601String(),
       'address': instance.address,
       'city': instance.city,
       'description': instance.description,
       'price': instance.price,
       'user_id': instance.user_id,
-      'sportsId': instance.sportsId,
-      'objectImage': instance.objectImage,
+      'ObjectImage': instance.ObjectImage,
+      'sportId': instance.sportId,
     };

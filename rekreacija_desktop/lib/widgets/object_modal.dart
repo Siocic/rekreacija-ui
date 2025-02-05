@@ -75,7 +75,8 @@ class _ObjectModal extends State<ObjectModal> {
         });
       }
     } catch (e) {
-      print("object");
+     ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Failed to add image')));
     }
   }
 
@@ -104,19 +105,14 @@ class _ObjectModal extends State<ObjectModal> {
                     children: [
                       GestureDetector(
                         onTap: pickImage,
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: selectedImage != null
-                                  ? FileImage(selectedImage!) as ImageProvider
-                                  : const AssetImage(
-                                      'assets/images/RekreacijaDefaultProfilePicture.png'),
-                              fit: BoxFit.fill,
-                            ),
-                            shape: BoxShape.rectangle,
-                          ),
+                        child: SizedBox(
+                          width: 400,
+                          height: 250,
+                          child: selectedImage != null
+                              ? Image.file(selectedImage!, fit: BoxFit.fill)
+                              : Image.asset(
+                                  'assets/images/RekreacijaDefault.jpg',
+                                  fit: BoxFit.fill),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -201,10 +197,7 @@ class _ObjectModal extends State<ObjectModal> {
                             return "Please select at least one sport.";
                           }
                           return null;
-                        },
-                        onChanged: (value) {
-                          print(value);
-                        },
+                        },                       
                         options: sports.map((sport) {
                           return FormBuilderChipOption(
                             value: sport.id!,
@@ -254,10 +247,9 @@ class _ObjectModal extends State<ObjectModal> {
                                   final priceAsDouble = double.tryParse(price);
                                   final choice =
                                       formData['select_sport']?.value ?? '';
-                                      final List<int> sportIds = List<int>.from(choice);
-
+                                  final List<int> sportIds =
+                                      List<int>.from(choice);
                                   DateTime now = DateTime.now();
-                                  //Duration offset = now.timeZoneOffset;
 
                                   ObjectInsert objectInsert = ObjectInsert(
                                       name,
@@ -267,8 +259,9 @@ class _ObjectModal extends State<ObjectModal> {
                                       description,
                                       priceAsDouble,
                                       userId,
-                                      base64Image,sportIds);
-                                    
+                                      base64Image,
+                                      sportIds);
+
                                   await _objectProvider.Insert(objectInsert);
 
                                   ScaffoldMessenger.of(context).showSnackBar(

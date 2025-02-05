@@ -87,7 +87,7 @@ class _EditObjectModalState extends State<EditObjectModal> {
       }
     } catch (e) {
        ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Failed')));
+          .showSnackBar(const SnackBar(content: Text('Failed to add image')));
     }
   }
 
@@ -115,7 +115,7 @@ class _EditObjectModalState extends State<EditObjectModal> {
                   children: [
                     GestureDetector(
                       onTap: pickImage,
-                      child: Container(
+                      child: SizedBox(
                         width: 400,
                         height: 250,
                         child: selectedImage != null

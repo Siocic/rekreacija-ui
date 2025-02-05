@@ -17,7 +17,6 @@ class _ContentHeader extends State<ContentHeader> {
     super.initState();
     fetchUserFullName();
   }
-
  
   Future<void> fetchUserFullName() async {
     final userName = await getUserFullName();

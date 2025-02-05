@@ -22,7 +22,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
+        child: SizedBox(
           width: 230.0,
           height: 130.0,
           child: Column(

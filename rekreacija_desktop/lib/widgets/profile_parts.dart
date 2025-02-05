@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ProfileParts extends StatefulWidget {
-   ProfileParts(
+   const ProfileParts(
       {super.key, required this.labelText, required this.inputText});
   final String labelText;
-  TextEditingController inputText=TextEditingController();
+  final TextEditingController inputText;
 
   @override
   State<ProfileParts> createState() => _ProfileParts();

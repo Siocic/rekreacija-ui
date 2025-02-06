@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/colors.dart';
+import 'package:rekreacija_desktop/models/notification_model.dart';
+import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/notification_card.dart';
 import 'package:rekreacija_desktop/widgets/notification_modal.dart';
@@ -13,8 +17,32 @@ class ReviewNotificationScreen extends StatefulWidget {
 }
 
 class _ReviewNotificationState extends State<ReviewNotificationScreen> {
+  late NotificationProvider _notificationProvider;
+  List<NotificationModel>? notifications;
   String comment =
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the";
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationProvider = context.read<NotificationProvider>();
+    _loadNotificationOfUser();
+  }
+
+  Future<void>_loadNotificationOfUser()async{
+    try{
+      final userNotification=await _notificationProvider.getNotificationsOfUser();
+      setState(() {
+        notifications=userNotification;
+      });
+    }catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+    }
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,10 +76,9 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
                       builder: (BuildContext context) {
                         return NotificationModal();
                       });
-                      if(result==true)
-                      {
-                        //todo ucitai nove notifikacije
-                      }
+                  if (result == true) {
+                    _loadNotificationOfUser();
+                  }
                 },
                 child: Text(
                   'Add new notification',
@@ -104,19 +131,20 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 15.0),
           child: SizedBox(
-            height: 250.0,
-            width: 1590.0,
+            height: 200.0,
+            width: double.infinity,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               controller: _notificationScrollController,
-              itemCount: 10,
+              itemCount: notifications!.length,
               itemBuilder: (context, index) {
+                final ourNotification = notifications![index];
                 return Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: NotificationCard(
-                      date: '12.12.2024',
-                      description: comment,
-                      hallName: 'Hall Name'),
+                      date: DateFormat('d/M/y').format(ourNotification.created_date!),
+                      description: ourNotification.description??'',
+                      hallName: ourNotification.name??''),
                 );
               },
             ),

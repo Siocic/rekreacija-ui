@@ -26,8 +26,8 @@ class _NotificationCardState extends State<NotificationCard> {
         padding: const EdgeInsets.only(left: 10.0, top: 10.0),
         child: SizedBox(
           width: 400.0,
-          height: 250.0,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -53,43 +53,6 @@ class _NotificationCardState extends State<NotificationCard> {
                     color: AppColors.textCardColor),
               ),
               const SizedBox(height: 15.0),
-              Row(
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.buttonGreen,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      'Edit',
-                      style: GoogleFonts.suezOne(
-                          color: AppColors.textWhite,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18),
-                    ),
-                  ),
-                  const SizedBox(width: 10.0),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.buttonRed,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      'Delete',
-                      style: GoogleFonts.suezOne(
-                          color: AppColors.textWhite,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18),
-                    ),
-                  )
-                ],
-              )
             ],
           ),
         ),

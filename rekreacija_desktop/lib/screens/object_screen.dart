@@ -82,41 +82,51 @@ class _ObjectScreen extends State<ObjectScreen> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 35.0, right: 35.0, top: 10.0),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 5.3 / 3,
-              ),
-              itemCount: objects!.length,
-              itemBuilder: (context, index) {
-                final ourObjects = objects![index];
-                return ObjectCard(
-                  objectName: ourObjects.name ?? '',
-                  objectAddress: ourObjects.address ?? '',
-                  image: ourObjects.objectImage != null
-                      ? imageFromString(ourObjects.objectImage!)
-                      : Image.asset("assets/images/RekreacijaDefault.jpg"),
-                  deleteObject: () async {
-                    _showDeleteDialog(ourObjects.id!);
-                  },
-                  editObject: () async {
-                    final bool? result = await showDialog<bool>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return EditObjectModal(
-                            object: ourObjects,
-                          );
-                        });
+            child: (objects == null || objects!.isEmpty)
+                ? Center(
+                    child: Text(
+                      "You don't have any objects added yet",
+                      style: GoogleFonts.suezOne(
+                          fontSize: 25, fontWeight: FontWeight.w400),
+                    ),
+                  )
+                : GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 5.3 / 3,
+                    ),
+                    itemCount: objects!.length,
+                    itemBuilder: (context, index) {
+                      final ourObjects = objects![index];
+                      return ObjectCard(
+                        objectName: ourObjects.name ?? '',
+                        objectAddress: ourObjects.address ?? '',
+                        image: ourObjects.objectImage != null
+                            ? imageFromString(ourObjects.objectImage!)
+                            : Image.asset(
+                                "assets/images/RekreacijaDefault.jpg"),
+                        deleteObject: () async {
+                          _showDeleteDialog(ourObjects.id!);
+                        },
+                        editObject: () async {
+                          final bool? result = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return EditObjectModal(
+                                  object: ourObjects,
+                                );
+                              });
 
-                    if (result == true) {
-                      _loadObjectOfUser();
-                    }
-                  },
-                );
-              },
-            ),
+                          if (result == true) {
+                            _loadObjectOfUser();
+                          }
+                        },
+                      );
+                    },
+                  ),
           ),
         ),
         const SizedBox(height: 25.0)

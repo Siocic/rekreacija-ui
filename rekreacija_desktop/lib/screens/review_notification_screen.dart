@@ -29,19 +29,18 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
     _loadNotificationOfUser();
   }
 
-  Future<void>_loadNotificationOfUser()async{
-    try{
-      final userNotification=await _notificationProvider.getNotificationsOfUser();
+  Future<void> _loadNotificationOfUser() async {
+    try {
+      final userNotification =
+          await _notificationProvider.getNotificationsOfUser();
       setState(() {
-        notifications=userNotification;
+        notifications = userNotification;
       });
-    }catch (e) {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load user data: $e')));
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -89,41 +88,43 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: notificationLeft,
-                    style: TextButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      backgroundColor: Colors.grey[300],
-                      padding: const EdgeInsets.all(8),
+              (notifications == null || notifications!.isEmpty)
+                  ? const Text("")
+                  : Row(
+                      children: [
+                        TextButton(
+                          onPressed: notificationLeft,
+                          style: TextButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            backgroundColor: Colors.grey[300],
+                            padding: const EdgeInsets.all(8),
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_left_sharp,
+                            color: Color.fromRGBO(14, 119, 62, 1),
+                            size: 32,
+                          ),
+                        ),
+                        const SizedBox(width: 5.0),
+                        TextButton(
+                          onPressed: notificationRight,
+                          style: TextButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            backgroundColor: Colors.grey[300],
+                            padding: const EdgeInsets.all(8),
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_right_sharp,
+                            color: Color.fromRGBO(14, 119, 62, 1),
+                            size: 32,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: const Icon(
-                      Icons.keyboard_arrow_left_sharp,
-                      color: Color.fromRGBO(14, 119, 62, 1),
-                      size: 32,
-                    ),
-                  ),
-                  const SizedBox(width: 5.0),
-                  TextButton(
-                    onPressed: notificationRight,
-                    style: TextButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      backgroundColor: Colors.grey[300],
-                      padding: const EdgeInsets.all(8),
-                    ),
-                    child: const Icon(
-                      Icons.keyboard_arrow_right_sharp,
-                      color: Color.fromRGBO(14, 119, 62, 1),
-                      size: 32,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -133,21 +134,30 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
           child: SizedBox(
             height: 200.0,
             width: double.infinity,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _notificationScrollController,
-              itemCount: notifications!.length,
-              itemBuilder: (context, index) {
-                final ourNotification = notifications![index];
-                return Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: NotificationCard(
-                      date: DateFormat('d/M/y').format(ourNotification.created_date!),
-                      description: ourNotification.description??'',
-                      hallName: ourNotification.name??''),
-                );
-              },
-            ),
+            child: (notifications == null || notifications!.isEmpty)
+                ? Center(
+                    child: Text(
+                      "You haven't created any notifications yet.",
+                      style: GoogleFonts.suezOne(
+                          fontSize: 25, fontWeight: FontWeight.w400),
+                    ),
+                  )
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _notificationScrollController,
+                    itemCount: notifications!.length,
+                    itemBuilder: (context, index) {
+                      final ourNotification = notifications![index];
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: NotificationCard(
+                            date: DateFormat('d/M/y')
+                                .format(ourNotification.created_date!),
+                            description: ourNotification.description ?? '',
+                            hallName: ourNotification.name ?? ''),
+                      );
+                    },
+                  ),
           ),
         ),
         const SizedBox(height: 20.0),

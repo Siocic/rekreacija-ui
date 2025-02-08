@@ -27,7 +27,7 @@ class AuthProvider {
           "Content-Type": "application/json",
         },
       );
-      
+
       if (isValidResponse(response)) {
         final responseBody = jsonDecode(response.body);
         final token = responseBody['token'];
@@ -75,23 +75,52 @@ class AuthProvider {
       throw Exception(e.toString());
     }
   }
-   Future<void> changePassword(ChangePasswordModel model)async{
-    var url="${_baseUrl}Auth/change";
+
+  Future<void> changePassword(ChangePasswordModel model) async {
+    var url = "${_baseUrl}Auth/change";
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
-    try{
+    try {
       final jsonRequest = jsonEncode(model.toJson());
-      final response= await http.post(uri,body: jsonRequest,headers: headers);
+      final response =
+          await http.post(uri, body: jsonRequest, headers: headers);
       isValidResponse(response);
-    }
-    catch(e)
-    {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
+  Future<List<UserModel>> getUserOfRolePravnoLice() async {
+    var url = "${_baseUrl}Auth/getUserOfPravnoLice";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<UserModel> result = (data as List<dynamic>)
+          .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
 
-  
+    Future<List<UserModel>> getUserOfFizickoLice() async {
+    var url = "${_baseUrl}Auth/getUserOfFizickoLice";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<UserModel> result = (data as List<dynamic>)
+          .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
 }
 
 Future<String> getUserRole() async {

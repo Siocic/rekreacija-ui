@@ -10,7 +10,7 @@ void main() async {
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => ObjectProvider()),
       ChangeNotifierProvider(create: (_) => SportCategoryProvider()),
-      ChangeNotifierProvider(create: (_) => NotificationProvider())
+      ChangeNotifierProvider(create: (_) => NotificationProvider()),
     ], child: const MyApp()),
   );
 }

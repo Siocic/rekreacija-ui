@@ -9,6 +9,7 @@ import 'package:rekreacija_desktop/screens/object_screen.dart';
 import 'package:rekreacija_desktop/screens/payment_screen.dart';
 import 'package:rekreacija_desktop/screens/profile_screen.dart';
 import 'package:rekreacija_desktop/screens/review_notification_screen.dart';
+import 'package:rekreacija_desktop/screens/user_screen.dart';
 import 'package:rekreacija_desktop/widgets/main_drawer.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -50,6 +51,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
           return const ProfileScreen();
         case 9:
           return  ChangePassword();
+        case 10:
+          return const UserScreen();
         default:
           return const Center(child: Text('Select a screen from the menu'));
       }

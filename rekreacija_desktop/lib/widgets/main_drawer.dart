@@ -64,6 +64,12 @@ class MainDrawer extends StatelessWidget {
                     isSelected: selectedIndex == 0,
                     onTap: () => onItemSelected(0),
                   ),
+                   buildNavItem(
+                    icon: Icons.people_outline,
+                    title: 'Users',
+                    isSelected: selectedIndex == 10,
+                    onTap: () => onItemSelected(10),
+                  ),
                   buildNavItem(
                     icon: Icons.person,
                     title: 'My Profile',

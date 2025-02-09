@@ -7,6 +7,7 @@ import 'package:rekreacija_desktop/screens/dashboard_screen.dart';
 import 'package:rekreacija_desktop/screens/messages_screen.dart';
 import 'package:rekreacija_desktop/screens/object_screen.dart';
 import 'package:rekreacija_desktop/screens/payment_screen.dart';
+import 'package:rekreacija_desktop/screens/pending_approvals.dart';
 import 'package:rekreacija_desktop/screens/profile_screen.dart';
 import 'package:rekreacija_desktop/screens/review_notification_screen.dart';
 import 'package:rekreacija_desktop/screens/user_screen.dart';
@@ -50,9 +51,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
         case 6:
           return const ProfileScreen();
         case 9:
-          return  ChangePassword();
+          return ChangePassword();
         case 10:
           return const UserScreen();
+        case 11:
+          return const PendingApprovals();
         default:
           return const Center(child: Text('Select a screen from the menu'));
       }
@@ -75,7 +78,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         case 7:
           return const ObjectScreen();
         case 9:
-          return  ChangePassword();
+          return ChangePassword();
         default:
           return const Center(child: Text('Select a screen from the menu'));
       }

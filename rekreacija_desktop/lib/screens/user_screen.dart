@@ -16,35 +16,29 @@ class _UserScreenState extends State<UserScreen> {
   final AuthProvider authProvider = AuthProvider();
   List<UserModel> pravnoLiceList = [];
   List<UserModel> fizickoLiceList = [];
+  bool isLoading=true;
 
   @override
   void initState() {
     super.initState();
-    getPravnoLiceUsers();
-    getFizickoLiceUsers();
+    fetchUsers();
   }
 
-  Future<void> getPravnoLiceUsers() async {
+  Future<void> fetchUsers() async {
     try {
       var pLice = await authProvider.getUserOfRolePravnoLice();
-      setState(() {
-        pravnoLiceList = pLice;
-        pravnoLiceSource = PravnoLiceSource(pravnoLiceList);
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load user data: $e')));
-    }
-  }
-
-  Future<void> getFizickoLiceUsers() async {
-    try {
       var fLice = await authProvider.getUserOfFizickoLice();
       setState(() {
+        pravnoLiceList = pLice;
         fizickoLiceList = fLice;
+        pravnoLiceSource = PravnoLiceSource(pravnoLiceList);
         fizikoLiceSource = FizickoLiceSource(fizickoLiceList);
+         isLoading = false;
       });
     } catch (e) {
+      setState(() {
+         isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load user data: $e')));
     }
@@ -52,7 +46,6 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -60,46 +53,10 @@ class _UserScreenState extends State<UserScreen> {
           padding: EdgeInsets.all(40.0),
           child: ContentHeader(title: 'Users'),
         ),
-        const SizedBox(height: 0.0),
-        if (pravnoLiceList.isEmpty)
-          const Center(
-            child: Text("There are not users yet"),
-          )         
-        else
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(0),
-                child: Text(
-                  "Pravno lice users",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 5),
-              Padding(
-                padding: const EdgeInsets.only(left: 0.0),
-                child: SizedBox(
-                  width: 1200.0,
-                  child: PaginatedDataTable(
-                        columns: [
-                          dataColumn("First Name"),
-                          dataColumn("Last Name"),
-                          dataColumn("Email"),
-                          dataColumn("Address"),
-                          dataColumn("City"),
-                          dataColumn("Phone number"),
-                        ],
-                        source: pravnoLiceSource!,
-                        rowsPerPage: 5,
-                        showEmptyRows: false,
-                  ),
-                ),
-              )
-            ],
-          ),
-        const SizedBox(height: 5),
-         if (fizickoLiceList.isEmpty)
+        const SizedBox(height: 10),
+        if (isLoading)
+          const Center(child: CircularProgressIndicator())
+        else if (pravnoLiceList.isEmpty && fizickoLiceList.isEmpty)
           const Center(
             child: Text("There are not users yet"),
           )
@@ -107,68 +64,103 @@ class _UserScreenState extends State<UserScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(0),
-                child: Text(
-                  "Fizicko lice users",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 5),
-              Padding(
-                padding: const EdgeInsets.only(left: 0.0),
-                child: SizedBox(
-                  width: 1200.0,
-                  child: PaginatedDataTable(
-                        columns: [
-                          dataColumn("First Name"),
-                          dataColumn("Last Name"),
-                          dataColumn("Email"),
-                          dataColumn("Address"),
-                          dataColumn("City"),
-                          dataColumn("Phone number"),
-                        ],
-                        source: pravnoLiceSource!,
-                        rowsPerPage: 5,
-                        showEmptyRows: false,
+              if (pravnoLiceList.isNotEmpty) ...[
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Pravno Lice Users",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              )
+                const SizedBox(height: 5),
+                Center(
+                  child: SizedBox(
+                    width: 1200.0,
+                    child: PaginatedDataTable(
+                      columns: [
+                        dataColumn("First Name"),
+                        dataColumn("Last Name"),
+                        dataColumn("Email"),
+                        dataColumn("Address"),
+                        dataColumn("City"),
+                        dataColumn("Phone number"),
+                      ],
+                      source: pravnoLiceSource!,
+                      rowsPerPage: 5,
+                      showEmptyRows: false,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              if (fizickoLiceList.isNotEmpty) ...[
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Fizicko Lice Users",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Center(
+                  child: SizedBox(
+                    width: 1200.0,
+                    child: PaginatedDataTable(
+                      columns: [
+                        dataColumn("First Name"),
+                        dataColumn("Last Name"),
+                        dataColumn("Email"),
+                        dataColumn("Address"),
+                        dataColumn("City"),
+                        dataColumn("Phone number"),
+                      ],
+                      source: fizikoLiceSource!,
+                      rowsPerPage: 5,
+                      showEmptyRows: false,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
-        
       ],
     );
   }
 }
 
-DataColumn dataColumn(String columName){
-  return  DataColumn(
-    label: Expanded(child: Text(columName))
-  );
+DataColumn dataColumn(String columName) {
+  return DataColumn(label: Expanded(child: Text(columName)));
 }
 
-class PravnoLiceSource extends DataTableSource{
-   final List<UserModel> _pravnoLiceList;
+class PravnoLiceSource extends DataTableSource {
+  final List<UserModel> _pravnoLiceList;
 
-   PravnoLiceSource(this._pravnoLiceList);
+  PravnoLiceSource(this._pravnoLiceList);
 
-   @override
+  @override
   DataRow? getRow(int index) {
-    if(index >= _pravnoLiceList.length)return null;
-    
+    if (index >= _pravnoLiceList.length) return null;
+
     final pravnoLice = _pravnoLiceList[index];
-    return DataRow(
-      cells: [
+    return DataRow(cells: [
       DataCell(Text(pravnoLice.firstName!)),
       DataCell(Text(pravnoLice.lastName!)),
       DataCell(Text(pravnoLice.email!)),
       DataCell(Text(pravnoLice.address!)),
       DataCell(Text(pravnoLice.city!)),
-      DataCell(Text(pravnoLice.phoneNumber!)),
+      DataCell(Text(pravnoLice.phoneNumber ?? "/")),
     ]);
   }
-   @override
+
+  @override
   bool get isRowCountApproximate => false;
 
   @override
@@ -178,18 +170,17 @@ class PravnoLiceSource extends DataTableSource{
   int get selectedRowCount => 0;
 }
 
-class FizickoLiceSource extends DataTableSource{
-   final List<UserModel> _fizickoLiceList;
+class FizickoLiceSource extends DataTableSource {
+  final List<UserModel> _fizickoLiceList;
 
-   FizickoLiceSource(this._fizickoLiceList);
+  FizickoLiceSource(this._fizickoLiceList);
 
-   @override
+  @override
   DataRow? getRow(int index) {
-    if(index >= _fizickoLiceList.length)return null;
-    
+    if (index >= _fizickoLiceList.length) return null;
+
     final pravnoLice = _fizickoLiceList[index];
-    return DataRow(
-      cells: [
+    return DataRow(cells: [
       DataCell(Text(pravnoLice.firstName!)),
       DataCell(Text(pravnoLice.lastName!)),
       DataCell(Text(pravnoLice.email!)),
@@ -198,7 +189,8 @@ class FizickoLiceSource extends DataTableSource{
       DataCell(Text(pravnoLice.phoneNumber!)),
     ]);
   }
-   @override
+
+  @override
   bool get isRowCountApproximate => false;
 
   @override

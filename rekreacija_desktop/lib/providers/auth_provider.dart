@@ -106,7 +106,7 @@ class AuthProvider {
     }
   }
 
-    Future<List<UserModel>> getUserOfFizickoLice() async {
+  Future<List<UserModel>> getUserOfFizickoLice() async {
     var url = "${_baseUrl}Auth/getUserOfFizickoLice";
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
@@ -119,6 +119,38 @@ class AuthProvider {
       return result;
     } else {
       throw new Exception("Unknow exception");
+    }
+  }
+
+  Future<List<UserModel>> getUserThatNotApprovedYet() async {
+    var url = "${_baseUrl}Auth/getNotApprovedUser";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<UserModel> result = (data as List<dynamic>)
+          .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
+
+  Future<bool> approveRegistartion(String userId) async {
+    var url = "${_baseUrl}Auth/approve-registartion?userId=$userId";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    try {
+      final response = await http.post(uri, headers: headers);
+      if (isValidResponse(response)) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

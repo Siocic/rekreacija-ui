@@ -27,12 +27,15 @@ class _PendingApprovalsState extends State<PendingApprovals> {
       var notApproved = await authProvider.getUserThatNotApprovedYet();
       setState(() {
         notApproveList = notApproved;
-        notApprovedUser = NotApprovedUserSource(notApproveList, context);
+        notApprovedUser = NotApprovedUserSource(notApproveList, context, refreshList);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load user data: $e')));
     }
+  }
+    void refreshList() {
+    getUserThatNotApproved();
   }
 
   @override
@@ -99,7 +102,8 @@ DataColumn dataColumn(String columName) {
 class NotApprovedUserSource extends DataTableSource {
   final List<UserModel> _notApprovedList;
   final BuildContext context;
-  NotApprovedUserSource(this._notApprovedList, this.context);
+ final VoidCallback refreshList; 
+  NotApprovedUserSource(this._notApprovedList, this.context,this.refreshList);
 
   @override
   DataRow? getRow(int index) {
@@ -127,11 +131,13 @@ class NotApprovedUserSource extends DataTableSource {
                   backgroundColor: Colors.green,
                 ),
               );
+              refreshList();
+              
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Failed to approve user.'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.red,
                 ),
               );
             }

@@ -1,353 +1,158 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_desktop/models/object_model.dart';
+import 'package:rekreacija_desktop/providers/notification_provider.dart';
+import 'package:rekreacija_desktop/providers/object_provider.dart';
+import 'package:rekreacija_desktop/screens/card_view.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+  @override
+  State<StatefulWidget> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  late ObjectProvider objectProvider;
+  late NotificationProvider notificationProvider;
+  int numberOfObjects = 0;
+  int numberOfNotifications = 0;
+  bool isLoading = true;
+  ObjectModel? object;
+
+  @override
+  void initState() {
+    super.initState();
+    objectProvider = context.read<ObjectProvider>();
+    notificationProvider = context.read<NotificationProvider>();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final userObject = await objectProvider.getObjectOfLoggedUser();
+      userObject.sort((a, b) => b.created_date!.compareTo(a.created_date!));
+      final userNotification =
+          await notificationProvider.getNotificationsOfUser();
+
+      setState(() {
+        numberOfObjects = userObject.length;
+        numberOfNotifications = userNotification.length;
+        object = userObject.isNotEmpty ? userObject.first : null;
+        isLoading = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(40.0),
-          child: ContentHeader(title: 'Dashboard'),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Padding(
+        padding: EdgeInsets.all(40.0),
+        child: ContentHeader(title: 'Dashboard'),
+      ),
+      const SizedBox(height: 30),
+      Padding(
+        padding: const EdgeInsets.only(left: 40),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CardView(
+                icon: Icons.apartment,
+                num: numberOfObjects,
+                decription: "My objects",
+                isLoading: isLoading),
+            const SizedBox(width: 10),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: Row(
-            children: [
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
-                child: SizedBox(
-                  width: 350.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 100.0,
-                          height: 100.0,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(
-                                Icons.insert_drive_file,
-                                color: Colors.green[500],
-                                size: 100.0,
-                              ),
-                              Positioned(
-                                top: 15.0,
-                                right: 20.0,
-                                child: Container(
-                                  width: 35.0,
-                                  height: 35.0,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle),
-                                  child: const Icon(
-                                    Icons.arrow_downward,
-                                    color: Colors.white,
-                                    size: 25.0,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '75',
-                                  style: TextStyle(
-                                      fontSize: 36.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                ),
-                                const SizedBox(height: 4.0),
-                                Text(
-                                  'Open requests',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const SizedBox(height: 4.0),
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_upward,
-                                      color: Colors.green,
-                                      size: 16.0,
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text(
-                                      '4% (30 days)',
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+      ),
+      const SizedBox(height: 10),
+      Padding(
+        padding: const EdgeInsets.only(left: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (object != null) ...[
+              const Text("Last added object"),
+              objectCardView(
+                object!.name!,
+                object!.address!,
+                object!.objectImage != null
+                    ? imageFromString(object!.objectImage!)
+                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
               ),
-              const SizedBox(width: 10.0),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
-                child: SizedBox(
-                  width: 350.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 100.0,
-                          height: 100.0,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(
-                                Icons.inventory_sharp,
-                                color: Colors.green[500],
-                                size: 100.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '375',
-                                  style: TextStyle(
-                                      fontSize: 36.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                ),
-                                const SizedBox(height: 4.0),
-                                Text(
-                                  'Finished appointments',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const SizedBox(height: 4.0),
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_upward,
-                                      color: Colors.green,
-                                      size: 16.0,
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text(
-                                      '4% (30 days)',
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10.0),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
-                child: SizedBox(
-                  width: 350.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 100.0,
-                          height: 100.0,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(
-                                Icons.insert_drive_file,
-                                color: Colors.green[500],
-                                size: 100.0,
-                              ),
-                              Positioned(
-                                top: 15.0,
-                                right: 20.0,
-                                child: Container(
-                                  width: 35.0,
-                                  height: 35.0,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle),
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 25.0,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '65',
-                                  style: TextStyle(
-                                      fontSize: 36.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                ),
-                                const SizedBox(height: 4.0),
-                                Text(
-                                  'Canceled appointments',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const SizedBox(height: 4.0),
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_downward,
-                                      color: Colors.red,
-                                      size: 16.0,
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text(
-                                      '4% (30 days)',
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10.0),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
-                child: SizedBox(
-                  width: 350.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 100.0,
-                          height: 100.0,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(
-                                Icons.paid,
-                                color: Colors.green[500],
-                                size: 100.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '1200 KM',
-                                  style: TextStyle(
-                                      fontSize: 36.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                ),
-                                const SizedBox(height: 4.0),
-                                Text(
-                                  'Total revenue',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const SizedBox(height: 4.0),
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_upward,
-                                      color: Colors.green,
-                                      size: 16.0,
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text(
-                                      '4% (30 days)',
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+            ]
+          ],
+        ),
+      )
+    ]);
   }
 }
+
+Widget objectCardView(
+    String objectName, String objectAddress, final Image image) {
+  return Card(
+    elevation: 5.0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15.0),
+    ),
+    child: SizedBox(
+      width: 400,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0),
+            ),
+            child: Container(
+              width: double.infinity,
+              height: 200.0,
+              color: Colors.grey[300],
+              child: Image(
+                image: image.image,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  objectName,
+                  style: GoogleFonts.suezOne(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                Text(
+                  objectAddress,
+                  style: GoogleFonts.suezOne(
+                    color: Colors.black54,
+                    fontSize: 18.0,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+}
+

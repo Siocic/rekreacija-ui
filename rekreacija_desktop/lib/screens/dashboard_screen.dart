@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
-import 'package:rekreacija_desktop/screens/card_view.dart';
+import 'package:rekreacija_desktop/widgets/card_view.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 

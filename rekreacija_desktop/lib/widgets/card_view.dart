@@ -11,6 +11,7 @@ class CardView extends StatefulWidget {
       required this.num,
       required this.decription,
       required this.isLoading});
+      
   @override
   State<StatefulWidget> createState() => _CardView();
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -7,13 +8,14 @@ import 'package:rekreacija_desktop/models/login_model.dart';
 import 'package:rekreacija_desktop/models/user_model.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 
-class AuthProvider {
+class AuthProvider extends ChangeNotifier {
   static String? _baseUrl;
   final _secureStorage = const FlutterSecureStorage();
   AuthProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://localhost:5246/");
   }
+
   Future<void> userLogin(LoginModel model) async {
     final url = "${_baseUrl}Auth/Login";
     final uri = Uri.parse(url);
@@ -32,11 +34,13 @@ class AuthProvider {
         final responseBody = jsonDecode(response.body);
         final token = responseBody['token'];
         final payload = JwtDecoder.decode(token);
+        String userRole = payload.entries.firstWhere((e)
+        =>e.key.toLowerCase().contains('role'),orElse: ()=>MapEntry('role', '')).value;
 
-        if (payload['Role'] == 'FizickoLice') {
+        if (userRole == 'FizickoLice') {
           var message = "Invalid email or password";
           throw message;
-        } else if (payload['Role'] == 'PravnoLice' &&
+        } else if (userRole == 'PravnoLice' &&
             payload['IsApproved'] == false) {
           var message = "You are not allowed yet to login";
           throw message;
@@ -56,6 +60,22 @@ class AuthProvider {
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
       var result = UserModel.fromJson(data);
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
+
+  Future<List<UserModel>>getAllUser()async{
+     var url = "${_baseUrl}Auth/GetAllUsers";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<UserModel> result = (data as List<dynamic>)
+          .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+          .toList();
       return result;
     } else {
       throw new Exception("Unknow exception");
@@ -165,7 +185,10 @@ Future<String> getUserRole() async {
 
   try {
     final payload = JwtDecoder.decode(token);
-    final role = payload['Role'] ?? '';
+      String userRole = payload.entries.firstWhere((e)
+        =>e.key.toLowerCase().contains('role'),orElse: ()=>MapEntry('role', '')).value;
+
+    final role = userRole;
     return role;
   } catch (e) {
     return '';

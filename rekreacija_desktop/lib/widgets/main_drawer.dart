@@ -61,8 +61,8 @@ class MainDrawer extends StatelessWidget {
                   buildNavItem(
                     icon: Icons.home,
                     title: 'Dashboard',
-                    isSelected: selectedIndex == 0,
-                    onTap: () => onItemSelected(0),
+                    isSelected: selectedIndex == 12,
+                    onTap: () => onItemSelected(12),
                   ),
                   buildNavItem(
                     icon: Icons.people_outline,

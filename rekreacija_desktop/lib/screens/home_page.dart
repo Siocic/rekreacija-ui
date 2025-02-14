@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
+import 'package:rekreacija_desktop/screens/admin_dashboard_screen.dart';
 import 'package:rekreacija_desktop/screens/appointment_screen.dart';
 import 'package:rekreacija_desktop/screens/change_password_screen.dart';
 import 'package:rekreacija_desktop/screens/clients_screen.dart';
@@ -40,14 +41,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
     final role = await getUserRole();
     setState(() {
       userRole = role;
+      selectedIndex = (userRole == 'SuperAdmin') ? 12 : 0; 
     });
   }
 
   Widget getSelectedScreen() {
     if (userRole == 'SuperAdmin') {
-      switch (selectedIndex) {
-        case 0:
-          return const DashboardScreen();
+      switch (selectedIndex) {      
         case 6:
           return const ProfileScreen();
         case 9:
@@ -56,6 +56,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
           return const UserScreen();
         case 11:
           return const PendingApprovals();
+        case 12:
+          return const AdminDashboard();
         default:
           return const Center(child: Text('Select a screen from the menu'));
       }

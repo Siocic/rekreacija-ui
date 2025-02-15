@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_mobile/providers/auth_provider.dart';
+import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => SportCategoryProvider()),
+    ChangeNotifierProvider(create: (_) => AuthProvider())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,8 +17,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(        
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(14, 121, 115, 0)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromRGBO(14, 121, 115, 0)),
         useMaterial3: true,
       ),
       initialRoute: AppRoutes.login,
@@ -21,4 +28,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

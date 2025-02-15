@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/change_password_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
@@ -23,6 +24,13 @@ class _ChangePassword extends State<ChangePassword> {
   bool _showPassword = false;
   bool _showNewPassword = false;
   bool _showConfirmPassword = false;
+  late AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authProvider = context.read<AuthProvider>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +76,9 @@ class _ChangePassword extends State<ChangePassword> {
                           },
                         ),
                       ),
-                      // validator: FormBuilderValidators.compose([
-                      //   FormBuilderValidators.required(),
-                      // ]),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                      ]),
                     ),
                     const SizedBox(height: 20.0),
                     FormBuilderTextField(
@@ -152,8 +160,8 @@ class _ChangePassword extends State<ChangePassword> {
 
                               ChangePasswordModel change =
                                   ChangePasswordModel(password, newPassword);
-                              final AuthProvider customerLogin = AuthProvider();
-                              await customerLogin.changePassword(change);
+
+                              await _authProvider.changePassword(change);
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

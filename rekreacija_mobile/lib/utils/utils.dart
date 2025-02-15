@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 
 String formatNumber(dynamic) {
@@ -24,4 +25,22 @@ Future<Map<String, String>> getAuthHeaders() async {
     "Content-Type": "application/json",
     "Authorization": "Bearer $token",
   };
+}
+
+bool isValidResponse(Response response) {
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return true;
+  } else if (response.statusCode >= 400 && response.statusCode < 500) {
+    final errorBody = jsonDecode(response.body);
+    final message =
+        errorBody['message'] ?? "Something went wrong. Please try again.";
+    throw message;
+  } else if (response.statusCode >= 500) {
+    var messageErr =
+        "Something went wrong on our side. Please try again later.";
+    throw messageErr;
+  } else {
+    var expMessage = "Unexpected error. Please try again.";
+    throw expMessage;
+  }
 }

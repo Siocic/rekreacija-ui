@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/sport_category.dart';
 import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
@@ -14,10 +15,10 @@ class ObjektiScreen extends StatefulWidget {
 
 class _ObjektiScreenState extends State<ObjektiScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final SportCategoryProvider _sportCategoryProvider = SportCategoryProvider();
+  late SportCategoryProvider _sportCategoryProvider;
   bool isLoadingSports = true;
   List<SportCategory> sports = [];
-  SportCategory? selectedSport ;
+  SportCategory? selectedSport;
   final List<Map<String, String>> halls = [
     {
       'name': 'Univerzitetska dvorana',
@@ -93,6 +94,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   @override
   void initState() {
     super.initState();
+    _sportCategoryProvider = context.read<SportCategoryProvider>();
     _filteredHalls = halls;
     _loadSports();
   }
@@ -112,11 +114,11 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
 
   Future<void> _loadSports() async {
     try {
-      final categories = await _sportCategoryProvider.get();
+      final categories = await _sportCategoryProvider.Get();
       setState(() {
         sports = categories;
         if (sports.isNotEmpty) {
-          selectedSport = sports.first;         
+          selectedSport = sports.first;
         }
         isLoadingSports = false;
       });
@@ -214,7 +216,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                         ),
                       ),
                       child: Text(
-                        sport.name??"",
+                        sport.name ?? "",
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),

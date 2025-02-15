@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 
@@ -33,6 +34,15 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   File? _selectedImage;
   String? base64Image;
+  late AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authProvider = context.read<AuthProvider>();
+  }
+
+
   Future<void> _pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -118,8 +128,7 @@ class _EditProfileState extends State<EditProfile> {
                                   city,
                                   phone,
                                   base64Image);
-                              final AuthProvider editProfile = AuthProvider();
-                              await editProfile.editProfile(userModel);
+                              await _authProvider.editProfile(userModel);
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

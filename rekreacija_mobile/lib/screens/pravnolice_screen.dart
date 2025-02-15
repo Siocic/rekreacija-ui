@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/registration_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
@@ -24,6 +25,14 @@ class PravnoliceScreen extends StatefulWidget {
 }
 
 class _PravnoliceScreen extends State<PravnoliceScreen> {
+  late AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authProvider = context.read<AuthProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
@@ -86,9 +95,7 @@ class _PravnoliceScreen extends State<PravnoliceScreen> {
                           phone,
                           password);
 
-                      final AuthProvider customerRegistraion = AuthProvider();
-                      await customerRegistraion.userRegister(
-                          registrationModel, 1);
+                      await _authProvider.userRegister(registrationModel, 1);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

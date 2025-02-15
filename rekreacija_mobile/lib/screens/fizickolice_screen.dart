@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/registration_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
@@ -16,13 +17,22 @@ class FizickoliceScreen extends StatefulWidget {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _repeatPasswordContoller = TextEditingController();
+  final TextEditingController _repeatPasswordContoller =
+      TextEditingController();
 
   @override
   State<StatefulWidget> createState() => _FizickoliceScreen();
 }
 
 class _FizickoliceScreen extends State<FizickoliceScreen> {
+  late AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authProvider = context.read<AuthProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
@@ -85,9 +95,7 @@ class _FizickoliceScreen extends State<FizickoliceScreen> {
                           phone,
                           password);
 
-                      final AuthProvider customerRegistraion = AuthProvider();
-                      await customerRegistraion.userRegister(
-                          registrationModel, 0);
+                      await _authProvider.userRegister(registrationModel, 0);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

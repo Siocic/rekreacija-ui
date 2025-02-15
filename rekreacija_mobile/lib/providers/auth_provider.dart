@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -8,7 +9,7 @@ import 'package:rekreacija_mobile/models/registration_model.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
 
-class AuthProvider {
+class AuthProvider extends ChangeNotifier {
   static String? _baseUrl;
   final _secureStorage = const FlutterSecureStorage();
   AuthProvider() {
@@ -29,12 +30,16 @@ class AuthProvider {
           "Content-Type": "application/json",
         },
       );
-      if (_isValidResponse(response)) {
+      if (isValidResponse(response)) {
         final responseBody = jsonDecode(response.body);
         final token = responseBody['token'];
         final payload = JwtDecoder.decode(token);
+        String userRole = payload.entries
+            .firstWhere((e) => e.key.toLowerCase().contains('role'),
+                orElse: () => MapEntry('role', ''))
+            .value;
 
-        if (payload['Role'] != 'FizickoLice') {
+        if (userRole != 'FizickoLice') {
           var message = "Invalid email or password";
           throw message;
         }
@@ -58,7 +63,7 @@ class AuthProvider {
           "Content-Type": "application/json",
         },
       );
-      _isValidResponse(response);
+      isValidResponse(response);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -69,7 +74,7 @@ class AuthProvider {
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
     var response = await http.get(uri, headers: headers);
-    if (_isValidResponse(response)) {
+    if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
       var result = UserModel.fromJson(data);
       return result;
@@ -86,43 +91,23 @@ class AuthProvider {
       final jsonRequest = jsonEncode(model.toJson());
       final response =
           await http.post(uri, body: jsonRequest, headers: headers);
-      _isValidResponse(response);
+      isValidResponse(response);
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  Future<void> changePassword(ChangePasswordModel model)async{
-    var url="${_baseUrl}Auth/change";
+  Future<void> changePassword(ChangePasswordModel model) async {
+    var url = "${_baseUrl}Auth/change";
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
-    try{
+    try {
       final jsonRequest = jsonEncode(model.toJson());
-      final response= await http.post(uri,body: jsonRequest,headers: headers);
-      _isValidResponse(response);
-    }
-    catch(e)
-    {
+      final response =
+          await http.post(uri, body: jsonRequest, headers: headers);
+      isValidResponse(response);
+    } catch (e) {
       throw Exception(e.toString());
-    }
-  }
-
- 
-  bool _isValidResponse(http.Response response) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return true;
-    } else if (response.statusCode >= 400 && response.statusCode < 500) {
-      final errorBody = jsonDecode(response.body);
-      final message =
-          errorBody['message'] ?? "Something went wrong. Please try again.";
-      throw message;
-    } else if (response.statusCode >= 500) {
-      var messageErr =
-          "Something went wrong on our side. Please try again later.";
-      throw messageErr;
-    } else {
-      var expMessage = "Unexpected error. Please try again.";
-      throw expMessage;
     }
   }
 }

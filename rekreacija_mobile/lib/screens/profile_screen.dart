@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
@@ -15,7 +16,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreen extends State<ProfileScreen> {
-  final AuthProvider _authProvider = AuthProvider();
+  late AuthProvider _authProvider;
   UserModel? profile;
   late Map<String, TextEditingController> controllers;
   Image? image;
@@ -23,6 +24,7 @@ class _ProfileScreen extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    _authProvider = context.read<AuthProvider>();
     controllers = {
       "firstName": TextEditingController(),
       "lastName": TextEditingController(),

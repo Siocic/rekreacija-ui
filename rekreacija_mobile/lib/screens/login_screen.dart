@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/login_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
@@ -18,6 +19,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreen extends State<LoginScreen> {
   bool _showPassword = false;
+  late AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authProvider = context.read<AuthProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
@@ -116,13 +125,13 @@ class _LoginScreen extends State<LoginScreen> {
 
                               LoginModel loginModel =
                                   LoginModel(email, password);
-                              final AuthProvider customerLogin = AuthProvider();
-                              await customerLogin.userLogin(loginModel);
+                              await _authProvider.userLogin(loginModel);
 
                               ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Login successful')),
-                            );
-                            
+                                const SnackBar(
+                                    content: Text('Login successful')),
+                              );
+
                               Navigator.pushReplacementNamed(
                                   context, AppRoutes.tabsscreen);
                             } catch (e) {

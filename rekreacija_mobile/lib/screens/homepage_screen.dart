@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_mobile/models/object_model.dart';
+import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/hall_card.dart';
 
@@ -12,34 +16,27 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreen extends State<HomePageScreen> {
-  final List<Map<String, String>> objectNearYou = [
-    {
-      'name': 'Univerzitetska dvorana',
-      'address': 'Univerzitetska 1',
-    },
-    {
-      'name': 'Tusanj',
-      'address': 'Rudarska bb',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-  ];
-  final List<Map<String, String>> mostPopularHalls = [
-    {
-      'name': 'Katolicki skolski centar',
-      'address': 'Klosterska',
-    },
-    {
-      'name': 'Gimnazija Ismet Mujezinovic',
-      'address': 'Ulica bb',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-  ];
+  late ObjectProvider _objectProvider;
+  List<ObjectModel> objects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _objectProvider = context.read<ObjectProvider>();
+    fetchObjects();
+  }
+
+  Future<void> fetchObjects() async {
+    try {
+      var objectList = await _objectProvider.Get();
+      setState(() {
+        objects = objectList;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to fetch data: ${3}')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,24 +114,28 @@ class _HomePageScreen extends State<HomePageScreen> {
                           viewportFraction: 1.0,
                           initialPage: 0,
                         ),
-                        itemCount:mostPopularHalls.length,
-                          itemBuilder: (context, index) {
-                          final popularHalls = mostPopularHalls[index];
+                        itemCount: objects.length,
+                        itemBuilder: (context, index) {
+                          final popularHalls = objects[index];
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, '/hallDetails');
+                                Navigator.pushNamed(context, '/hallDetails');
                               },
                               child: HallCard(
-                                  hallAdress: popularHalls['name'] ?? '',
-                                  hallName: popularHalls['name'] ?? ''),
+                                hallAdress: popularHalls.name ?? '',
+                                hallName: popularHalls.address ?? '',
+                                image: popularHalls.objectImage != null
+                                    ? imageFromString(popularHalls.objectImage!)
+                                    : Image.asset(
+                                        "assets/image/RekreacijaDefault.jpg"),
+                              ),
                             ),
                           );
                         },
-                      ),                     
+                      ),
                     ),
                     const SizedBox(height: 15.0),
                     Row(
@@ -162,20 +163,24 @@ class _HomePageScreen extends State<HomePageScreen> {
                           viewportFraction: 1.0,
                           initialPage: 0,
                         ),
-                        itemCount: objectNearYou.length,
+                        itemCount: objects.length,
                         itemBuilder: (context, index) {
-                          final nearYou = objectNearYou[index];
+                          final nearYou = objects[index];
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
-                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, '/hallDetails');
+                              onTap: () {
+                                Navigator.pushNamed(context, '/hallDetails');
                               },
                               child: HallCard(
-                                  hallAdress: nearYou['name'] ?? '',
-                                  hallName: nearYou['name'] ?? ''),
+                                hallAdress: nearYou.name ?? '',
+                                hallName: nearYou.address ?? '',
+                                image: nearYou.objectImage != null
+                                    ? imageFromString(nearYou.objectImage!)
+                                    : Image.asset(
+                                        "assets/image/RekreacijaDefault.jpg"),
+                              ),
                             ),
                           );
                         },
@@ -207,20 +212,24 @@ class _HomePageScreen extends State<HomePageScreen> {
                           viewportFraction: 1.0,
                           initialPage: 0,
                         ),
-                        itemCount: objectNearYou.length,
+                        itemCount: objects.length,
                         itemBuilder: (context, index) {
-                          final nearYou = objectNearYou[index];
+                          final nearYou = objects[index];
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, '/hallDetails');
+                                Navigator.pushNamed(context, '/hallDetails');
                               },
                               child: HallCard(
-                                  hallAdress: nearYou['name'] ?? '',
-                                  hallName: nearYou['name'] ?? ''),
+                                hallAdress: nearYou.name ?? '',
+                                hallName: nearYou.address ?? '',
+                                image: nearYou.objectImage != null
+                                    ? imageFromString(nearYou.objectImage!)
+                                    : Image.asset(
+                                        "assets/image/RekreacijaDefault.jpg"),
+                              ),
                             ),
                           );
                         },

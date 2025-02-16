@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class HallCard extends StatefulWidget {
   final String hallName;
   final String hallAdress;
+  final Image image;
 
-  const HallCard({super.key, required this.hallAdress, required this.hallName});
+  const HallCard({super.key, required this.hallAdress, required this.hallName, required this.image});
 
   @override
   State<StatefulWidget> createState() => _HallCardState();
@@ -22,7 +23,6 @@ class _HallCardState extends State<HallCard> {
           width: 400.0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
@@ -30,43 +30,45 @@ class _HallCardState extends State<HallCard> {
                   width: double.infinity,
                   height: 150.0,
                   color: Colors.grey[300],
-                  child: const Icon(Icons.image, size: 50, color: Colors.grey),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              widget.hallName,
-                              style: const TextStyle(
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              widget.hallAdress,
-                              style: const TextStyle(
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                  child: Image(
+                    image: widget.image.image,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
+              const SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 0.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.hallName,
+                            style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            widget.hallAdress,
+                            style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 5),
               const Padding(
                 padding: EdgeInsets.only(left: 10.0),
                 child: Row(
@@ -79,10 +81,8 @@ class _HallCardState extends State<HallCard> {
                 ),
               ),
               const SizedBox(height: 10.0),
-            ],
-            
-          ),
-      
+            ],            
+          ),      
         ),
       ),
     );

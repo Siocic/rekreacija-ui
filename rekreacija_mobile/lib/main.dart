@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
+import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SportCategoryProvider()),
-    ChangeNotifierProvider(create: (_) => AuthProvider())
+    ChangeNotifierProvider(create: (_) => AuthProvider()),
+    ChangeNotifierProvider(create: (_)=>ObjectProvider())
   ], child: const MyApp()));
 }
 

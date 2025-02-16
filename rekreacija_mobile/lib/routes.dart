@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rekreacija_mobile/screens/appointment_screen.dart';
 import 'package:rekreacija_mobile/screens/change_password_screen.dart';
 import 'package:rekreacija_mobile/screens/fizickolice_screen.dart';
-import 'package:rekreacija_mobile/screens/hall_details_screen.dart';
 import 'package:rekreacija_mobile/screens/hall_message_screen.dart';
 import 'package:rekreacija_mobile/screens/hall_review_screen.dart';
 import 'package:rekreacija_mobile/screens/homepage_screen.dart';
@@ -29,7 +28,6 @@ class AppRoutes{
   static const String pravnolice='/pravnolice';
   static const String fizickolice='/fizickolice';
   static const String roleselection='/roleselction';
-  static const String hallDetails='/hallDetails';
   static const String hallmessage='/hallMessage';
   static const String hallReview='/hallReview';
   static const String appointment='/appointment';
@@ -37,10 +35,10 @@ class AppRoutes{
 
   static Map<String,WidgetBuilder>getRoutes(){
     return{
-      home:(context)=>HomePageScreen(),
+      home:(context)=>const HomePageScreen(),
       login:(context)=>LoginScreen(),
       tabsscreen:(context)=>const TabsScreen(),
-      objekti:(context)=>ObjektiScreen(),
+      objekti:(context)=>const ObjektiScreen(),
       rezervacije:(context)=>const RezervacijeScreen(),
       profil:(context)=>ProfileScreen(),
       messages:(context)=>const MessagesScreen(),
@@ -48,12 +46,10 @@ class AppRoutes{
       pravnolice:(context)=>PravnoliceScreen(),
       fizickolice:(context)=>FizickoliceScreen(),
       roleselection:(context)=>const RoleSelectionScreen(),
-      hallDetails:(context)=> HallDetailsScreen(),
       hallmessage:(context)=>const HallMessageScreen(),
       hallReview:(context)=>const HallReviewScreen(),
       appointment:(context)=>const AppointmentScreen(),
       changePassord:(context)=> ChangePassword(),
     };
   }
-
 }

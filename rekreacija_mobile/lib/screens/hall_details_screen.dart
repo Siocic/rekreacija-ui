@@ -1,22 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rekreacija_mobile/models/object_model.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/review_card.dart';
 
 class HallDetailsScreen extends StatefulWidget {
-  const HallDetailsScreen({super.key});
+  final ObjectModel object;
+  const HallDetailsScreen({super.key, required this.object});
   @override
   State<StatefulWidget> createState() => _HallDetailsScreenState();
 }
 
 class _HallDetailsScreenState extends State<HallDetailsScreen> {
   bool _isExpanded = false;
+  late String objectName;
+  late String objectAddress;
+  late String objectPrice;
+  late String objectDescription;
+  late Image objectImage;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeFields();
+  }
+
+  void initializeFields() {
+    objectName = widget.object.name ?? '';
+    objectAddress = widget.object.address ?? '';
+    objectPrice = widget.object.price.toString();
+    objectDescription = widget.object.description ?? '';
+    objectImage = widget.object.objectImage != null
+        ? imageFromString(widget.object.objectImage!)
+        : Image.asset("assets/images/RekreacijaDefault.jpg");
+  }
 
   @override
   Widget build(BuildContext context) {
-    String description =
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged ";
     String comment =
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the";
 
@@ -32,7 +54,7 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
             ),
           )
         ],
-      ),   
+      ),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
@@ -48,8 +70,10 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                     width: 400.0,
                     height: 230.0,
                     color: Colors.grey[300],
-                    child:
-                        const Icon(Icons.image, size: 50, color: Colors.grey),
+                    child: Image(
+                      image: objectImage.image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -60,7 +84,7 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hall Name',
+                      objectName,
                       style: GoogleFonts.suezOne(
                         color: Colors.white,
                         fontSize: 18,
@@ -68,7 +92,7 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                     ),
                     const SizedBox(height: 5.0),
                     Text(
-                      'Hall Address',
+                      objectAddress,
                       style: GoogleFonts.suezOne(
                         color: Colors.white,
                         fontSize: 17,
@@ -76,7 +100,7 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                     ),
                     const SizedBox(height: 5.0),
                     Text(
-                      'Hall Price/h',
+                      '${objectPrice} KM',
                       style: GoogleFonts.suezOne(
                         color: Colors.white,
                         fontSize: 17,
@@ -119,32 +143,35 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: _isExpanded
-                                ? description
-                                : "${description.substring(0, 100)}...  ",
-                            style: GoogleFonts.suezOne(
+                            text: objectDescription.length <= 100
+                                ? objectDescription
+                                : _isExpanded
+                                    ? objectDescription
+                                    : "${objectDescription.substring(0, 100)}...",
+                            style: GoogleFonts.robotoSlab(
                               color: Colors.white,
-                              fontSize: 17.0,
+                              fontSize: 18.0,
                             ),
                           ),
-                          WidgetSpan(
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _isExpanded = !_isExpanded;
-                                });
-                              },
-                              child: Text(
-                                _isExpanded ? "Show Less" : "Read More",
-                                style: GoogleFonts.suezOne(
-                                  color:
-                                      const Color.fromRGBO(198, 124, 78, 100),
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
+                          if (objectDescription.length > 100)
+                            WidgetSpan(
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isExpanded = !_isExpanded;
+                                  });
+                                },
+                                child: Text(
+                                  _isExpanded ? "Show Less" : "Read More",
+                                  style: GoogleFonts.suezOne(
+                                    color:
+                                        const Color.fromRGBO(198, 124, 78, 100),
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -183,19 +210,18 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                     ),
                     const SizedBox(height: 5.0),
                     SizedBox(
-                      height: 165.0 ,
+                      height: 165.0,
                       child: PageView.builder(
                         controller: PageController(
-                          viewportFraction: 1.0,
-                          initialPage: 0
-                        ),
+                            viewportFraction: 1.0, initialPage: 0),
                         itemCount: 3,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ReviewCard(rating: '5.0', personName: 'personName', comment: comment)
-                            
-                          );
+                              padding: const EdgeInsets.all(8.0),
+                              child: ReviewCard(
+                                  rating: '5.0',
+                                  personName: 'personName',
+                                  comment: comment));
                         },
                       ),
                     ),

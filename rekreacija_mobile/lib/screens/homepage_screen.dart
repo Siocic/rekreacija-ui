@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/object_model.dart';
 import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/routes.dart';
+import 'package:rekreacija_mobile/screens/hall_details_screen.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/hall_card.dart';
@@ -122,11 +123,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, '/hallDetails');
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HallDetailsScreen(object: popularHalls)));
                               },
                               child: HallCard(
-                                hallAdress: popularHalls.name ?? '',
                                 hallName: popularHalls.address ?? '',
+                                hallAdress: popularHalls.name ?? '',
                                 image: popularHalls.objectImage != null
                                     ? imageFromString(popularHalls.objectImage!)
                                     : Image.asset(
@@ -171,11 +172,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, '/hallDetails');
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HallDetailsScreen(object: nearYou)));
                               },
                               child: HallCard(
-                                hallAdress: nearYou.name ?? '',
                                 hallName: nearYou.address ?? '',
+                                hallAdress: nearYou.name ?? '',
                                 image: nearYou.objectImage != null
                                     ? imageFromString(nearYou.objectImage!)
                                     : Image.asset(
@@ -220,11 +221,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, '/hallDetails');
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HallDetailsScreen(object: nearYou)));
                               },
                               child: HallCard(
-                                hallAdress: nearYou.name ?? '',
-                                hallName: nearYou.address ?? '',
+                                hallName: nearYou.name ?? '',
+                                hallAdress: nearYou.address ?? '',
                                 image: nearYou.objectImage != null
                                     ? imageFromString(nearYou.objectImage!)
                                     : Image.asset(

@@ -37,4 +37,19 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception(e.toString());
     }
   }
+
+  Future<T> Insert(dynamic request) async {
+    var url = "$_baseUrl$_endpoint/Insert";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    try {
+      var jsonRequest = jsonEncode(request);
+      var response = await http.post(uri, headers: headers, body: jsonRequest);
+      isValidResponse(response);
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

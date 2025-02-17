@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 String formatNumber(dynamic) {
   var f = NumberFormat('##,00');
@@ -25,6 +26,23 @@ Future<Map<String, String>> getAuthHeaders() async {
     "Content-Type": "application/json",
     "Authorization": "Bearer $token",
   };
+}
+
+Future<String> getUserId() async {
+  const secureStorage = FlutterSecureStorage();
+  final token = await secureStorage.read(key: 'jwt_token');
+
+  if (token == null || JwtDecoder.isExpired(token)) {
+    return ' ';
+  }
+
+  try {
+    final payload = JwtDecoder.decode(token);
+    final userId = payload['sub'] ?? ' ';  
+    return '$userId';
+  } catch (e) {
+    return ' ';
+  }
 }
 
 bool isValidResponse(Response response) {

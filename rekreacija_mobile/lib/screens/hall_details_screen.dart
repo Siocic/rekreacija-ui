@@ -5,6 +5,7 @@ import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/review_card.dart';
+import 'package:rekreacija_mobile/widgets/review_modal.dart';
 
 class HallDetailsScreen extends StatefulWidget {
   final ObjectModel object;
@@ -20,14 +21,18 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
   late String objectPrice;
   late String objectDescription;
   late Image objectImage;
+  late int objectId;
+  String userId = '';
 
   @override
   void initState() {
     super.initState();
     initializeFields();
+    getIdUser();
   }
 
   void initializeFields() {
+    objectId=widget.object.id??0;
     objectName = widget.object.name ?? '';
     objectAddress = widget.object.address ?? '';
     objectPrice = widget.object.price.toString();
@@ -35,6 +40,13 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
     objectImage = widget.object.objectImage != null
         ? imageFromString(widget.object.objectImage!)
         : Image.asset("assets/images/RekreacijaDefault.jpg");
+  }
+
+  Future<void> getIdUser() async {
+    final iduser = await getUserId();
+    setState(() {
+      userId = iduser;
+    });
   }
 
   @override
@@ -231,7 +243,12 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                       height: 50,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/hallReview');
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ReviewModal(userId: userId,objectId: objectId,);
+                              });
+                          //Navigator.pushNamed(context, '/hallReview');
                         },
                         style: TextButton.styleFrom(
                           backgroundColor:

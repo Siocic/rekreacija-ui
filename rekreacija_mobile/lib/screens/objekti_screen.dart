@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rekreacija_mobile/models/object_model.dart';
 import 'package:rekreacija_mobile/models/sport_category.dart';
+import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
+import 'package:rekreacija_mobile/screens/hall_details_screen.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/sport_section.dart';
 
@@ -19,98 +23,18 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   bool isLoadingSports = true;
   List<SportCategory> sports = [];
   SportCategory? selectedSport;
-  final List<Map<String, String>> halls = [
-    {
-      'name': 'Univerzitetska dvorana',
-      'address': 'Univerzitetska 1',
-    },
-    {
-      'name': 'Tusanj',
-      'address': 'Rudarska bb',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Mejdan',
-      'address': 'Bosne Srebrene',
-    },
-    {
-      'name': 'Univerzitetska dvorana',
-      'address': 'Univerzitetska 1',
-    },
-    {
-      'name': 'Tusanj',
-      'address': 'Rudarska bb',
-    },
-    {
-      'name': 'Univerzitetska dvorana',
-      'address': 'Univerzitetska 1',
-    },
-    {
-      'name': 'Tusanj',
-      'address': 'Rudarska bb',
-    },
-  ];
+  late ObjectProvider _objectProvider;
+  List<ObjectModel> objects = [];  
+  List<ObjectModel>filteredObjects =[];
 
-  List<Map<String, String>> _filteredHalls = [];
   @override
   void initState() {
     super.initState();
     _sportCategoryProvider = context.read<SportCategoryProvider>();
-    _filteredHalls = halls;
+    _objectProvider = context.read<ObjectProvider>();
     _loadSports();
-  }
-
-  void _filterHalls(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredHalls = halls;
-      } else {
-        _filteredHalls = halls
-            .where((hall) =>
-                hall['name']!.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
-    });
-  }
+    fetchObjects();
+  }  
 
   Future<void> _loadSports() async {
     try {
@@ -118,10 +42,11 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
       setState(() {
         sports = categories;
         if (sports.isNotEmpty) {
-          selectedSport = sports.first;
+          selectedSport = sports.first;        
         }
         isLoadingSports = false;
       });
+
     } catch (e) {
       setState(() {
         isLoadingSports = false;
@@ -130,6 +55,25 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
           .showSnackBar(SnackBar(content: Text('Failed to load sports: $e')));
     }
   }
+
+  Future<void> fetchObjects() async {
+    try {
+      var objectList = await _objectProvider.Get();
+      setState(() {
+        objects = objectList;
+
+        if(selectedSport!=null){
+          filteredObjects=objects.where((h)=>h.sportsId!.contains(selectedSport!.id)).toList();
+        }
+
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to fetch data: $e')));
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +112,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                 children: [
                   TextField(
                     controller: _searchController,
-                    onChanged: _filterHalls,
+                    //onChanged: _filterHalls,
                     decoration: InputDecoration(
                       fillColor: const Color.fromRGBO(49, 49, 49, 0.8),
                       filled: true,
@@ -202,6 +146,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                       onPressed: () {
                         setState(() {
                           selectedSport = sport;
+                          filteredObjects =objects.where((h)=>h.sportsId!.contains(sport.id)).toList();
                         });
                       },
                       style: TextButton.styleFrom(
@@ -233,16 +178,24 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                     Expanded(
                       child: ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: _filteredHalls.length,
+                        itemCount: filteredObjects .length,
                         itemBuilder: (context, index) {
-                          final hall = _filteredHalls[index];
+                          final hall = filteredObjects [index];
                           return InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, '/hallDetails');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          HallDetailsScreen(object: hall)));
                             },
                             child: SportSection(
-                                hallAdress: hall['name'] ?? '',
-                                hallName: hall['address'] ?? '',
+                                hallName: hall.name ?? '',
+                                hallAdress: hall.address ?? '',
+                                image: hall.objectImage != null
+                                    ? imageFromString(hall.objectImage!)
+                                    : Image.asset(
+                                        "assets/image/RekreacijaDefault.jpg"),
                                 onFavoritePressed: () {}),
                           );
                         },

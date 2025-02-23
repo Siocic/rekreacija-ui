@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class SportSection extends StatefulWidget {
   final String hallName;
   final String hallAdress;
+  final Image image;
   final VoidCallback? onFavoritePressed;
 
   const SportSection(
       {super.key,
       required this.hallAdress,
       required this.hallName,
+      required this.image,
       required this.onFavoritePressed});
 
   @override
@@ -32,7 +34,7 @@ class _SportSectionState extends State<SportSection> {
                 width: 100.0,
                 height: 120.0,
                 color: Colors.grey[300],
-                child: const Icon(Icons.image, size: 50, color: Colors.grey),
+                child: Image(image: widget.image.image, fit: BoxFit.cover),
               ),
             ),
             const SizedBox(width: 10),
@@ -74,7 +76,6 @@ class _SportSectionState extends State<SportSection> {
                 onPressed: widget.onFavoritePressed,
               ),
             ),
-            
           ],
         ),
       ),

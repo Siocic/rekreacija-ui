@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rekreacija_mobile/models/favorites_model.dart';
 import 'package:rekreacija_mobile/models/object_model.dart';
 import 'package:rekreacija_mobile/models/sport_category.dart';
+import 'package:rekreacija_mobile/providers/favorites_provider.dart';
 import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
 import 'package:rekreacija_mobile/screens/hall_details_screen.dart';
@@ -20,21 +22,25 @@ class ObjektiScreen extends StatefulWidget {
 class _ObjektiScreenState extends State<ObjektiScreen> {
   final TextEditingController _searchController = TextEditingController();
   late SportCategoryProvider _sportCategoryProvider;
+  late FavoritesProvider _favoritesProvider;
   bool isLoadingSports = true;
   List<SportCategory> sports = [];
   SportCategory? selectedSport;
   late ObjectProvider _objectProvider;
-  List<ObjectModel> objects = [];  
-  List<ObjectModel>filteredObjects =[];
+  List<ObjectModel> objects = [];
+  List<ObjectModel> filteredObjects = [];
+  String userId = '';
 
   @override
   void initState() {
     super.initState();
     _sportCategoryProvider = context.read<SportCategoryProvider>();
     _objectProvider = context.read<ObjectProvider>();
+    _favoritesProvider = context.read<FavoritesProvider>();
     _loadSports();
     fetchObjects();
-  }  
+    getIdOfUser();
+  }
 
   Future<void> _loadSports() async {
     try {
@@ -42,11 +48,10 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
       setState(() {
         sports = categories;
         if (sports.isNotEmpty) {
-          selectedSport = sports.first;        
+          selectedSport = sports.first;
         }
         isLoadingSports = false;
       });
-
     } catch (e) {
       setState(() {
         isLoadingSports = false;
@@ -62,10 +67,11 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
       setState(() {
         objects = objectList;
 
-        if(selectedSport!=null){
-          filteredObjects=objects.where((h)=>h.sportsId!.contains(selectedSport!.id)).toList();
+        if (selectedSport != null) {
+          filteredObjects = objects
+              .where((h) => h.sportsId!.contains(selectedSport!.id))
+              .toList();
         }
-
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -73,7 +79,17 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
     }
   }
 
-
+  Future<void> getIdOfUser() async {
+    try {
+      final idOfUser = await getUserId();
+      setState(() {
+        userId = idOfUser;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to load sports: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +162,9 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                       onPressed: () {
                         setState(() {
                           selectedSport = sport;
-                          filteredObjects =objects.where((h)=>h.sportsId!.contains(sport.id)).toList();
+                          filteredObjects = objects
+                              .where((h) => h.sportsId!.contains(sport.id))
+                              .toList();
                         });
                       },
                       style: TextButton.styleFrom(
@@ -178,9 +196,9 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                     Expanded(
                       child: ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: filteredObjects .length,
+                        itemCount: filteredObjects.length,
                         itemBuilder: (context, index) {
-                          final hall = filteredObjects [index];
+                          final hall = filteredObjects[index];
                           return InkWell(
                             onTap: () {
                               Navigator.push(
@@ -196,7 +214,35 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                     ? imageFromString(hall.objectImage!)
                                     : Image.asset(
                                         "assets/image/RekreacijaDefault.jpg"),
-                                onFavoritePressed: () {}),
+                                onFavoritePressed: () async {
+                                  try {
+                                    FavoritesModel requestInsert =
+                                        FavoritesModel(hall.id, userId);
+                                    await _favoritesProvider.Insert(
+                                        requestInsert);
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'You added ${hall.name} as favorites'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    String errorMessage = e.toString();
+
+                                    if (errorMessage.startsWith("Exception:")) {
+                                      errorMessage = errorMessage
+                                          .replaceFirst("Exception:", "")
+                                          .trim();
+                                    }
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(errorMessage)),
+                                    );
+                                  }
+
+                                  // print('Test object ${hall.id}');
+                                }),
                           );
                         },
                       ),

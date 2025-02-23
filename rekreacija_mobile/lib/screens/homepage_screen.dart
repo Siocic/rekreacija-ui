@@ -132,6 +132,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                               child: HallCard(
                                 hallName: popularHalls.address ?? '',
                                 hallAdress: popularHalls.name ?? '',
+                                rating: formatNumber(popularHalls.rating!),
                                 image: popularHalls.objectImage != null
                                     ? imageFromString(popularHalls.objectImage!)
                                     : Image.asset(
@@ -185,6 +186,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                               child: HallCard(
                                 hallName: nearYou.address ?? '',
                                 hallAdress: nearYou.name ?? '',
+                                rating: formatNumber(nearYou.rating!),
                                 image: nearYou.objectImage != null
                                     ? imageFromString(nearYou.objectImage!)
                                     : Image.asset(
@@ -238,6 +240,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                               child: HallCard(
                                 hallName: nearYou.name ?? '',
                                 hallAdress: nearYou.address ?? '',
+                                rating: formatNumber(nearYou.rating!),
                                 image: nearYou.objectImage != null
                                     ? imageFromString(nearYou.objectImage!)
                                     : Image.asset(

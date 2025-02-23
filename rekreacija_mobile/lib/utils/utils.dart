@@ -6,12 +6,9 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-String formatNumber(dynamic) {
-  var f = NumberFormat('##,00');
-  if (dynamic == null) {
-    return "";
-  }
-  return f.format(dynamic);
+String formatNumber(double number) {
+  var f = NumberFormat("#,##0.0");
+  return f.format(number);
 }
 
 Image imageFromString(String input) {

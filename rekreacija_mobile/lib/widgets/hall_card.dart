@@ -4,8 +4,9 @@ class HallCard extends StatefulWidget {
   final String hallName;
   final String hallAdress;
   final Image image;
+  final String rating;
 
-  const HallCard({super.key, required this.hallAdress, required this.hallName, required this.image});
+  const HallCard({super.key, required this.hallAdress, required this.hallName, required this.image, required this.rating});
 
   @override
   State<StatefulWidget> createState() => _HallCardState();
@@ -69,14 +70,14 @@ class _HallCardState extends State<HallCard> {
                 ),
               ),
               const SizedBox(height: 5),
-              const Padding(
-                padding: EdgeInsets.only(left: 10.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(Icons.star, color: Colors.yellow, size: 21.0),
-                    SizedBox(width: 5.0),
-                    Text('5.0', style: TextStyle(color: Colors.white))
+                    const Icon(Icons.star, color: Colors.yellow, size: 21.0),
+                    const SizedBox(width: 5.0),
+                    Text(widget.rating, style: const TextStyle(color: Colors.white))
                   ],
                 ),
               ),

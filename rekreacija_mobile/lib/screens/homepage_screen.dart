@@ -19,6 +19,7 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreen extends State<HomePageScreen> {
   late ObjectProvider _objectProvider;
   List<ObjectModel> objects = [];
+  List<ObjectModel> favoritesObject=[];
 
   @override
   void initState() {
@@ -30,8 +31,10 @@ class _HomePageScreen extends State<HomePageScreen> {
   Future<void> fetchObjects() async {
     try {
       var objectList = await _objectProvider.Get();
+      var favorites = await _objectProvider.getFavoritesObjectOfUser();
       setState(() {
         objects = objectList;
+        favoritesObject=favorites;
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -223,9 +226,9 @@ class _HomePageScreen extends State<HomePageScreen> {
                           viewportFraction: 1.0,
                           initialPage: 0,
                         ),
-                        itemCount: objects.length,
+                        itemCount: favoritesObject.length,
                         itemBuilder: (context, index) {
-                          final nearYou = objects[index];
+                          final yourFavorites = favoritesObject[index];
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
@@ -235,14 +238,14 @@ class _HomePageScreen extends State<HomePageScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => HallDetailsScreen(
-                                            object: nearYou)));
+                                            object: yourFavorites)));
                               },
                               child: HallCard(
-                                hallName: nearYou.name ?? '',
-                                hallAdress: nearYou.address ?? '',
-                                rating: formatNumber(nearYou.rating!),
-                                image: nearYou.objectImage != null
-                                    ? imageFromString(nearYou.objectImage!)
+                                hallName: yourFavorites.name ?? '',
+                                hallAdress: yourFavorites.address ?? '',
+                                rating: formatNumber(yourFavorites.rating!),
+                                image: yourFavorites.objectImage != null
+                                    ? imageFromString(yourFavorites.objectImage!)
                                     : Image.asset(
                                         "assets/image/RekreacijaDefault.jpg"),
                               ),

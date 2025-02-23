@@ -5,12 +5,15 @@ class ReviewCard extends StatefulWidget {
   final String rating;
   final String personName;
   final String comment;
+  final Image image;
 
   const ReviewCard(
       {super.key,
       required this.rating,
       required this.personName,
-      required this.comment});
+      required this.comment,
+      required this.image,
+      });
 
   @override
   State<StatefulWidget> createState() => _ReviewCardState();
@@ -33,10 +36,12 @@ class _ReviewCardState extends State<ReviewCard> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(40.0),
                 child: Container(
-                  width: 50.0,
-                  height: 50.0,
+                  width: 60.0,
+                  height: 60.0,
                   color: Colors.grey[300],
-                  child: const Icon(Icons.person, size: 30, color: Colors.grey),
+                  child:Image(image:widget.image.image,
+                  fit: BoxFit.cover,
+                  )
                 ),
               ),
               const SizedBox(width: 10),

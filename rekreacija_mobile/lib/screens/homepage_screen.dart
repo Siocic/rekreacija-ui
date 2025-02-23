@@ -34,8 +34,8 @@ class _HomePageScreen extends State<HomePageScreen> {
         objects = objectList;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to fetch data: ${3}')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to fetch data: $e')));
     }
   }
 
@@ -123,7 +123,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HallDetailsScreen(object: popularHalls)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HallDetailsScreen(
+                                            object: popularHalls)));
                               },
                               child: HallCard(
                                 hallName: popularHalls.address ?? '',
@@ -172,7 +176,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HallDetailsScreen(object: nearYou)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HallDetailsScreen(
+                                            object: nearYou)));
                               },
                               child: HallCard(
                                 hallName: nearYou.address ?? '',
@@ -180,7 +188,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 image: nearYou.objectImage != null
                                     ? imageFromString(nearYou.objectImage!)
                                     : Image.asset(
-                                        "assets/image/RekreacijaDefault.jpg"),
+                                        "assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );
@@ -221,7 +229,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>HallDetailsScreen(object: nearYou)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HallDetailsScreen(
+                                            object: nearYou)));
                               },
                               child: HallCard(
                                 hallName: nearYou.name ?? '',

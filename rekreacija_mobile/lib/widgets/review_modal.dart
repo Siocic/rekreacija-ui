@@ -9,7 +9,7 @@ import 'package:rekreacija_mobile/providers/review_provider.dart';
 class ReviewModal extends StatefulWidget {
   String userId;
   int objectId;
-  ReviewModal({super.key,required this.userId,required this.objectId});
+  ReviewModal({super.key, required this.userId, required this.objectId});
   final TextEditingController comment = TextEditingController();
 
   @override
@@ -23,7 +23,7 @@ class _ReviewModalState extends State<ReviewModal> {
   @override
   void initState() {
     super.initState();
-    _reviewProvider=context.read<ReviewProvider>();
+    _reviewProvider = context.read<ReviewProvider>();
   }
 
   @override
@@ -106,19 +106,24 @@ class _ReviewModalState extends State<ReviewModal> {
                               final rating = formData['Rating']?.value ?? '';
                               DateTime created_date = DateTime.now();
 
-                              ReviewInsertModel reviewInsert = ReviewInsertModel(comment, rating, created_date,widget.userId,widget.objectId);
+                              ReviewInsertModel reviewInsert =
+                                  ReviewInsertModel(
+                                      comment,
+                                      rating,
+                                      created_date,
+                                      widget.userId,
+                                      widget.objectId);
                               await _reviewProvider.Insert(reviewInsert);
-                              
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(
-                                      'You added a review successfully.'),
+                                  content:
+                                      Text('You added a review successfully.'),
                                   backgroundColor: Colors.green,
                                 ),
                               );
 
-                              Navigator.pop(context);
+                              Navigator.pop(context, true);
                             } catch (e) {
                               String errorMessage = e.toString();
 

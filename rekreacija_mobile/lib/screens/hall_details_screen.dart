@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/object_model.dart';
+import 'package:rekreacija_mobile/models/review_model.dart';
+import 'package:rekreacija_mobile/providers/review_provider.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
@@ -23,16 +26,20 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
   late Image objectImage;
   late int objectId;
   String userId = '';
+  late ReviewProvider reviewProvider;
+  List<ReviewModel> reviewModel = [];
 
   @override
   void initState() {
     super.initState();
+    reviewProvider = context.read<ReviewProvider>();
     initializeFields();
     getIdUser();
+    getReviewsOfObject();
   }
 
   void initializeFields() {
-    objectId=widget.object.id??0;
+    objectId = widget.object.id ?? 0;
     objectName = widget.object.name ?? '';
     objectAddress = widget.object.address ?? '';
     objectPrice = widget.object.price.toString();
@@ -49,11 +56,20 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
     });
   }
 
+  Future<void> getReviewsOfObject() async {
+    try {
+      var review = await reviewProvider.getReviewofObject(objectId);
+      setState(() {
+        reviewModel = review;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String comment =
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the";
-
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Details',
@@ -67,10 +83,11 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          decoration: customDecoration,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: customDecoration,
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -112,7 +129,7 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                     ),
                     const SizedBox(height: 5.0),
                     Text(
-                      '${objectPrice} KM',
+                      '$objectPrice KM',
                       style: GoogleFonts.suezOne(
                         color: Colors.white,
                         fontSize: 17,
@@ -221,34 +238,59 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                       ),
                     ),
                     const SizedBox(height: 5.0),
-                    SizedBox(
-                      height: 165.0,
-                      child: PageView.builder(
-                        controller: PageController(
-                            viewportFraction: 1.0, initialPage: 0),
-                        itemCount: 3,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ReviewCard(
-                                  rating: '5.0',
-                                  personName: 'personName',
-                                  comment: comment));
-                        },
-                      ),
-                    ),
+                    reviewModel.isNotEmpty
+                        ? SizedBox(
+                            height: 165.0,
+                            child: PageView.builder(
+                              controller: PageController(
+                                  viewportFraction: 1.0, initialPage: 0),
+                              itemCount: reviewModel.length,
+                              itemBuilder: (context, index) {
+                                final reviews = reviewModel[index];
+                                return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ReviewCard(
+                                        rating: reviews.rating.toString(),
+                                        comment: reviews.comment!,
+                                        personName:
+                                            '${reviews.user!.firstName!} ${reviews.user!.lastName!}',
+                                        image: reviews.user!.profilePicture !=
+                                                null
+                                            ? imageFromString(
+                                                reviews.user!.profilePicture!)
+                                            : Image.asset(
+                                                "assets/images/RekreacijaDefaultProfilePicture.png")));
+                              },
+                            ),
+                          )
+                        : const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                "There are no reviews for this object yet.",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
                     const SizedBox(height: 10.0),
                     SizedBox(
                       width: 400,
                       height: 50,
                       child: TextButton(
-                        onPressed: () {
-                          showDialog(
+                        onPressed: () async {
+                          final bool? result = await showDialog<bool>(
                               context: context,
                               builder: (BuildContext context) {
-                                return ReviewModal(userId: userId,objectId: objectId,);
+                                return ReviewModal(
+                                  userId: userId,
+                                  objectId: objectId,
+                                );
                               });
-                          //Navigator.pushNamed(context, '/hallReview');
+                          if (result == true) {
+                            getReviewsOfObject();
+                          }
                         },
                         style: TextButton.styleFrom(
                           backgroundColor:

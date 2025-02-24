@@ -138,8 +138,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 rating: formatNumber(popularHalls.rating!),
                                 image: popularHalls.objectImage != null
                                     ? imageFromString(popularHalls.objectImage!)
-                                    : Image.asset(
-                                        "assets/image/RekreacijaDefault.jpg"),
+                                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );
@@ -192,8 +191,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 rating: formatNumber(nearYou.rating!),
                                 image: nearYou.objectImage != null
                                     ? imageFromString(nearYou.objectImage!)
-                                    : Image.asset(
-                                        "assets/images/RekreacijaDefault.jpg"),
+                                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );
@@ -246,8 +244,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 rating: formatNumber(yourFavorites.rating!),
                                 image: yourFavorites.objectImage != null
                                     ? imageFromString(yourFavorites.objectImage!)
-                                    : Image.asset(
-                                        "assets/image/RekreacijaDefault.jpg"),
+                                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );

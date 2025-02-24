@@ -214,7 +214,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                 image: hall.objectImage != null
                                     ? imageFromString(hall.objectImage!)
                                     : Image.asset(
-                                        "assets/image/RekreacijaDefault.jpg"),
+                                        "assets/images/RekreacijaDefault.jpg"),
                                 onFavoritePressed: () async {
                                   try {
                                     FavoritesModel requestInsert =

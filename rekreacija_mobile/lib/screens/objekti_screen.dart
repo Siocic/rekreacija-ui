@@ -63,7 +63,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
 
   Future<void> fetchObjects() async {
     try {
-      var objectList = await _objectProvider.Get();
+      var objectList = await _objectProvider.getObjects();
       setState(() {
         objects = objectList;
 
@@ -210,6 +210,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                             child: SportSection(
                                 hallName: hall.name ?? '',
                                 hallAdress: hall.address ?? '',
+                                isFavorite: hall.isFavorites!,
                                 image: hall.objectImage != null
                                     ? imageFromString(hall.objectImage!)
                                     : Image.asset(
@@ -240,8 +241,6 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                       SnackBar(content: Text(errorMessage)),
                                     );
                                   }
-
-                                  // print('Test object ${hall.id}');
                                 }),
                           );
                         },

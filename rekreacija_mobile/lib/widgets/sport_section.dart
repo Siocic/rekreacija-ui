@@ -5,12 +5,14 @@ class SportSection extends StatefulWidget {
   final String hallAdress;
   final Image image;
   final VoidCallback? onFavoritePressed;
+  final bool isFavorite;
 
   const SportSection(
       {super.key,
       required this.hallAdress,
       required this.hallName,
       required this.image,
+      this.isFavorite = false,
       required this.onFavoritePressed});
 
   @override
@@ -69,8 +71,8 @@ class _SportSectionState extends State<SportSection> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
-                icon: const Icon(
-                  Icons.favorite_border,
+                icon: Icon(
+                  widget.isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: Colors.red,
                 ),
                 onPressed: widget.onFavoritePressed,

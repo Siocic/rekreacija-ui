@@ -25,6 +25,7 @@ ObjectModel _$ObjectModelFromJson(Map<String, dynamic> json) => ObjectModel(
           .toList(),
       json['objectImage'] as String?,
       (json['rating'] as num?)?.toDouble(),
+      json['isFavorites'] as bool?,
     );
 
 Map<String, dynamic> _$ObjectModelToJson(ObjectModel instance) =>
@@ -41,4 +42,5 @@ Map<String, dynamic> _$ObjectModelToJson(ObjectModel instance) =>
       'sportsId': instance.sportsId,
       'objectImage': instance.objectImage,
       'rating': instance.rating,
+      'isFavorites': instance.isFavorites,
     };

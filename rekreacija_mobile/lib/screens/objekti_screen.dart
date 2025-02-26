@@ -37,8 +37,10 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
     _sportCategoryProvider = context.read<SportCategoryProvider>();
     _objectProvider = context.read<ObjectProvider>();
     _favoritesProvider = context.read<FavoritesProvider>();
-    _loadSports();
-    fetchObjects();
+     _searchController.addListener(() {
+    fetchObjects(name: _searchController.text); // Call API when text changes
+  });
+    _loadSports();   
     getIdOfUser();
   }
 
@@ -49,6 +51,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
         sports = categories;
         if (sports.isNotEmpty) {
           selectedSport = sports.first;
+           fetchObjects();
         }
         isLoadingSports = false;
       });
@@ -61,23 +64,18 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
     }
   }
 
-  Future<void> fetchObjects() async {
+  Future<void> fetchObjects({String? name}) async {
     try {
-      var objectList = await _objectProvider.getObjects();
+    var objectList = await _objectProvider.getObjects(selectedSport!.id!, name: name);
       setState(() {
-        objects = objectList;
-
-        if (selectedSport != null) {
-          filteredObjects = objects
-              .where((h) => h.sportsId!.contains(selectedSport!.id))
-              .toList();
-        }
+        objects = objectList;        
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Failed to fetch data: $e')));
     }
   }
+
 
   Future<void> getIdOfUser() async {
     try {
@@ -128,7 +126,6 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                 children: [
                   TextField(
                     controller: _searchController,
-                    //onChanged: _filterHalls,
                     decoration: InputDecoration(
                       fillColor: const Color.fromRGBO(49, 49, 49, 0.8),
                       filled: true,
@@ -159,12 +156,14 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final objectsByCategory=await _objectProvider.getObjects(sport.id!);
                         setState(() {
                           selectedSport = sport;
-                          filteredObjects = objects
-                              .where((h) => h.sportsId!.contains(sport.id))
-                              .toList();
+                          objects=objectsByCategory;
+                          // filteredObjects = objects
+                          //     .where((h) => h.sportsId!.contains(sport.id))
+                          //     .toList();
                         });
                       },
                       style: TextButton.styleFrom(
@@ -196,9 +195,9 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                     Expanded(
                       child: ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: filteredObjects.length,
+                        itemCount: objects.length,
                         itemBuilder: (context, index) {
-                          final hall = filteredObjects[index];
+                          final hall = objects[index];
                           return InkWell(
                             onTap: () {
                               Navigator.push(

@@ -30,7 +30,7 @@ class _HomePageScreen extends State<HomePageScreen> {
 
   Future<void> fetchObjects() async {
     try {
-      var objectList = await _objectProvider.getObjects();
+      var objectList = await _objectProvider.Get();
       var favorites = await _objectProvider.getFavoritesObjectOfUser();
       setState(() {
         objects = objectList;

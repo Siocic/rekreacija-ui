@@ -33,8 +33,11 @@ class ObjectProvider extends BaseProvider<ObjectModel> {
     }
   }
 
-  Future<List<ObjectModel>> getObjects() async {
-     var url = "${_baseUrl}Object/getObjects";
+  Future<List<ObjectModel>> getObjects(int categoryId,{String? name}) async {
+     var url = "${_baseUrl}Object/getObjects/$categoryId";
+      if(name!=null && name.isNotEmpty){
+        url+="?name=${Uri.encodeComponent(name)}";
+      }
     var uri = Uri.parse(url);
     var headers = await getAuthHeaders();
     var response = await http.get(uri, headers: headers);

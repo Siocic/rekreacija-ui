@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
+import 'package:rekreacija_desktop/providers/review_provider.dart';
 import 'package:rekreacija_desktop/providers/sport_category_provider.dart';
 import 'package:rekreacija_desktop/screens/login.dart';
 
@@ -13,7 +14,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SportCategoryProvider()),
       ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ChangeNotifierProvider(create: (_) => AuthProvider()),
-
+      ChangeNotifierProvider(create: (_)=>ReviewProvider()),
     ], child: const MyApp()),
   );
 }

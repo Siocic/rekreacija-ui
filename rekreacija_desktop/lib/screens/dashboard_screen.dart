@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
+import 'package:rekreacija_desktop/providers/review_provider.dart';
 import 'package:rekreacija_desktop/widgets/card_view.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
@@ -17,8 +18,10 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late ObjectProvider objectProvider;
   late NotificationProvider notificationProvider;
+  late ReviewProvider reviewProvider;
   int numberOfObjects = 0;
   int numberOfNotifications = 0;
+  int numberOfReviews = 0;
   bool isLoading = true;
   ObjectModel? object;
 
@@ -27,6 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     objectProvider = context.read<ObjectProvider>();
     notificationProvider = context.read<NotificationProvider>();
+    reviewProvider = context.read<ReviewProvider>();
     fetchData();
   }
 
@@ -36,10 +40,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       userObject.sort((a, b) => b.created_date!.compareTo(a.created_date!));
       final userNotification =
           await notificationProvider.getNotificationsOfUser();
+      final reviews = await reviewProvider.getReviewsForMyObjects();
 
       setState(() {
         numberOfObjects = userObject.length;
         numberOfNotifications = userNotification.length;
+        numberOfReviews = reviews.length;
         object = userObject.isNotEmpty ? userObject.first : null;
         isLoading = false;
       });
@@ -72,6 +78,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 decription: "My objects",
                 isLoading: isLoading),
             const SizedBox(width: 10),
+            CardView(
+                icon: Icons.reviews,
+                num: numberOfReviews,
+                decription: "Total reivews",
+                isLoading: isLoading),
           ],
         ),
       ),
@@ -155,4 +166,3 @@ Widget objectCardView(
     ),
   );
 }
-

@@ -24,26 +24,44 @@ class _ReviewCardState extends State<ReviewCard> {
     return Card(
       color: AppColors.cardColor,
       child: Padding(
-        padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+        padding: const EdgeInsets.all(10.0),
         child: SizedBox(
-          width: 400.0,
-          height: 300.0,
+          width: 350.0,
+          height: 200.0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.customer,
-                style: GoogleFonts.barlow(
-                    fontSize: 21,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textCardColor),
+              Row(
+                children: [
+                  Text(
+                    widget.customer,
+                    style: GoogleFonts.barlow(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textCardColor),
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: AppColors.iconYellow),
+                      const SizedBox(width: 5.0),
+                      Text(
+                        widget.rating,
+                        style: GoogleFonts.barlow(
+                            fontSize: 21,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textCardColor),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               Text(
                 widget.date,
                 style: GoogleFonts.barlow(
                     fontSize: 19,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.dateCardColor ),
+                    color: AppColors.dateCardColor),
               ),
               const SizedBox(height: 15.0),
               Text(
@@ -53,37 +71,6 @@ class _ReviewCardState extends State<ReviewCard> {
                     fontWeight: FontWeight.w500,
                     color: AppColors.textCardColor),
               ),
-              const SizedBox(height: 15.0),
-              Row(
-                children: [
-                  const Icon(Icons.star, color: AppColors.iconYellow),
-                  const SizedBox(width: 15.0),
-                  Text(
-                    widget.rating,
-                    style: GoogleFonts.barlow(
-                        fontSize: 21,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textCardColor),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 25.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.buttonGreen,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                ),
-                onPressed: () {},
-                child: Text(
-                  'Reply',
-                  style: GoogleFonts.suezOne(
-                      color: AppColors.textWhite,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18),
-                ),
-              )
             ],
           ),
         ),

@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/colors.dart';
 import 'package:rekreacija_desktop/models/notification_model.dart';
+import 'package:rekreacija_desktop/models/review_model.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
+import 'package:rekreacija_desktop/providers/review_provider.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/notification_card.dart';
 import 'package:rekreacija_desktop/widgets/notification_modal.dart';
@@ -18,23 +20,25 @@ class ReviewNotificationScreen extends StatefulWidget {
 
 class _ReviewNotificationState extends State<ReviewNotificationScreen> {
   late NotificationProvider _notificationProvider;
+  late ReviewProvider _reviewProvider;
   List<NotificationModel>? notifications;
-  String comment =
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the";
-
+  List<ReviewModel>? reviws;
   @override
   void initState() {
     super.initState();
     _notificationProvider = context.read<NotificationProvider>();
-    _loadNotificationOfUser();
+    _reviewProvider = context.read<ReviewProvider>();
+    fetch();
   }
 
-  Future<void> _loadNotificationOfUser() async {
+  Future<void> fetch() async {
     try {
       final userNotification =
           await _notificationProvider.getNotificationsOfUser();
+      final objectReviews = await _reviewProvider.getReviewsForMyObjects();
       setState(() {
         notifications = userNotification;
+        reviws = objectReviews;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,7 +80,7 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
                         return NotificationModal();
                       });
                   if (result == true) {
-                    _loadNotificationOfUser();
+                    fetch();
                   }
                 },
                 child: Text(
@@ -171,41 +175,43 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
                 style: GoogleFonts.suezOne(fontSize: 20),
               ),
               const SizedBox(height: 10.0),
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: reviewLeft,
-                    style: TextButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      backgroundColor: Colors.grey[300],
-                      padding: const EdgeInsets.all(8),
+              (reviws == null || reviws!.isEmpty)
+                  ? const Text('')
+                  : Row(
+                      children: [
+                        TextButton(
+                          onPressed: reviewLeft,
+                          style: TextButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            backgroundColor: Colors.grey[300],
+                            padding: const EdgeInsets.all(8),
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_left_sharp,
+                            color: Color.fromRGBO(14, 119, 62, 1),
+                            size: 32,
+                          ),
+                        ),
+                        const SizedBox(width: 5.0),
+                        TextButton(
+                          onPressed: reviewRight,
+                          style: TextButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            backgroundColor: Colors.grey[300],
+                            padding: const EdgeInsets.all(8),
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_right_sharp,
+                            color: Color.fromRGBO(14, 119, 62, 1),
+                            size: 32,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: const Icon(
-                      Icons.keyboard_arrow_left_sharp,
-                      color: Color.fromRGBO(14, 119, 62, 1),
-                      size: 32,
-                    ),
-                  ),
-                  const SizedBox(width: 5.0),
-                  TextButton(
-                    onPressed: reviewRight,
-                    style: TextButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      backgroundColor: Colors.grey[300],
-                      padding: const EdgeInsets.all(8),
-                    ),
-                    child: const Icon(
-                      Icons.keyboard_arrow_right_sharp,
-                      color: Color.fromRGBO(14, 119, 62, 1),
-                      size: 32,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -213,23 +219,34 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 15.0),
           child: SizedBox(
-            height: 320.0,
+            height: 200.0,
             width: 1590.0,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _reviewScrollController,
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: ReviewCard(
-                      comment: comment,
-                      date: '12.12.2024',
-                      customer: 'Person Name',
-                      rating: '5.0'),
-                );
-              },
-            ),
+            child: (reviws == null || reviws!.isEmpty)
+                ? Center(
+                    child: Text(
+                      "You don't have any reviews yet.",
+                      style: GoogleFonts.suezOne(
+                          fontSize: 25, fontWeight: FontWeight.w400),
+                    ),
+                  )
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _reviewScrollController,
+                    itemCount: reviws!.length,
+                    itemBuilder: (context, index) {
+                      final objReview = reviws![index];
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: ReviewCard(
+                            comment: objReview.comment!,
+                            date: DateFormat('d/M/y')
+                                .format(objReview.created_date!),
+                            customer:
+                                '${objReview.user!.firstName!} ${objReview.user!.lastName!}',
+                            rating: objReview.rating.toString()),
+                      );
+                    },
+                  ),
           ),
         ),
       ],

@@ -30,6 +30,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   List<ObjectModel> objects = [];
   List<ObjectModel> filteredObjects = [];
   String userId = '';
+  static String? baseUrl = "http://10.0.2.2:5246";
 
   @override
   void initState() {
@@ -37,10 +38,10 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
     _sportCategoryProvider = context.read<SportCategoryProvider>();
     _objectProvider = context.read<ObjectProvider>();
     _favoritesProvider = context.read<FavoritesProvider>();
-     _searchController.addListener(() {
-    fetchObjects(name: _searchController.text); // Call API when text changes
-  });
-    _loadSports();   
+    _searchController.addListener(() {
+      fetchObjects(name: _searchController.text); // Call API when text changes
+    });
+    _loadSports();
     getIdOfUser();
   }
 
@@ -51,7 +52,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
         sports = categories;
         if (sports.isNotEmpty) {
           selectedSport = sports.first;
-           fetchObjects();
+          fetchObjects();
         }
         isLoadingSports = false;
       });
@@ -66,16 +67,16 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
 
   Future<void> fetchObjects({String? name}) async {
     try {
-    var objectList = await _objectProvider.getObjects(selectedSport!.id!, name: name);
+      var objectList =
+          await _objectProvider.getObjects(selectedSport!.id!, name: name);
       setState(() {
-        objects = objectList;        
+        objects = objectList;
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Failed to fetch data: $e')));
     }
   }
-
 
   Future<void> getIdOfUser() async {
     try {
@@ -157,13 +158,11 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextButton(
                       onPressed: () async {
-                        final objectsByCategory=await _objectProvider.getObjects(sport.id!);
+                        final objectsByCategory =
+                            await _objectProvider.getObjects(sport.id!);
                         setState(() {
                           selectedSport = sport;
-                          objects=objectsByCategory;
-                          // filteredObjects = objects
-                          //     .where((h) => h.sportsId!.contains(sport.id))
-                          //     .toList();
+                          objects = objectsByCategory;
                         });
                       },
                       style: TextButton.styleFrom(
@@ -210,8 +209,9 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                 hallName: hall.name ?? '',
                                 hallAdress: hall.address ?? '',
                                 isFavorite: hall.isFavorites!,
-                                image: hall.objectImage != null
-                                    ? imageFromString(hall.objectImage!)
+                                image: hall.imagePath != null
+                                    ? Image.network(
+                                        '$baseUrl${hall.imagePath!}')
                                     : Image.asset(
                                         "assets/images/RekreacijaDefault.jpg"),
                                 onFavoritePressed: () async {

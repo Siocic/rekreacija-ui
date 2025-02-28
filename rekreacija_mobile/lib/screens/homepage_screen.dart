@@ -19,7 +19,8 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreen extends State<HomePageScreen> {
   late ObjectProvider _objectProvider;
   List<ObjectModel> objects = [];
-  List<ObjectModel> favoritesObject=[];
+  List<ObjectModel> favoritesObject = [];
+  static String? baseUrl = "http://10.0.2.2:5246";
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _HomePageScreen extends State<HomePageScreen> {
       var favorites = await _objectProvider.getFavoritesObjectOfUser();
       setState(() {
         objects = objectList;
-        favoritesObject=favorites;
+        favoritesObject = favorites;
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -136,9 +137,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 hallName: popularHalls.address ?? '',
                                 hallAdress: popularHalls.name ?? '',
                                 rating: formatNumber(popularHalls.rating!),
-                                image: popularHalls.objectImage != null
-                                    ? imageFromString(popularHalls.objectImage!)
-                                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                                image: popularHalls.imagePath != null
+                                    ? Image.network(
+                                        '$baseUrl${popularHalls.imagePath!}')
+                                    : Image.asset(
+                                        "assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );
@@ -189,9 +192,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 hallName: nearYou.address ?? '',
                                 hallAdress: nearYou.name ?? '',
                                 rating: formatNumber(nearYou.rating!),
-                                image: nearYou.objectImage != null
-                                    ? imageFromString(nearYou.objectImage!)
-                                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                                image: nearYou.imagePath != null
+                                    ? Image.network(
+                                        '$baseUrl${nearYou.imagePath!}')
+                                    : Image.asset(
+                                        "assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );
@@ -242,9 +247,11 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 hallName: yourFavorites.name ?? '',
                                 hallAdress: yourFavorites.address ?? '',
                                 rating: formatNumber(yourFavorites.rating!),
-                                image: yourFavorites.objectImage != null
-                                    ? imageFromString(yourFavorites.objectImage!)
-                                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                                image: yourFavorites.imagePath != null
+                                    ? Image.network(
+                                        '$baseUrl${yourFavorites.imagePath!}')
+                                    : Image.asset(
+                                        "assets/images/RekreacijaDefault.jpg"),
                               ),
                             ),
                           );

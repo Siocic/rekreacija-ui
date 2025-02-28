@@ -135,6 +135,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               filled: true,
               prefixIcon: Icon(Icons.phone, color: Colors.black),
             ),
+            keyboardType:TextInputType.phone,
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(),
               FormBuilderValidators.phoneNumber()

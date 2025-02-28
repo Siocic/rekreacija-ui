@@ -33,6 +33,7 @@ class _EditObjectModalState extends State<EditObjectModal> {
   String? base64Image;
   List<SportCategory> sports = [];
   String userId = '';
+  String? baseUrl = "http://localhost:5246";
 
   @override
   void initState() {
@@ -86,7 +87,7 @@ class _EditObjectModalState extends State<EditObjectModal> {
         });
       }
     } catch (e) {
-       ScaffoldMessenger.of(context)
+      ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Failed to add image')));
     }
   }
@@ -120,10 +121,11 @@ class _EditObjectModalState extends State<EditObjectModal> {
                         height: 250,
                         child: selectedImage != null
                             ? Image.file(selectedImage!, fit: BoxFit.fill)
-                            : (widget.object.objectImage != null
-                                ? imageFromString(widget.object.objectImage!)
+                            : (widget.object.imagePath != null
+                                ? Image.network(
+                                    '$baseUrl${widget.object.imagePath!}')
                                 : Image.asset(
-                                    'assets/images/RekreacijaDefaultProfilePicture.png',
+                                    'assets/images/RekreacijaDefault.jpg',
                                     fit: BoxFit.fill)),
                       ),
                     ),

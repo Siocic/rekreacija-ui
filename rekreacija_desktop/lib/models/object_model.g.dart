@@ -24,6 +24,7 @@ ObjectModel _$ObjectModelFromJson(Map<String, dynamic> json) => ObjectModel(
           ?.map((e) => (e as num).toInt())
           .toList(),
       json['objectImage'] as String?,
+      json['imagePath'] as String?,
     );
 
 Map<String, dynamic> _$ObjectModelToJson(ObjectModel instance) =>
@@ -39,4 +40,5 @@ Map<String, dynamic> _$ObjectModelToJson(ObjectModel instance) =>
       'user_id': instance.user_id,
       'sportsId': instance.sportsId,
       'objectImage': instance.objectImage,
+      'imagePath': instance.imagePath,
     };

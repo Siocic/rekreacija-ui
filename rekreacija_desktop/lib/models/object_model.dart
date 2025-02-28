@@ -15,9 +15,10 @@ class ObjectModel {
   String? user_id;
   List<int>? sportsId;
   String? objectImage;
+  String? imagePath;
 
   ObjectModel(this.id, this.name, this.created_date, this.updated_date,
-      this.address, this.city, this.description, this.price, this.user_id,this.sportsId,this.objectImage);
+      this.address, this.city, this.description, this.price, this.user_id,this.sportsId,this.objectImage,this.imagePath);
 
   factory ObjectModel.fromJson(Map<String, dynamic> json) =>
       _$ObjectModelFromJson(json);

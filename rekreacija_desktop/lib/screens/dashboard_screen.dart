@@ -24,6 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int numberOfReviews = 0;
   bool isLoading = true;
   ObjectModel? object;
+  String? baseUrl = "http://localhost:5246";
 
   @override
   void initState() {
@@ -37,7 +38,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> fetchData() async {
     try {
       final userObject = await objectProvider.getObjectOfLoggedUser();
-      userObject.sort((a, b) => b.created_date!.compareTo(a.created_date!));
       final userNotification =
           await notificationProvider.getNotificationsOfUser();
       final reviews = await reviewProvider.getReviewsForMyObjects();
@@ -97,8 +97,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               objectCardView(
                 object!.name!,
                 object!.address!,
-                object!.objectImage != null
-                    ? imageFromString(object!.objectImage!)
+                object!.imagePath != null
+                    ?  Image.network('$baseUrl${object!.imagePath!}')
                     : Image.asset("assets/images/RekreacijaDefault.jpg"),
               ),
             ]

@@ -20,6 +20,7 @@ class _ObjectScreen extends State<ObjectScreen> {
   late ObjectProvider _objectProvider;
   List<ObjectModel>? objects;
   Image? image;
+  String? baseUrl = "http://localhost:5246";
 
   @override
   void initState() {
@@ -104,8 +105,8 @@ class _ObjectScreen extends State<ObjectScreen> {
                       return ObjectCard(
                         objectName: ourObjects.name ?? '',
                         objectAddress: ourObjects.address ?? '',
-                        image: ourObjects.objectImage != null
-                            ? imageFromString(ourObjects.objectImage!)
+                        image: ourObjects.imagePath != null
+                            ? Image.network('$baseUrl${ourObjects.imagePath!}')
                             : Image.asset(
                                 "assets/images/RekreacijaDefault.jpg"),
                         deleteObject: () async {

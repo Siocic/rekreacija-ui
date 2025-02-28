@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
-import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/edit_object_modal.dart';
 import 'package:rekreacija_desktop/widgets/object_card.dart';

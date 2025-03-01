@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/providers/favorites_provider.dart';
+import 'package:rekreacija_mobile/providers/notification_provider.dart';
 import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/providers/review_provider.dart';
 import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
@@ -13,7 +14,8 @@ void main() {
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => ObjectProvider()),
     ChangeNotifierProvider(create: (_) => ReviewProvider()),
-    ChangeNotifierProvider(create: (_) => FavoritesProvider())
+    ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+    ChangeNotifierProvider(create: (_)=>NotificationProvider()),
   ], child: const MyApp()));
 }
 

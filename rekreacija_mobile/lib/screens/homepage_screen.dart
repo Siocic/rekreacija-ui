@@ -134,8 +134,8 @@ class _HomePageScreen extends State<HomePageScreen> {
                                             object: popularHalls)));
                               },
                               child: HallCard(
-                                hallName: popularHalls.address ?? '',
-                                hallAdress: popularHalls.name ?? '',
+                                hallName: popularHalls.name ?? '',
+                                hallAdress: popularHalls.address ?? '',
                                 rating: formatNumber(popularHalls.rating!),
                                 image: popularHalls.imagePath != null
                                     ? Image.network(
@@ -189,8 +189,8 @@ class _HomePageScreen extends State<HomePageScreen> {
                                             object: nearYou)));
                               },
                               child: HallCard(
-                                hallName: nearYou.address ?? '',
-                                hallAdress: nearYou.name ?? '',
+                                hallName: nearYou.name ?? '',
+                                hallAdress: nearYou.address ?? '',
                                 rating: formatNumber(nearYou.rating!),
                                 image: nearYou.imagePath != null
                                     ? Image.network(
@@ -204,6 +204,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                       ),
                     ),
                     const SizedBox(height: 15.0),
+                    favoritesObject.isNotEmpty?                    
                     Row(
                       children: [
                         const Padding(padding: EdgeInsets.all(5.0)),
@@ -221,43 +222,57 @@ class _HomePageScreen extends State<HomePageScreen> {
                           color: Colors.red,
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      height: 250.0,
-                      child: PageView.builder(
-                        controller: PageController(
-                          viewportFraction: 1.0,
-                          initialPage: 0,
-                        ),
-                        itemCount: favoritesObject.length,
-                        itemBuilder: (context, index) {
-                          final yourFavorites = favoritesObject[index];
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HallDetailsScreen(
-                                            object: yourFavorites)));
+                    ):const Text(""),
+                    favoritesObject.isNotEmpty?
+                   SizedBox(
+                            height: 250.0,
+                            child: PageView.builder(
+                              controller: PageController(
+                                viewportFraction: 1.0,
+                                initialPage: 0,
+                              ),
+                              itemCount: favoritesObject.length,
+                              itemBuilder: (context, index) {
+                                final yourFavorites = favoritesObject[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HallDetailsScreen(
+                                                      object: yourFavorites)));
+                                    },
+                                    child: HallCard(
+                                      hallName: yourFavorites.name ?? '',
+                                      hallAdress: yourFavorites.address ?? '',
+                                      rating:
+                                          formatNumber(yourFavorites.rating!),
+                                      image: yourFavorites.imagePath != null
+                                          ? Image.network(
+                                              '$baseUrl${yourFavorites.imagePath!}')
+                                          : Image.asset(
+                                              "assets/images/RekreacijaDefault.jpg"),
+                                    ),
+                                  ),
+                                );
                               },
-                              child: HallCard(
-                                hallName: yourFavorites.name ?? '',
-                                hallAdress: yourFavorites.address ?? '',
-                                rating: formatNumber(yourFavorites.rating!),
-                                image: yourFavorites.imagePath != null
-                                    ? Image.network(
-                                        '$baseUrl${yourFavorites.imagePath!}')
-                                    : Image.asset(
-                                        "assets/images/RekreacijaDefault.jpg"),
+                            ),
+                          ):const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                "You don't have any favorite objects yet",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          )
+                      
                   ],
                 ),
               ),

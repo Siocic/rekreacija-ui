@@ -22,12 +22,14 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
   late String objectName;
   late String objectAddress;
   late String objectPrice;
+  late String rating;
   late String objectDescription;
   late Image objectImage;
   late int objectId;
   String userId = '';
   late ReviewProvider reviewProvider;
   List<ReviewModel> reviewModel = [];
+  static String? baseUrl = "http://10.0.2.2:5246";
 
   @override
   void initState() {
@@ -44,8 +46,9 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
     objectAddress = widget.object.address ?? '';
     objectPrice = widget.object.price.toString();
     objectDescription = widget.object.description ?? '';
-    objectImage = widget.object.objectImage != null
-        ? imageFromString(widget.object.objectImage!)
+    rating = formatNumber(widget.object.rating!);
+    objectImage = widget.object.imagePath != null
+        ? Image.network('$baseUrl${widget.object.imagePath!}')
         : Image.asset("assets/images/RekreacijaDefault.jpg");
   }
 
@@ -73,15 +76,6 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Details',
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.favorite_border,
-              color: Colors.white,
-            ),
-          )
-        ],
       ),
       body: Container(
         width: double.infinity,
@@ -142,9 +136,9 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                         const Icon(Icons.star,
                             color: Colors.yellow, size: 25.0),
                         const SizedBox(width: 5.0),
-                        const Text('5.0',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 17)),
+                        Text(rating,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 17)),
                         const Spacer(),
                         IconButton(
                           icon: const Icon(

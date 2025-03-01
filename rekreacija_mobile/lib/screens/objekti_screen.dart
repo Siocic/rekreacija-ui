@@ -228,6 +228,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                         backgroundColor: Colors.green,
                                       ),
                                     );
+                                    await _loadSports();
                                   } catch (e) {
                                     String errorMessage = e.toString();
 

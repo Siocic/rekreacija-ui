@@ -136,7 +136,7 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 15.0),
           child: SizedBox(
-            height: 200.0,
+            height: 230.0,
             width: double.infinity,
             child: (notifications == null || notifications!.isEmpty)
                 ? Center(

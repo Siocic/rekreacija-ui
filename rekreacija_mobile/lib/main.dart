@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rekreacija_mobile/providers/appointment_provider.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/providers/favorites_provider.dart';
 import 'package:rekreacija_mobile/providers/notification_provider.dart';
@@ -15,7 +16,8 @@ void main() {
     ChangeNotifierProvider(create: (_) => ObjectProvider()),
     ChangeNotifierProvider(create: (_) => ReviewProvider()),
     ChangeNotifierProvider(create: (_) => FavoritesProvider()),
-    ChangeNotifierProvider(create: (_)=>NotificationProvider()),
+    ChangeNotifierProvider(create: (_) => NotificationProvider()),
+    ChangeNotifierProvider(create: (_) => AppointmentProvider()),
   ], child: const MyApp()));
 }
 

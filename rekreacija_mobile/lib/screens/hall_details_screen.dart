@@ -5,6 +5,7 @@ import 'package:rekreacija_mobile/models/object_model.dart';
 import 'package:rekreacija_mobile/models/review_model.dart';
 import 'package:rekreacija_mobile/providers/review_provider.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
+import 'package:rekreacija_mobile/widgets/appointment_modal.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/review_card.dart';
@@ -203,8 +204,16 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                       width: 400,
                       height: 50,
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/appointment');
+                        // onPressed: () {
+                        //   Navigator.pushNamed(context, '/appointment');
+                        // },
+                        onPressed: ()async{
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AppointmentModal(price: objectPrice,object_id: objectId,userId: userId,);
+                              }
+                          );
                         },
                         style: TextButton.styleFrom(
                           backgroundColor:

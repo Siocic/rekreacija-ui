@@ -37,7 +37,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
   syncfusion_flutter_datepicker: ^28.1.33
-  syncfusion_flutter_calendar: ^28.1.33
   http: ^1.2.2
   json_annotation: ^4.9.0
   flutter_form_builder: ^9.7.0

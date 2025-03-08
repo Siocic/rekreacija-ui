@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rekreacija_desktop/colors.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_desktop/models/appointment_model.dart';
+import 'package:rekreacija_desktop/providers/appointment_provider.dart';
 import 'package:rekreacija_desktop/widgets/appointment_card.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
@@ -12,11 +14,26 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
-  List<Appointment> appointments = [];
+  late AppointmentProvider _appointmentProvider;
+  List<AppointmentModel> appointmentModel = [];
+
   @override
   void initState() {
     super.initState();
-    appointments = getDummyAppointments();
+    _appointmentProvider = context.read<AppointmentProvider>();
+    fetchAppointments();
+  }
+
+  Future<void> fetchAppointments() async {
+    try {
+      final appointment = await _appointmentProvider.getAppointments();
+      setState(() {
+        appointmentModel = appointment;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+    }
   }
 
   @override
@@ -135,21 +152,58 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 15.0),
           child: SizedBox(
-            height: 160.0,
+            height: 180.0,
             width: 1590.0,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               controller: _scrollController,
-              itemCount: 10,
+              itemCount: appointmentModel.length,
               itemBuilder: (context, index) {
+                final appointment = appointmentModel[index];
                 return Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: AppointmentCard(
-                    customer: 'Person Name',
-                    date: '12.12.2024',
-                    time: '15:00',
-                    approveAppointment: approveAppointment,
-                    declineAppointment: declineAppointment,
+                    customer: appointment.fullname ?? '',
+                    objectName: appointment.object_name ?? '',
+                    date: DateFormat('d.M.y')
+                        .format(appointment.appointment_date!),
+                    startTime: DateFormat('Hm').format(appointment.start_time!),
+                    endTime: DateFormat('Hm').format(appointment.end_time!),
+                    approveAppointment: () async {
+                      try {
+                        await _appointmentProvider
+                            .approveAppointment(appointment.id!);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                "You successfully appointment for object:${appointment.object_name} and for user:${appointment.fullname}."),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        fetchAppointments();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content:
+                                Text('Failed to approve appointment: $e')));
+                      }
+                    },
+                    declineAppointment: () async {
+                      try {
+                        await _appointmentProvider.Delete(appointment.id!);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                "You decline this appointment for object: ${appointment.object_name} and for user: ${appointment.fullname}"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        fetchAppointments();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content:
+                                Text('Failed to decline appointment: $e')));
+                      }
+                    },
                   ),
                 );
               },
@@ -157,63 +211,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           ),
         ),
         const SizedBox(height: 20.0),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0),
-          child: SizedBox(
-            width: 1560.0,
-            height: 600.0,
-            child: SfCalendar(
-              view: CalendarView.month,
-              dataSource: MeetingDataSource(appointments),
-              monthViewSettings: const MonthViewSettings(
-                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-                dayFormat: 'EEEE',
-              ),
-              todayHighlightColor: Colors.blue[300],
-              viewHeaderHeight: 30.0,
-              showNavigationArrow: true,
-              showTodayButton: true,
-              headerStyle: CalendarHeaderStyle(
-                backgroundColor: Colors.grey[300],
-                textStyle:
-                    GoogleFonts.suezOne(color: Colors.black, fontSize: 20.0),
-              ),
-              appointmentTextStyle: GoogleFonts.suezOne(
-                  fontSize: 20.0, color: Colors.white, height: 1),
-              onLongPress: (calendarTapDetails) {
-                if (calendarTapDetails.targetElement ==
-                    CalendarElement.calendarCell) {
-                  _showAddHolidayDialog(calendarTapDetails.date!);
-                }
-              },
-            ),
-          ),
-        ),
       ],
     );
-  }
-
-  List<Appointment> getDummyAppointments() {
-    return <Appointment>[
-      Appointment(
-        startTime: DateTime.now(),
-        endTime: DateTime.now().add(const Duration(hours: 1)),
-        subject: 'Team Meeting',
-        color: Colors.blue,
-      ),
-      Appointment(
-        startTime: DateTime.now(),
-        endTime: DateTime.now().add(const Duration(hours: 1)),
-        subject: 'Team Meeting',
-        color: Colors.red,
-      ),
-      Appointment(
-        startTime: DateTime.now().add(const Duration(days: 2)),
-        endTime: DateTime.now().add(const Duration(days: 2, hours: 1)),
-        subject: 'Project Kickoff',
-        color: Colors.green,
-      ),
-    ];
   }
 
   TimeOfDay? startTime;
@@ -274,28 +273,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return '$hour:$minutes';
   }
 
-  void approveAppointment() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        'You approved appointment for .....',
-        style: GoogleFonts.suezOne(),
-      ),
-      backgroundColor: AppColors.buttonGreen,
-      duration: Durations.extralong4,
-    ));
-  }
-
-  void declineAppointment() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        'You declined appointment for .....',
-        style: GoogleFonts.suezOne(),
-      ),
-      backgroundColor: AppColors.buttonRed,
-      duration: Durations.extralong4,
-    ));
-  }
-
   final ScrollController _scrollController = ScrollController();
 
   void scrollLeft() {
@@ -312,49 +289,5 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-  }
-
-  List<DateTime> holidays = [];
-
-  void _addHoliday(DateTime date) {
-    setState(() {
-      holidays.add(date);
-      appointments.add(Appointment(
-        startTime: date,
-        endTime: date.add(const Duration(hours: 1)),
-        subject: 'Holiday',
-        color: Colors.redAccent,
-        isAllDay: true,
-      ));
-    });
-  }
-
-  void _showAddHolidayDialog(DateTime date) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Set Holiday'),
-        content: Text('Do you want to mark ${date.toLocal()} as a holiday?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _addHoliday(date);
-            },
-            child: const Text('Confirm'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MeetingDataSource extends CalendarDataSource {
-  MeetingDataSource(List<Appointment> source) {
-    appointments = source;
   }
 }

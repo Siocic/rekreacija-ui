@@ -3,14 +3,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/colors.dart';
 
 class AppointmentCard extends StatefulWidget {
-  
   final String date;
-  final String time;
+  final String startTime;
+  final String endTime;
   final String customer;
+  final String objectName;
   final VoidCallback approveAppointment;
   final VoidCallback declineAppointment;
 
-  const AppointmentCard({super.key,required this.customer,required this.date, required this.time,required this.approveAppointment,required this.declineAppointment});
+  const AppointmentCard(
+      {super.key,
+      required this.customer,
+      required this.objectName,
+      required this.date,
+      required this.startTime,
+      required this.endTime,
+      required this.approveAppointment,
+      required this.declineAppointment});
 
   @override
   State<StatefulWidget> createState() => _AppointmentCardState();
@@ -23,7 +32,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          width: 230.0,
+          width: 300.0,
           height: 130.0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,16 +45,23 @@ class _AppointmentCardState extends State<AppointmentCard> {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                widget.time,
+                '${widget.startTime} - ${widget.endTime}',
                 style: GoogleFonts.barlow(
                     color: AppColors.textCardColor,
                     fontSize: 30,
                     fontWeight: FontWeight.bold),
               ),
+              Text(
+                'Object: ${widget.objectName}',
+                style: GoogleFonts.barlow(
+                    color: AppColors.textCardColor,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              ),
               Row(
                 children: [
                   Text(
-                    widget.customer,
+                    'Customer: ${widget.customer}',
                     style: GoogleFonts.barlow(
                         color: AppColors.textCardColor,
                         fontSize: 17,

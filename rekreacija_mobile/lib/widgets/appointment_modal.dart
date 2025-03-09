@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/appointment_insert_model.dart';
-import 'package:rekreacija_mobile/providers/appointment_provider.dart';
+import 'package:rekreacija_mobile/screens/paypal_screen.dart';
 
 class AppointmentModal extends StatefulWidget {
-  String? price;
-  String userId;
-  int? object_id;
-  AppointmentModal({super.key, required this.price,required this.object_id,required this.userId});
+  final String? price;
+  final String userId;
+  final int? object_id;
+  AppointmentModal(
+      {super.key,
+      required this.price,
+      required this.object_id,
+      required this.userId});
   final TextEditingController comment = TextEditingController();
 
   @override
@@ -16,15 +19,10 @@ class AppointmentModal extends StatefulWidget {
 }
 
 class _AppointmentModalState extends State<AppointmentModal> {
-  late AppointmentProvider _appointmentProvider;
-
- @override
+  @override
   void initState() {
     super.initState();
-    _appointmentProvider = context.read<AppointmentProvider>();
   }
-
-
 
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   double totalPrice = 0.0;
@@ -83,7 +81,7 @@ class _AppointmentModalState extends State<AppointmentModal> {
                       border: OutlineInputBorder(),
                     ),
                     firstDate: DateTime.now(),
-                    lastDate: DateTime(2101),                    
+                    lastDate: DateTime(2101),
                     // validator: FormBuilderValidators.compose([
                     //   FormBuilderValidators.required(
                     //       errorText: "This field is required"),
@@ -114,8 +112,10 @@ class _AppointmentModalState extends State<AppointmentModal> {
                                 false) {
                               try {
                                 final formData = formKey.currentState!.fields;
-                                final startDate = formData['StartDate']?.value??'';
-                                final endDate = formData['EndDate']?.value??'';
+                                final startDate =
+                                    formData['StartDate']?.value ?? '';
+                                final endDate =
+                                    formData['EndDate']?.value ?? '';
 
                                 if (startDate == null || endDate == null) {
                                   // ScaffoldMessenger.of(context).showSnackBar(
@@ -142,25 +142,25 @@ class _AppointmentModalState extends State<AppointmentModal> {
                                   //     backgroundColor: Colors.red,
                                   //   ),
                                   // );
-                                   formData['EndDate']
-                                      ?.invalidate('End Date must be after Start Date');
+                                  formData['EndDate']?.invalidate(
+                                      'End Date must be after Start Date');
                                   return;
                                 }
 
-                               AppointmentInsertModel appointmentInsert=AppointmentInsertModel(
-                                startDate, startDate, endDate, widget.object_id, widget.userId, totalPrice);
-                                
-                                await _appointmentProvider.Insert(appointmentInsert);
+                                AppointmentInsertModel appointmentInsert =
+                                    AppointmentInsertModel(
+                                        startDate,
+                                        startDate,
+                                        endDate,
+                                        widget.object_id,
+                                        widget.userId,
+                                        totalPrice);
 
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'You added a review successfully.'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                                Navigator.pop(context,
-                                    true); //IZBACI POSLE MOZDA NAVIGACIJA NA PAYPAL SCREEN
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => PayPalScreen(
+                                            appointmentInsertModel:
+                                                appointmentInsert)));
                               } catch (e) {
                                 String errorMessage = e.toString();
 

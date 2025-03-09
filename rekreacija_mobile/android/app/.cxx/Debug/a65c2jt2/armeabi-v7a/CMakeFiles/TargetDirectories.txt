@@ -1,0 +1,2 @@
+C:/Users/User5278/Desktop/RS2 Project/rekreacija-ui/rekreacija_mobile/android/app/.cxx/Debug/a65c2jt2/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/User5278/Desktop/RS2 Project/rekreacija-ui/rekreacija_mobile/android/app/.cxx/Debug/a65c2jt2/armeabi-v7a/CMakeFiles/rebuild_cache.dir

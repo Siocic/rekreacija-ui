@@ -20,6 +20,7 @@ class _HomePageScreen extends State<HomePageScreen> {
   late ObjectProvider _objectProvider;
   List<ObjectModel> objects = [];
   List<ObjectModel> favoritesObject = [];
+  List<ObjectModel> popularObject = [];
   static String? baseUrl = "http://10.0.2.2:5246";
 
   @override
@@ -33,9 +34,11 @@ class _HomePageScreen extends State<HomePageScreen> {
     try {
       var objectList = await _objectProvider.Get();
       var favorites = await _objectProvider.getFavoritesObjectOfUser();
+      var popular = await _objectProvider.getRecommended();
       setState(() {
         objects = objectList;
         favoritesObject = favorites;
+        popularObject = popular;
       });
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -120,9 +123,9 @@ class _HomePageScreen extends State<HomePageScreen> {
                             viewportFraction: 1.0,
                             initialPage: 0,
                           ),
-                          itemCount: objects.length,
+                          itemCount: popularObject.length,
                           itemBuilder: (context, index) {
-                            final popularHalls = objects[index];
+                            final popular = popularObject[index];
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
@@ -131,16 +134,17 @@ class _HomePageScreen extends State<HomePageScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HallDetailsScreen(
-                                              object: popularHalls)));
+                                          builder: (context) =>
+                                              HallDetailsScreen(
+                                                  object: popular)));
                                 },
                                 child: HallCard(
-                                  hallName: popularHalls.name ?? '',
-                                  hallAdress: popularHalls.address ?? '',
-                                  rating: formatNumber(popularHalls.rating!),
-                                  image: popularHalls.imagePath != null
+                                  hallName: popular.name ?? '',
+                                  hallAdress: popular.address ?? '',
+                                  rating: formatNumber(popular.rating!),
+                                  image: popular.imagePath != null
                                       ? Image.network(
-                                          '$baseUrl${popularHalls.imagePath!}')
+                                          '$baseUrl${popular.imagePath!}')
                                       : Image.asset(
                                           "assets/images/RekreacijaDefault.jpg"),
                                 ),
@@ -186,8 +190,9 @@ class _HomePageScreen extends State<HomePageScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HallDetailsScreen(
-                                              object: nearYou)));
+                                          builder: (context) =>
+                                              HallDetailsScreen(
+                                                  object: nearYou)));
                                 },
                                 child: HallCard(
                                   hallName: nearYou.name ?? '',
@@ -205,27 +210,28 @@ class _HomePageScreen extends State<HomePageScreen> {
                         ),
                       ),
                       const SizedBox(height: 15.0),
-                      favoritesObject.isNotEmpty?                    
-                      Row(
-                        children: [
-                          const Padding(padding: EdgeInsets.all(5.0)),
-                          Text(
-                            'Favorite objects',
-                            style: GoogleFonts.suezOne(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 10.0),
-                          const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          ),
-                        ],
-                      ):const Text(""),
-                      favoritesObject.isNotEmpty?
-                     SizedBox(
+                      favoritesObject.isNotEmpty
+                          ? Row(
+                              children: [
+                                const Padding(padding: EdgeInsets.all(5.0)),
+                                Text(
+                                  'Favorite objects',
+                                  style: GoogleFonts.suezOne(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 10.0),
+                                const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                ),
+                              ],
+                            )
+                          : const Text(""),
+                      favoritesObject.isNotEmpty
+                          ? SizedBox(
                               height: 250.0,
                               child: PageView.builder(
                                 controller: PageController(
@@ -245,7 +251,8 @@ class _HomePageScreen extends State<HomePageScreen> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     HallDetailsScreen(
-                                                        object: yourFavorites)));
+                                                        object:
+                                                            yourFavorites)));
                                       },
                                       child: HallCard(
                                         hallName: yourFavorites.name ?? '',
@@ -262,7 +269,8 @@ class _HomePageScreen extends State<HomePageScreen> {
                                   );
                                 },
                               ),
-                            ):const Center(
+                            )
+                          : const Center(
                               child: Padding(
                                 padding: EdgeInsets.all(16.0),
                                 child: Text(
@@ -273,7 +281,6 @@ class _HomePageScreen extends State<HomePageScreen> {
                                 ),
                               ),
                             )
-                        
                     ],
                   ),
                 ),

@@ -51,4 +51,23 @@ class ObjectProvider extends BaseProvider<ObjectModel> {
       throw new Exception("Unknow exception");
     }
   }
+
+  Future<List<ObjectModel>>getRecommended()async{
+    var url="${_baseUrl}Object/getRecommended";
+    var uri=Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+    if(isValidResponse(response))
+    {
+      var data=jsonDecode(response.body);
+       List<ObjectModel> result = (data as List<dynamic>)
+        .map((json) => ObjectModel.fromJson(json as Map<String, dynamic>))
+        .toList();
+      return result;
+    }
+    else{
+      throw new Exception("Unknow exception");
+    }
+  }
+
 }

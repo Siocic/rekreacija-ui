@@ -18,7 +18,7 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreen extends State<HomePageScreen> {
   late ObjectProvider _objectProvider;
-  List<ObjectModel> objects = [];
+  List<ObjectModel> recentAppointments = [];
   List<ObjectModel> favoritesObject = [];
   List<ObjectModel> popularObject = [];
   static String? baseUrl = "http://10.0.2.2:5246";
@@ -32,11 +32,11 @@ class _HomePageScreen extends State<HomePageScreen> {
 
   Future<void> fetchObjects() async {
     try {
-      var objectList = await _objectProvider.Get();
+      var appointmentRecent = await _objectProvider.getRecentAppointments();
       var favorites = await _objectProvider.getFavoritesObjectOfUser();
       var popular = await _objectProvider.getRecommended();
       setState(() {
-        objects = objectList;
+        recentAppointments = appointmentRecent;
         favoritesObject = favorites;
         popularObject = popular;
       });
@@ -158,7 +158,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                         children: [
                           const Padding(padding: EdgeInsets.all(5.0)),
                           Text(
-                            'Halls Near You',
+                            'Recent Appointments',
                             style: GoogleFonts.suezOne(
                               fontWeight: FontWeight.w400,
                               color: Colors.white,
@@ -179,9 +179,9 @@ class _HomePageScreen extends State<HomePageScreen> {
                             viewportFraction: 1.0,
                             initialPage: 0,
                           ),
-                          itemCount: objects.length,
+                          itemCount: recentAppointments.length,
                           itemBuilder: (context, index) {
-                            final nearYou = objects[index];
+                            final recent = recentAppointments[index];
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
@@ -192,15 +192,15 @@ class _HomePageScreen extends State<HomePageScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               HallDetailsScreen(
-                                                  object: nearYou)));
+                                                  object: recent)));
                                 },
                                 child: HallCard(
-                                  hallName: nearYou.name ?? '',
-                                  hallAdress: nearYou.address ?? '',
-                                  rating: formatNumber(nearYou.rating!),
-                                  image: nearYou.imagePath != null
+                                  hallName: recent.name ?? '',
+                                  hallAdress: recent.address ?? '',
+                                  rating: formatNumber(recent.rating!),
+                                  image: recent.imagePath != null
                                       ? Image.network(
-                                          '$baseUrl${nearYou.imagePath!}')
+                                          '$baseUrl${recent.imagePath!}')
                                       : Image.asset(
                                           "assets/images/RekreacijaDefault.jpg"),
                                 ),

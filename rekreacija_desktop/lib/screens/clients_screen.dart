@@ -1,14 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:rekreacija_desktop/screens/client_profile_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_desktop/models/my_clients_model.dart';
+import 'package:rekreacija_desktop/providers/appointment_provider.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 
-class ClientsScreen extends StatelessWidget {
+class ClientsScreen extends StatefulWidget {
   const ClientsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final dataSource = MyDataSource(context: context);
+  State<StatefulWidget> createState() => _ClientsScrenns();
+}
 
+class _ClientsScrenns extends State<ClientsScreen> {
+  MyClientsSource? clientsSource;
+
+  late AppointmentProvider appointmentProvider;
+  List<MyClientsModel> clients = [];
+
+  @override
+  void initState() {
+    super.initState();
+    appointmentProvider = context.read<AppointmentProvider>();
+    fetchClients();
+  }
+
+  Future<void> fetchClients() async {
+    try {
+      var client = await appointmentProvider.getMyClients();
+      setState(() {
+        clients = client;
+        clientsSource = MyClientsSource(clients);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -17,186 +49,61 @@ class ClientsScreen extends StatelessWidget {
           child: ContentHeader(title: 'Clients'),
         ),
         const SizedBox(height: 20.0),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0),
-          child: SizedBox(
-            width: 1200.0,
-            child: PaginatedDataTable(
-              columns: const [
-                DataColumn(
-                    label: Expanded(
-                  child: Text('Person Name'),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text('Sport'),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text('Phone number'),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text('Email'),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text('City'),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text('Status'),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text('Profile'),
-                )),
-              ],
-              source: dataSource,
-              rowsPerPage: 5,
-              showEmptyRows: false,
+        if (clients.isEmpty)
+          Center(
+            child: Text(
+              "You don't have any client yet",
+              style: GoogleFonts.suezOne(
+                  fontSize: 20, fontWeight: FontWeight.w400),
             ),
+          )
+        else
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: SizedBox(
+                  width: 1200.0,
+                  child: PaginatedDataTable(
+                    columns: [
+                      dataColumn("FullName"),
+                      dataColumn("Email"),
+                      dataColumn("Phone number"),
+                      dataColumn("Number of Appointments"),
+                      dataColumn("Last Appointment"),
+                    ],
+                    source: clientsSource!,
+                    rowsPerPage: 5,
+                    showEmptyRows: false,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
       ],
     );
   }
 }
 
-//final DataTableSource dataSource = MyDataSource(context);
+DataColumn dataColumn(String columName) {
+  return DataColumn(label: Center(child: Text(columName)));
+}
 
-class MyDataSource extends DataTableSource {
-  final BuildContext context;
-  final List<List<String>> dummyData = [
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Active'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Active'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Active'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Inactive'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Active'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Inactive'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Active'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Inactive'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Inactive'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Active'
-    ],
-    [
-      'Admin Admin',
-      'Football',
-      '123456789',
-      'admin@email.com',
-      'Admin',
-      'Inactive'
-    ],
-  ];
+class MyClientsSource extends DataTableSource {
+  final List<MyClientsModel> myClientsList;
+  MyClientsSource(this.myClientsList);
 
-  MyDataSource({required this.context});
   @override
   DataRow? getRow(int index) {
-    if (index >= dummyData.length) return null;
+    if (index >= myClientsList.length) return null;
 
-    final row = dummyData[index];
-    final isActive = row[5] == 'Active';
+    final myClient = myClientsList[index];
     return DataRow(cells: [
-      DataCell(Text(row[0])),
-      DataCell(Text(row[1])),
-      DataCell(Text(row[2])),
-      DataCell(Text(row[3])),
-      DataCell(Text(row[4])),
-      DataCell(
-        Container(
-          decoration: BoxDecoration(
-              color: isActive ? Colors.green[100] : Colors.red[100],
-              border: Border.all(color: isActive ? Colors.green : Colors.red),
-              borderRadius: BorderRadius.circular(4.0)),
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-          child: Text(
-            row[5],
-            style: TextStyle(
-                color: isActive ? Colors.green[900] : Colors.red[900],
-                fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-      DataCell(
-        IconButton(
-          icon: const Icon(Icons.open_in_new),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ClientProfileScreen()));
-          },
-        ),
-      ),
+      DataCell(Text(myClient.fullName!)),
+      DataCell(Text(myClient.email!)),
+      DataCell(Text(myClient.phoneNumber!)),
+      DataCell(Text(myClient.numberOfAppointments.toString())),
+      DataCell(Text(DateFormat('d/M/y').format(myClient.lastAppointmentDate!))),
     ]);
   }
 
@@ -204,7 +111,7 @@ class MyDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => dummyData.length;
+  int get rowCount => myClientsList.length;
 
   @override
   int get selectedRowCount => 0;

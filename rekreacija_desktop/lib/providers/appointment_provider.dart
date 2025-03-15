@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:rekreacija_desktop/models/appointment_model.dart';
+import 'package:rekreacija_desktop/models/my_clients_model.dart';
 import 'package:rekreacija_desktop/providers/base_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:http/http.dart' as http;
@@ -48,4 +49,25 @@ class AppointmentProvider extends BaseProvder<AppointmentModel> {
       throw new Exception("Unknow exception");
     }
   }
+
+  Future<List<MyClientsModel>>getMyClients()async{
+        var url = "${_baseUrl}Appointment/GetMyClients";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+     if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<MyClientsModel> result = (data as List<dynamic>)
+          .map(
+              (json) => MyClientsModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
+
 }
+
+
+

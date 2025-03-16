@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:rekreacija_mobile/models/my_reservation_model.dart';
+import 'package:rekreacija_mobile/providers/appointment_provider.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
+import 'package:rekreacija_mobile/widgets/reservation_card.dart';
 
 class RezervacijeScreen extends StatefulWidget {
   const RezervacijeScreen({super.key});
@@ -10,11 +15,33 @@ class RezervacijeScreen extends StatefulWidget {
 }
 
 class _RezervacijaScreen extends State<RezervacijeScreen> {
+  late AppointmentProvider appointmentProvider;
+  List<MyReservationModel> reservationModel = [];
+  static String? baseUrl = "http://10.0.2.2:5246";
+
+  @override
+  void initState() {
+    super.initState();
+    appointmentProvider = context.read<AppointmentProvider>();
+    fetchReservation();
+  }
+
+  Future<void> fetchReservation() async {
+    try {
+      var reservation = await appointmentProvider.getMyReservation();
+      setState(() {
+        reservationModel = reservation;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user data: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: double.infinity,
       decoration: customDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,91 +61,29 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 5.0),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Card(
-                  color: const Color.fromRGBO(49, 49, 49, 0.8),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero),
-                  child: SizedBox(
-                    width: 400.0,
-                    child: Stack(
-                      children: [
-                        Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(0.0),
-                              child: Container(
-                                width: 100.0,
-                                height: 120.0,
-                                color: Colors.grey[300],
-                                child: const Icon(Icons.person,
-                                    size: 30, color: Colors.grey),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Hall Name',
-                                    style: GoogleFonts.suezOne(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    'Hall Adress',
-                                    style: GoogleFonts.suezOne(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    'Date',
-                                    style: GoogleFonts.suezOne(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    'Hour',
-                                    style: GoogleFonts.suezOne(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.near_me_sharp,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {},
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.vertical,
+              itemCount: reservationModel.length,
+              itemBuilder: (context, index) {
+                final reservation = reservationModel[index];
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ReservationCard(
+                      objectName: reservation.objectName!,
+                      objectAddress: reservation.objectAdress!,
+                      objectImage: reservation.objectImage != null
+                          ? Image.network('$baseUrl${reservation.objectImage!}')
+                          : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                      appointmentDate: DateFormat('d/M/y')
+                          .format(reservation.appointmentDate!),
+                      appointmentTime: DateFormat('Hm')
+                          .format(reservation.appointmentDate!)),
+                );
+              },
             ),
-          ),
+          )
         ],
       ),
     );

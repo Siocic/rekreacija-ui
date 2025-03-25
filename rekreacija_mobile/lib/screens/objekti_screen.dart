@@ -221,13 +221,6 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                     await _favoritesProvider.Insert(
                                         requestInsert);
 
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            'You added ${hall.name} as favorites'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
                                     await _loadSports();
                                   } catch (e) {
                                     String errorMessage = e.toString();

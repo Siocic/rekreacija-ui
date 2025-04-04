@@ -5,8 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/change_password_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 
 class ChangePassword extends StatefulWidget {
   ChangePassword({super.key});
@@ -149,6 +151,12 @@ class _ChangePassword extends State<ChangePassword> {
                       height: 50,
                       child: TextButton(
                         onPressed: () async {
+                          bool isExpired = await isTokenExpired();
+                          if (isExpired) {
+                            showTokenExpiredDialog(context);
+                            return;
+                          }
+
                           if (formKey.currentState?.saveAndValidate() ??
                               false) {
                             try {
@@ -191,7 +199,7 @@ class _ChangePassword extends State<ChangePassword> {
                           }
                         },
                         style: TextButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(14, 119, 62, 1.0),
+                            backgroundColor: const Color.fromRGBO(14, 119, 62, 1.0),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16.0))),

@@ -10,6 +10,7 @@ import 'package:rekreacija_mobile/providers/sport_category_provider.dart';
 import 'package:rekreacija_mobile/screens/hall_details_screen.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 import 'package:rekreacija_mobile/widgets/sport_section.dart';
 
 class ObjektiScreen extends StatefulWidget {
@@ -158,6 +159,12 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextButton(
                       onPressed: () async {
+                        bool isExpired = await isTokenExpired();
+                        if (isExpired) {
+                          showTokenExpiredDialog(context);
+                          return;
+                        }
+
                         final objectsByCategory =
                             await _objectProvider.getObjects(sport.id!);
                         setState(() {
@@ -215,6 +222,12 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                     : Image.asset(
                                         "assets/images/RekreacijaDefault.jpg"),
                                 onFavoritePressed: () async {
+                                  bool isExpired = await isTokenExpired();
+                                  if (isExpired) {
+                                    showTokenExpiredDialog(context);
+                                    return;
+                                  }
+
                                   try {
                                     FavoritesModel requestInsert =
                                         FavoritesModel(hall.id, userId);

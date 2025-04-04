@@ -8,6 +8,7 @@ import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/appointment_modal.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 import 'package:rekreacija_mobile/widgets/review_card.dart';
 import 'package:rekreacija_mobile/widgets/review_modal.dart';
 
@@ -72,8 +73,21 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Details',
@@ -207,13 +221,22 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                         // onPressed: () {
                         //   Navigator.pushNamed(context, '/appointment');
                         // },
-                        onPressed: ()async{
+                        onPressed: () async {
+                          bool isExpired = await isTokenExpired();
+                          if (isExpired) {
+                            showTokenExpiredDialog(context);
+                            return;
+                          }
+
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AppointmentModal(price: objectPrice,object_id: objectId,userId: userId,);
-                              }
-                          );
+                                return AppointmentModal(
+                                  price: objectPrice,
+                                  object_id: objectId,
+                                  userId: userId,
+                                );
+                              });
                         },
                         style: TextButton.styleFrom(
                           backgroundColor:

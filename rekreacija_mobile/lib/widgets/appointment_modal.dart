@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:rekreacija_mobile/models/appointment_insert_model.dart';
 import 'package:rekreacija_mobile/screens/paypal_screen.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 
 class AppointmentModal extends StatefulWidget {
   final String? price;
@@ -108,6 +110,12 @@ class _AppointmentModalState extends State<AppointmentModal> {
                     children: [
                       ElevatedButton(
                           onPressed: () async {
+                            bool isExpired = await isTokenExpired();
+                            if (isExpired) {
+                              showTokenExpiredDialog(context);
+                              return;
+                            }
+
                             if (formKey.currentState?.saveAndValidate() ??
                                 false) {
                               try {

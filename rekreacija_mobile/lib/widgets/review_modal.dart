@@ -5,10 +5,12 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/review_insert_model.dart';
 import 'package:rekreacija_mobile/providers/review_provider.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 
 class ReviewModal extends StatefulWidget {
-  String userId;
-  int objectId;
+  final String userId;
+  final int objectId;
   ReviewModal({super.key, required this.userId, required this.objectId});
   final TextEditingController comment = TextEditingController();
 
@@ -98,6 +100,12 @@ class _ReviewModalState extends State<ReviewModal> {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
+                          bool isExpired = await isTokenExpired();
+                          if (isExpired) {
+                            showTokenExpiredDialog(context);
+                            return;
+                          }
+
                           if (formKey.currentState?.saveAndValidate() ??
                               false) {
                             try {

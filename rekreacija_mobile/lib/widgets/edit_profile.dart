@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 
 class EditProfile extends StatefulWidget {
   final TextEditingController firstNameController;
@@ -41,7 +43,6 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
     _authProvider = context.read<AuthProvider>();
   }
-
 
   Future<void> _pickImage() async {
     try {
@@ -98,15 +99,23 @@ class _EditProfileState extends State<EditProfile> {
                   buildTextField(
                       widget.lastNameController, 'LastName', Icons.person),
                   buildTextField(widget.emailController, 'Email', Icons.email),
-                  buildTextField(widget.cityController, 'City', Icons.location_city),
+                  buildTextField(
+                      widget.cityController, 'City', Icons.location_city),
                   buildTextField(
                       widget.addressController, 'Address', Icons.location_on),
-                  buildTextField(widget.phoneController, 'Phone', Icons.phone_android_sharp),
+                  buildTextField(widget.phoneController, 'Phone',
+                      Icons.phone_android_sharp),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
                         onPressed: () async {
+                          bool isExpired = await isTokenExpired();
+                          if (isExpired) {
+                            showTokenExpiredDialog(context);
+                            return;
+                          }
+
                           if (formKey.currentState?.saveAndValidate() ??
                               false) {
                             try {

@@ -3,6 +3,8 @@ import 'package:rekreacija_mobile/screens/homepage_screen.dart';
 import 'package:rekreacija_mobile/screens/objekti_screen.dart';
 import 'package:rekreacija_mobile/screens/profile_screen.dart';
 import 'package:rekreacija_mobile/screens/rezervacije_screen.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -19,9 +21,22 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
-    Widget activePage = HomePageScreen();
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
+
+    Widget activePage = const HomePageScreen();
 
     if (_selectedPageIndex == 1) {
       activePage = const ObjektiScreen();

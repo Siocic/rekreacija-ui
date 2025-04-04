@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/notification_model.dart';
 import 'package:rekreacija_mobile/providers/notification_provider.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 import 'package:rekreacija_mobile/widgets/notification_card.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -37,8 +39,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Notificaitons',

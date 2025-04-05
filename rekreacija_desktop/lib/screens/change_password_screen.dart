@@ -4,6 +4,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/models/change_password_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class ChangePassword extends StatefulWidget {
   ChangePassword({super.key});
@@ -21,8 +23,20 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool _showNewPassword = false;
   bool _showConfirmPassword = false;
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -148,6 +162,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                           height: 50,
                           child: TextButton(
                             onPressed: () async {
+                              bool isExpirted = await isTokenExpired();
+                              if (isExpirted) {
+                                showTokenExpiredDialog(context);
+                                return;
+                              }
+
                               if (formKey.currentState?.saveAndValidate() ??
                                   false) {
                                 try {

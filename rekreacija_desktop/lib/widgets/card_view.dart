@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class CardView extends StatefulWidget {
   final IconData icon;
-  int num;
-  String decription;
-  bool isLoading;
+  final int num;
+  final String decription;
+  final bool isLoading;
   CardView(
       {super.key,
       required this.icon,
       required this.num,
       required this.decription,
       required this.isLoading});
-      
+
   @override
   State<StatefulWidget> createState() => _CardView();
 }

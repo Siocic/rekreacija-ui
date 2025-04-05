@@ -4,29 +4,31 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/my_client_payments_model.dart';
 import 'package:rekreacija_desktop/providers/appointment_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key}); 
+  const PaymentScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() =>_PaymentsScreenState();
+  State<StatefulWidget> createState() => _PaymentsScreenState();
 }
 
-class _PaymentsScreenState extends State<PaymentScreen>{
+class _PaymentsScreenState extends State<PaymentScreen> {
   MyPaymentSource? paymentSource;
   late AppointmentProvider appointmentProvider;
-  List<MyClientPaymentsModel> myPayments=[];
+  List<MyClientPaymentsModel> myPayments = [];
 
   @override
-  void initState() {   
+  void initState() {
     super.initState();
-    appointmentProvider=context.read<AppointmentProvider>();
+    appointmentProvider = context.read<AppointmentProvider>();
     fetchPayments();
   }
 
-  Future<void>fetchPayments()async{
-        try {
+  Future<void> fetchPayments() async {
+    try {
       var payment = await appointmentProvider.getMyClientPayments();
       setState(() {
         myPayments = payment;
@@ -37,8 +39,21 @@ class _PaymentsScreenState extends State<PaymentScreen>{
           SnackBar(content: Text('Failed to load user data: $e')));
     }
   }
+
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,7 +97,6 @@ class _PaymentsScreenState extends State<PaymentScreen>{
       ],
     );
   }
-
 }
 
 DataColumn dataColumn(String columName) {

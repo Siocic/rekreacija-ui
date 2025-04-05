@@ -7,7 +7,9 @@ import 'package:rekreacija_desktop/models/notification_model.dart';
 import 'package:rekreacija_desktop/models/review_model.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/review_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 import 'package:rekreacija_desktop/widgets/notification_card.dart';
 import 'package:rekreacija_desktop/widgets/notification_modal.dart';
 import 'package:rekreacija_desktop/widgets/review_card.dart';
@@ -46,8 +48,20 @@ class _ReviewNotificationState extends State<ReviewNotificationScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

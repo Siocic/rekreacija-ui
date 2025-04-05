@@ -6,6 +6,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:rekreacija_desktop/models/user_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class EditProfile extends StatefulWidget {
   final TextEditingController firstNameController;
@@ -103,6 +105,11 @@ class _EditProfile extends State<EditProfile> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
+                        bool isExpired = await isTokenExpired();
+                        if (isExpired) {
+                          showTokenExpiredDialog(context);
+                          return;
+                        }
                         if (formKey.currentState?.saveAndValidate() ?? false) {
                           try {
                             final formData = formKey.currentState!.fields;

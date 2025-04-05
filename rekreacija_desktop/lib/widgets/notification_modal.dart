@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/notification_insert.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class NotificationModal extends StatefulWidget {
   NotificationModal({super.key});
@@ -22,12 +23,11 @@ class _NotificationModalState extends State<NotificationModal> {
   @override
   void initState() {
     super.initState();
-    _notificationProvider=context.read<NotificationProvider>();
-        getIdUser();
-
+    _notificationProvider = context.read<NotificationProvider>();
+    getIdUser();
   }
 
-    Future<void> getIdUser() async {
+  Future<void> getIdUser() async {
     final iduser = await getUserId();
     setState(() {
       userId = iduser;
@@ -36,7 +36,7 @@ class _NotificationModalState extends State<NotificationModal> {
 
   @override
   Widget build(BuildContext context) {
-      final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
+    final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
 
     return Dialog(
       child: ConstrainedBox(
@@ -102,6 +102,11 @@ class _NotificationModalState extends State<NotificationModal> {
                       children: [
                         ElevatedButton(
                             onPressed: () async {
+                              bool isExpired = await isTokenExpired();
+                              if (isExpired) {
+                                showTokenExpiredDialog(context);
+                                return;
+                              }
                               if (formKey.currentState?.saveAndValidate() ??
                                   false) {
                                 try {
@@ -111,13 +116,15 @@ class _NotificationModalState extends State<NotificationModal> {
                                   final description =
                                       formData['Description']?.value ?? '';
                                   DateTime now = DateTime.now();
-                                  
-                                  NotificationInsert notificationInsert = NotificationInsert(
-                                    subject, description, now, userId);
 
-                                    await _notificationProvider.Insert(notificationInsert);
+                                  NotificationInsert notificationInsert =
+                                      NotificationInsert(
+                                          subject, description, now, userId);
 
-                                     ScaffoldMessenger.of(context).showSnackBar(
+                                  await _notificationProvider.Insert(
+                                      notificationInsert);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
                                           'You added a new notification successfully.'),
@@ -125,9 +132,7 @@ class _NotificationModalState extends State<NotificationModal> {
                                     ),
                                   );
 
-                                Navigator.pop(context, true);
-
-
+                                  Navigator.pop(context, true);
                                 } catch (e) {
                                   String errorMessage = e.toString();
 

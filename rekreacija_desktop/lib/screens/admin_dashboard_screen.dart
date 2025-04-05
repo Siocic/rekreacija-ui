@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/card_view.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -51,8 +53,20 @@ class _AdminDashboard extends State<AdminDashboard> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Padding(
         padding: EdgeInsets.all(40.0),

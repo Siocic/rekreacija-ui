@@ -11,6 +11,7 @@ import 'package:rekreacija_desktop/models/sport_category.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/sport_category_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class ObjectModal extends StatefulWidget {
   ObjectModal({super.key});
@@ -75,7 +76,7 @@ class _ObjectModal extends State<ObjectModal> {
         });
       }
     } catch (e) {
-     ScaffoldMessenger.of(context)
+      ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Failed to add image')));
     }
   }
@@ -197,7 +198,7 @@ class _ObjectModal extends State<ObjectModal> {
                             return "Please select at least one sport.";
                           }
                           return null;
-                        },                       
+                        },
                         options: sports.map((sport) {
                           return FormBuilderChipOption(
                             value: sport.id!,
@@ -233,6 +234,11 @@ class _ObjectModal extends State<ObjectModal> {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
+                              bool isExpired = await isTokenExpired();
+                              if (isExpired) {
+                                showTokenExpiredDialog(context);
+                                return;
+                              }
                               if (formKey.currentState?.saveAndValidate() ??
                                   false) {
                                 try {

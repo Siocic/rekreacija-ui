@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/appointment_model.dart';
 import 'package:rekreacija_desktop/providers/appointment_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/appointment_card.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
@@ -36,8 +38,20 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -170,6 +184,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     startTime: DateFormat('Hm').format(appointment.start_time!),
                     endTime: DateFormat('Hm').format(appointment.end_time!),
                     approveAppointment: () async {
+                      bool isExpired = await isTokenExpired();
+                      if (isExpired) {
+                        showTokenExpiredDialog(context);
+                        return;
+                      }
                       try {
                         await _appointmentProvider
                             .approveAppointment(appointment.id!);
@@ -188,6 +207,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       }
                     },
                     declineAppointment: () async {
+                      bool isExpired = await isTokenExpired();
+                      if (isExpired) {
+                        showTokenExpiredDialog(context);
+                        return;
+                      }
                       try {
                         await _appointmentProvider.Delete(appointment.id!);
                         ScaffoldMessenger.of(context).showSnackBar(

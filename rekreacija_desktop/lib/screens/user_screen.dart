@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rekreacija_desktop/models/user_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -16,7 +18,7 @@ class _UserScreenState extends State<UserScreen> {
   final AuthProvider authProvider = AuthProvider();
   List<UserModel> pravnoLiceList = [];
   List<UserModel> fizickoLiceList = [];
-  bool isLoading=true;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -33,19 +35,31 @@ class _UserScreenState extends State<UserScreen> {
         fizickoLiceList = fLice;
         pravnoLiceSource = PravnoLiceSource(pravnoLiceList);
         fizikoLiceSource = FizickoLiceSource(fizickoLiceList);
-         isLoading = false;
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-         isLoading = false;
+        isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load user data: $e')));
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [

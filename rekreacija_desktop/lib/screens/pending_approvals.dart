@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/models/user_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class PendingApprovals extends StatefulWidget {
   const PendingApprovals({super.key});
@@ -27,19 +29,33 @@ class _PendingApprovalsState extends State<PendingApprovals> {
       var notApproved = await authProvider.getUserThatNotApprovedYet();
       setState(() {
         notApproveList = notApproved;
-        notApprovedUser = NotApprovedUserSource(notApproveList, context, refreshList);
+        notApprovedUser =
+            NotApprovedUserSource(notApproveList, context, refreshList);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load user data: $e')));
     }
   }
-    void refreshList() {
+
+  void refreshList() {
     getUserThatNotApproved();
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -102,8 +118,8 @@ DataColumn dataColumn(String columName) {
 class NotApprovedUserSource extends DataTableSource {
   final List<UserModel> _notApprovedList;
   final BuildContext context;
- final VoidCallback refreshList; 
-  NotApprovedUserSource(this._notApprovedList, this.context,this.refreshList);
+  final VoidCallback refreshList;
+  NotApprovedUserSource(this._notApprovedList, this.context, this.refreshList);
 
   @override
   DataRow? getRow(int index) {
@@ -132,7 +148,6 @@ class NotApprovedUserSource extends DataTableSource {
                 ),
               );
               refreshList();
-              
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(

@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/my_clients_model.dart';
 import 'package:rekreacija_desktop/providers/appointment_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class ClientsScreen extends StatefulWidget {
   const ClientsScreen({super.key});
@@ -39,8 +41,20 @@ class _ClientsScrenns extends State<ClientsScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

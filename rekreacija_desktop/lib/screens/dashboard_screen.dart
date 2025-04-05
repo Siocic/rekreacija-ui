@@ -5,8 +5,10 @@ import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/review_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/card_view.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -58,8 +60,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Padding(
         padding: EdgeInsets.all(40.0),
@@ -97,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 object!.name!,
                 object!.address!,
                 object!.imagePath != null
-                    ?  Image.network('$baseUrl${object!.imagePath!}')
+                    ? Image.network('$baseUrl${object!.imagePath!}')
                     : Image.asset("assets/images/RekreacijaDefault.jpg"),
               ),
             ]

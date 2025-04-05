@@ -12,6 +12,7 @@ import 'package:rekreacija_desktop/models/sport_category.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/sport_category_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class EditObjectModal extends StatefulWidget {
   final ObjectModel object;
@@ -249,6 +250,11 @@ class _EditObjectModalState extends State<EditObjectModal> {
                       children: [
                         ElevatedButton(
                             onPressed: () async {
+                              bool isExpired = await isTokenExpired();
+                              if (isExpired) {
+                                showTokenExpiredDialog(context);
+                                return;
+                              }
                               if (formKey.currentState?.saveAndValidate() ??
                                   false) {
                                 try {

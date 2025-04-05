@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
+import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/edit_object_modal.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 import 'package:rekreacija_desktop/widgets/object_card.dart';
 import 'package:rekreacija_desktop/widgets/object_modal.dart';
 
@@ -40,8 +42,20 @@ class _ObjectScreen extends State<ObjectScreen> {
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -149,6 +163,11 @@ class _ObjectScreen extends State<ObjectScreen> {
                   child: const Text('No')),
               ElevatedButton(
                   onPressed: () async {
+                    bool isExpired = await isTokenExpired();
+                    if (isExpired) {
+                      showTokenExpiredDialog(context);
+                      return;
+                    }
                     try {
                       await _objectProvider.Delete(id);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

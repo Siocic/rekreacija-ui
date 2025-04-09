@@ -91,24 +91,24 @@ class _LoginScreen extends State<LoginScreen> {
                         FormBuilderValidators.required(),
                       ]),
                     ),
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          print('Forgot Password');
-                        },
-                        child: Text(
-                          'Forgot password?',
-                          style: GoogleFonts.montserrat(
-                              color: Colors.blue,
-                              fontSize: 16,
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.w500,
-                              decorationColor: Colors.blue),
-                        ),
-                      ),
-                    ),
+                    // const SizedBox(height: 10),
+                    // Align(
+                    //   alignment: Alignment.centerRight,
+                    //   child: GestureDetector(
+                    //     onTap: () {
+                    //       print('Forgot Password');
+                    //     },
+                    //     child: Text(
+                    //       'Forgot password?',
+                    //       style: GoogleFonts.montserrat(
+                    //           color: Colors.blue,
+                    //           fontSize: 16,
+                    //           decoration: TextDecoration.underline,
+                    //           fontWeight: FontWeight.w500,
+                    //           decorationColor: Colors.blue),
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(height: 30),
                     SizedBox(
                       width: 400,

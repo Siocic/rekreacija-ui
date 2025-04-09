@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:rekreacija_desktop/models/login_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/screens/home_page.dart';
@@ -87,24 +86,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             FormBuilderValidators.required(),
                           ]),
                         ),
-                        const SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () {
-                              print('Forgot Password');
-                            },
-                            child: Text(
-                              'Forgot password?',
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.blue,
-                                  fontSize: 16,
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.w500,
-                                  decorationColor: Colors.blue),
-                            ),
-                          ),
-                        ),
+                        // const SizedBox(height: 10),
+                        // Align(
+                        //   alignment: Alignment.centerRight,
+                        //   child: GestureDetector(
+                        //     onTap: () {
+                        //       print('Forgot Password');
+                        //     },
+                        //     child: Text(
+                        //       'Forgot password?',
+                        //       style: GoogleFonts.montserrat(
+                        //           color: Colors.blue,
+                        //           fontSize: 16,
+                        //           decoration: TextDecoration.underline,
+                        //           fontWeight: FontWeight.w500,
+                        //           decorationColor: Colors.blue),
+                        //     ),
+                        //   ),
+                        // ),
                         const SizedBox(height: 30),
                         SizedBox(
                           width: 400,

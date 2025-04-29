@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/appointment_insert_model.dart';
 import 'package:rekreacija_mobile/providers/appointment_provider.dart';
-import 'package:rekreacija_mobile/screens/homepage_screen.dart';
+import 'package:rekreacija_mobile/screens/tabs_screen.dart';
 
 class SuccessPage extends StatefulWidget {
   final AppointmentInsertModel appointmentInsertModel;
@@ -46,7 +46,7 @@ class _SuccessPageState extends State<SuccessPage> {
 
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const HomePageScreen(),
+                    builder: (context) => const TabsScreen(),
                   ),
                 );
               },

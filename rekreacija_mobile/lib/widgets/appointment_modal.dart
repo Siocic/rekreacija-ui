@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/appointment_insert_model.dart';
+import 'package:rekreacija_mobile/providers/appointment_provider.dart';
 import 'package:rekreacija_mobile/screens/paypal_screen.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
@@ -21,8 +23,11 @@ class AppointmentModal extends StatefulWidget {
 }
 
 class _AppointmentModalState extends State<AppointmentModal> {
+  late AppointmentProvider _appointmentProvider;
+
   @override
   void initState() {
+    _appointmentProvider = context.read<AppointmentProvider>();
     super.initState();
   }
 
@@ -34,7 +39,7 @@ class _AppointmentModalState extends State<AppointmentModal> {
     final endDate = formKey.currentState?.fields['EndDate']?.value;
     double pricePerHour = double.tryParse(widget.price.toString()) ?? 0.0;
 
-    if (startDate != null && endDate != null) {
+    if (startDate != null && endDate != null && endDate.isAfter(startDate)) {
       double totalHours = endDate.difference(startDate).inHours.toDouble();
       setState(() {
         totalPrice = totalHours * pricePerHour;
@@ -61,43 +66,52 @@ class _AppointmentModalState extends State<AppointmentModal> {
                   const SizedBox(height: 10),
                   FormBuilderDateTimePicker(
                     name: 'StartDate',
+                    valueTransformer: (val) => val,
                     decoration: const InputDecoration(
                       labelText: 'StartDate',
                       border: OutlineInputBorder(),
                     ),
                     firstDate: DateTime.now(),
                     lastDate: DateTime(2101),
-                    //inputType: InputType.time,
-                    // validator: FormBuilderValidators.required(
-                    //     errorText: "This field is required"),
-                    onChanged: (value) {
-                      formKey.currentState?.fields['EndDate']?.validate();
-                      calculatePrice();
+                    onChanged: (DateTime? selectedTime) async {
+                      if (selectedTime != null) {
+                        var reservedTime =
+                            await _appointmentProvider.getReservedTimes(
+                                widget.object_id!,
+                                selectedTime,
+                                selectedTime.add(Duration(minutes: 1)));
+                                 final autoEndTime = selectedTime.add(Duration(hours: 1));
+                                             formKey.currentState?.fields['EndDate']?.didChange(autoEndTime);
+
+                        if (reservedTime == true) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('This time is already reserved'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          formKey.currentState?.fields['StartDate']
+                              ?.didChange(null);
+                                            formKey.currentState?.fields['EndDate']?.didChange(null);
+
+                        } else {
+                          formKey.currentState?.fields['EndDate']?.validate();
+                          calculatePrice();
+                        }
+                      }
                     },
                   ),
                   const SizedBox(height: 10),
                   FormBuilderDateTimePicker(
                     name: 'EndDate',
+                    valueTransformer: (val) => val,
+                    enabled: true,
                     decoration: const InputDecoration(
                       labelText: 'EndDate',
                       border: OutlineInputBorder(),
                     ),
                     firstDate: DateTime.now(),
                     lastDate: DateTime(2101),
-                    // validator: FormBuilderValidators.compose([
-                    //   FormBuilderValidators.required(
-                    //       errorText: "This field is required"),
-                    // ]),
-                    // validator: (value) {
-                    //   final startDate =
-                    //       formKey.currentState?.fields['StartDate']?.value;
-                    //   if (startDate != null &&
-                    //       value != null &&
-                    //       value.isBefore(startDate)) {
-                    //     return 'End Date must be after Start Date';
-                    //   }
-                    //   return null;
-                    // },
                     onChanged: (value) {
                       calculatePrice();
                     },
@@ -120,38 +134,49 @@ class _AppointmentModalState extends State<AppointmentModal> {
                                 false) {
                               try {
                                 final formData = formKey.currentState!.fields;
-                                final startDate =
-                                    formData['StartDate']?.value ?? '';
-                                final endDate =
-                                    formData['EndDate']?.value ?? '';
+                                final startDate = formData['StartDate']?.value;
+                                final endDate = formData['EndDate']?.value;
 
                                 if (startDate == null || endDate == null) {
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //     content: Text(
-                                  //         'You must set both Start and End Dates.'),
-                                  //     backgroundColor: Colors.red,
-                                  //   ),
-                                  // );
                                   formData['StartDate']
                                       ?.invalidate('Start Date is required');
                                   formData['EndDate']
                                       ?.invalidate('End Date is required');
-
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'You must select both start and end time.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
                                   return;
                                 }
                                 if (startDate != null &&
                                     endDate != null &&
                                     endDate.isBefore(startDate)) {
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //     content: Text(
-                                  //         'End Date must be after Start Date'),
-                                  //     backgroundColor: Colors.red,
-                                  //   ),
-                                  // );
                                   formData['EndDate']?.invalidate(
                                       'End Date must be after Start Date');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'End Date must be after Start Date.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                bool overlap =
+                                    await _appointmentProvider.getReservedTimes(
+                                        widget.object_id!, startDate, endDate);
+                                if (overlap) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Selected time range overlaps with an existing reservation.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
                                   return;
                                 }
 

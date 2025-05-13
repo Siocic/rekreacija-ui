@@ -116,171 +116,465 @@ class _HomePageScreen extends State<HomePageScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 250.0,
-                        child: PageView.builder(
-                          controller: PageController(
-                            viewportFraction: 1.0,
-                            initialPage: 0,
-                          ),
-                          itemCount: popularObject.length,
-                          itemBuilder: (context, index) {
-                            final popular = popularObject[index];
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              HallDetailsScreen(
-                                                  object: popular)));
-                                },
-                                child: HallCard(
-                                  hallName: popular.name ?? '',
-                                  hallAdress: popular.address ?? '',
-                                  rating: formatNumber(popular.rating!),
-                                  image: popular.imagePath != null
-                                      ? Image.network(
-                                          '$baseUrl${popular.imagePath!}')
-                                      : Image.asset(
-                                          "assets/images/RekreacijaDefault.jpg"),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 15.0),
-                      Row(
-                        children: [
-                          const Padding(padding: EdgeInsets.all(5.0)),
-                          Text(
-                            'Recent Appointments',
-                            style: GoogleFonts.suezOne(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 10.0),
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 250.0,
-                        child: PageView.builder(
-                          controller: PageController(
-                            viewportFraction: 1.0,
-                            initialPage: 0,
-                          ),
-                          itemCount: recentAppointments.length,
-                          itemBuilder: (context, index) {
-                            final recent = recentAppointments[index];
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              HallDetailsScreen(
-                                                  object: recent)));
-                                },
-                                child: HallCard(
-                                  hallName: recent.name ?? '',
-                                  hallAdress: recent.address ?? '',
-                                  rating: formatNumber(recent.rating!),
-                                  image: recent.imagePath != null
-                                      ? Image.network(
-                                          '$baseUrl${recent.imagePath!}')
-                                      : Image.asset(
-                                          "assets/images/RekreacijaDefault.jpg"),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 15.0),
-                      favoritesObject.isNotEmpty
-                          ? Row(
-                              children: [
-                                const Padding(padding: EdgeInsets.all(5.0)),
-                                Text(
-                                  'Favorite objects',
-                                  style: GoogleFonts.suezOne(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                const SizedBox(width: 10.0),
-                                const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                              ],
-                            )
-                          : const Text(""),
-                      favoritesObject.isNotEmpty
-                          ? SizedBox(
-                              height: 250.0,
-                              child: PageView.builder(
-                                controller: PageController(
-                                  viewportFraction: 1.0,
-                                  initialPage: 0,
-                                ),
-                                itemCount: favoritesObject.length,
-                                itemBuilder: (context, index) {
-                                  final yourFavorites = favoritesObject[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
+                      popularObject.isNotEmpty
+                          ? (recentAppointments.isEmpty &&
+                                  favoritesObject.isEmpty
+                              ? Column(
+                                  children: popularObject.map((popular) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
                                             context,
                                             MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HallDetailsScreen(
+                                                      object: popular),
+                                            ),
+                                          );
+                                        },
+                                        child: HallCard(
+                                          hallName: popular.name ?? '',
+                                          hallAdress: popular.address ?? '',
+                                          rating: formatNumber(popular.rating!),
+                                          image: popular.imagePath != null
+                                              ? Image.network(
+                                                  '$baseUrl${popular.imagePath!}')
+                                              : Image.asset(
+                                                  "assets/images/RekreacijaDefault.jpg"),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                )
+                              : SizedBox(
+                                  height: 250.0,
+                                  child: PageView.builder(
+                                    controller: PageController(
+                                      viewportFraction: 1.0,
+                                      initialPage: 0,
+                                    ),
+                                    itemCount: popularObject.length,
+                                    itemBuilder: (context, index) {
+                                      final popular = popularObject[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
                                                 builder: (context) =>
                                                     HallDetailsScreen(
-                                                        object:
-                                                            yourFavorites)));
-                                      },
-                                      child: HallCard(
-                                        hallName: yourFavorites.name ?? '',
-                                        hallAdress: yourFavorites.address ?? '',
-                                        rating:
-                                            formatNumber(yourFavorites.rating!),
-                                        image: yourFavorites.imagePath != null
-                                            ? Image.network(
-                                                '$baseUrl${yourFavorites.imagePath!}')
-                                            : Image.asset(
-                                                "assets/images/RekreacijaDefault.jpg"),
+                                                        object: popular),
+                                              ),
+                                            );
+                                          },
+                                          child: HallCard(
+                                            hallName: popular.name ?? '',
+                                            hallAdress: popular.address ?? '',
+                                            rating:
+                                                formatNumber(popular.rating!),
+                                            image: popular.imagePath != null
+                                                ? Image.network(
+                                                    '$baseUrl${popular.imagePath!}')
+                                                : Image.asset(
+                                                    "assets/images/RekreacijaDefault.jpg"),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ))
+                          : const SizedBox.shrink(),
+
+                      const SizedBox(height: 15.0),
+                      if (recentAppointments.isNotEmpty) ...[
+                        Row(
+                          children: [
+                            const Padding(padding: EdgeInsets.all(5.0)),
+                            Text(
+                              'Recent Appointments',
+                              style: GoogleFonts.suezOne(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 250.0,
+                          child: PageView.builder(
+                            controller: PageController(
+                              viewportFraction: 1.0,
+                              initialPage: 0,
+                            ),
+                            itemCount: recentAppointments.length,
+                            itemBuilder: (context, index) {
+                              final recent = recentAppointments[index];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            HallDetailsScreen(object: recent),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : const Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text(
-                                  "You don't have any favorite objects yet",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                  textAlign: TextAlign.center,
+                                    );
+                                  },
+                                  child: HallCard(
+                                    hallName: recent.name ?? '',
+                                    hallAdress: recent.address ?? '',
+                                    rating: formatNumber(recent.rating!),
+                                    image: recent.imagePath != null
+                                        ? Image.network(
+                                            '$baseUrl${recent.imagePath!}')
+                                        : Image.asset(
+                                            "assets/images/RekreacijaDefault.jpg"),
+                                  ),
                                 ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+
+                      const SizedBox(height: 15.0),                     
+                      if (favoritesObject.isNotEmpty) ...[
+                        Row(
+                          children: [
+                            const Padding(padding: EdgeInsets.all(5.0)),
+                            Text(
+                              'Favorite objects',
+                              style: GoogleFonts.suezOne(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                                fontSize: 20,
                               ),
-                            )
+                            ),
+                            const SizedBox(width: 10.0),
+                            const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 250.0,
+                          child: PageView.builder(
+                            controller: PageController(
+                              viewportFraction: 1.0,
+                              initialPage: 0,
+                            ),
+                            itemCount: favoritesObject.length,
+                            itemBuilder: (context, index) {
+                              final yourFavorites = favoritesObject[index];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HallDetailsScreen(
+                                            object: yourFavorites),
+                                      ),
+                                    );
+                                  },
+                                  child: HallCard(
+                                    hallName: yourFavorites.name ?? '',
+                                    hallAdress: yourFavorites.address ?? '',
+                                    rating: formatNumber(yourFavorites.rating!),
+                                    image: yourFavorites.imagePath != null
+                                        ? Image.network(
+                                            '$baseUrl${yourFavorites.imagePath!}')
+                                        : Image.asset(
+                                            "assets/images/RekreacijaDefault.jpg"),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      // children: [
+                      //   const SizedBox(height: 15.0),
+                      //   Row(
+                      //     children: [
+                      //       const Padding(padding: EdgeInsets.all(5.0)),
+                      //       Text(
+                      //         'Popular Objects',
+                      //         style: GoogleFonts.suezOne(
+                      //           fontWeight: FontWeight.w400,
+                      //           color: Colors.white,
+                      //           fontSize: 20,
+                      //         ),
+                      //       ),
+                      //       const SizedBox(width: 10.0),
+                      //       const Icon(
+                      //         Icons.local_fire_department_outlined,
+                      //         color: Colors.red,
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   popularObject.isNotEmpty
+                      //       ? (recentAppointments.isEmpty &&
+                      //               favoritesObject.isEmpty
+                      //           // Show vertical list if only popular objects exist
+                      //           ? Column(
+                      //               children: popularObject.map((popular) {
+                      //                 return Padding(
+                      //                   padding: const EdgeInsets.symmetric(
+                      //                       vertical: 8.0, horizontal: 8.0),
+                      //                   child: InkWell(
+                      //                     onTap: () {
+                      //                       Navigator.push(
+                      //                         context,
+                      //                         MaterialPageRoute(
+                      //                           builder: (context) =>
+                      //                               HallDetailsScreen(
+                      //                                   object: popular),
+                      //                         ),
+                      //                       );
+                      //                     },
+                      //                     child: HallCard(
+                      //                       hallName: popular.name ?? '',
+                      //                       hallAdress: popular.address ?? '',
+                      //                       rating: formatNumber(popular.rating!),
+                      //                       image: popular.imagePath != null
+                      //                           ? Image.network(
+                      //                               '$baseUrl${popular.imagePath!}')
+                      //                           : Image.asset(
+                      //                               "assets/images/RekreacijaDefault.jpg"),
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               }).toList(),
+                      //             )
+                      //           // Otherwise show PageView as before
+                      //           : SizedBox(
+                      //               height: 250.0,
+                      //               child: PageView.builder(
+                      //                 controller: PageController(
+                      //                   viewportFraction: 1.0,
+                      //                   initialPage: 0,
+                      //                 ),
+                      //                 itemCount: popularObject.length,
+                      //                 itemBuilder: (context, index) {
+                      //                   final popular = popularObject[index];
+                      //                   return Padding(
+                      //                     padding: const EdgeInsets.symmetric(
+                      //                         horizontal: 8.0),
+                      //                     child: InkWell(
+                      //                       onTap: () {
+                      //                         Navigator.push(
+                      //                           context,
+                      //                           MaterialPageRoute(
+                      //                             builder: (context) =>
+                      //                                 HallDetailsScreen(
+                      //                                     object: popular),
+                      //                           ),
+                      //                         );
+                      //                       },
+                      //                       child: HallCard(
+                      //                         hallName: popular.name ?? '',
+                      //                         hallAdress: popular.address ?? '',
+                      //                         rating:
+                      //                             formatNumber(popular.rating!),
+                      //                         image: popular.imagePath != null
+                      //                             ? Image.network(
+                      //                                 '$baseUrl${popular.imagePath!}')
+                      //                             : Image.asset(
+                      //                                 "assets/images/RekreacijaDefault.jpg"),
+                      //                       ),
+                      //                     ),
+                      //                   );
+                      //                 },
+                      //               ),
+                      //             )
+                      //             )
+                      //       : const SizedBox.shrink(),
+
+                      // SizedBox(
+                      //   height: 250.0,
+                      //   child: PageView.builder(
+                      //     controller: PageController(
+                      //       viewportFraction: 1.0,
+                      //       initialPage: 0,
+                      //     ),
+                      //     itemCount: popularObject.length,
+                      //     itemBuilder: (context, index) {
+                      //       final popular = popularObject[index];
+                      //       return Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 8.0),
+                      //         child: InkWell(
+                      //           onTap: () {
+                      //             Navigator.push(
+                      //                 context,
+                      //                 MaterialPageRoute(
+                      //                     builder: (context) =>
+                      //                         HallDetailsScreen(
+                      //                             object: popular)));
+                      //           },
+                      //           child: HallCard(
+                      //             hallName: popular.name ?? '',
+                      //             hallAdress: popular.address ?? '',
+                      //             rating: formatNumber(popular.rating!),
+                      //             image: popular.imagePath != null
+                      //                 ? Image.network(
+                      //                     '$baseUrl${popular.imagePath!}')
+                      //                 : Image.asset(
+                      //                     "assets/images/RekreacijaDefault.jpg"),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 15.0),
+                      // Row(
+                      //   children: [
+                      //     const Padding(padding: EdgeInsets.all(5.0)),
+                      //     Text(
+                      //       'Recent Appointments',
+                      //       style: GoogleFonts.suezOne(
+                      //         fontWeight: FontWeight.w400,
+                      //         color: Colors.white,
+                      //         fontSize: 20,
+                      //       ),
+                      //     ),
+                      //     const SizedBox(width: 10.0),
+                      //     const Icon(
+                      //       Icons.location_on,
+                      //       color: Colors.white,
+                      //     ),
+                      //   ],
+                      // ),
+                      // SizedBox(
+                      //   height: 250.0,
+                      //   child: PageView.builder(
+                      //     controller: PageController(
+                      //       viewportFraction: 1.0,
+                      //       initialPage: 0,
+                      //     ),
+                      //     itemCount: recentAppointments.length,
+                      //     itemBuilder: (context, index) {
+                      //       final recent = recentAppointments[index];
+                      //       return Padding(
+                      //         padding:
+                      //             const EdgeInsets.symmetric(horizontal: 8.0),
+                      //         child: InkWell(
+                      //           onTap: () {
+                      //             Navigator.push(
+                      //                 context,
+                      //                 MaterialPageRoute(
+                      //                     builder: (context) =>
+                      //                         HallDetailsScreen(
+                      //                             object: recent)));
+                      //           },
+                      //           child: HallCard(
+                      //             hallName: recent.name ?? '',
+                      //             hallAdress: recent.address ?? '',
+                      //             rating: formatNumber(recent.rating!),
+                      //             image: recent.imagePath != null
+                      //                 ? Image.network(
+                      //                     '$baseUrl${recent.imagePath!}')
+                      //                 : Image.asset(
+                      //                     "assets/images/RekreacijaDefault.jpg"),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 15.0),
+                      // favoritesObject.isNotEmpty
+                      //     ? Row(
+                      //         children: [
+                      //           const Padding(padding: EdgeInsets.all(5.0)),
+                      //           Text(
+                      //             'Favorite objects',
+                      //             style: GoogleFonts.suezOne(
+                      //               fontWeight: FontWeight.w400,
+                      //               color: Colors.white,
+                      //               fontSize: 20,
+                      //             ),
+                      //           ),
+                      //           const SizedBox(width: 10.0),
+                      //           const Icon(
+                      //             Icons.favorite,
+                      //             color: Colors.red,
+                      //           ),
+                      //         ],
+                      //       )
+                      //     : const Text(""),
+                      // favoritesObject.isNotEmpty
+                      //     ? SizedBox(
+                      //         height: 250.0,
+                      //         child: PageView.builder(
+                      //           controller: PageController(
+                      //             viewportFraction: 1.0,
+                      //             initialPage: 0,
+                      //           ),
+                      //           itemCount: favoritesObject.length,
+                      //           itemBuilder: (context, index) {
+                      //             final yourFavorites = favoritesObject[index];
+                      //             return Padding(
+                      //               padding: const EdgeInsets.symmetric(
+                      //                   horizontal: 8.0),
+                      //               child: InkWell(
+                      //                 onTap: () {
+                      //                   Navigator.push(
+                      //                       context,
+                      //                       MaterialPageRoute(
+                      //                           builder: (context) =>
+                      //                               HallDetailsScreen(
+                      //                                   object:
+                      //                                       yourFavorites)));
+                      //                 },
+                      //                 child: HallCard(
+                      //                   hallName: yourFavorites.name ?? '',
+                      //                   hallAdress: yourFavorites.address ?? '',
+                      //                   rating:
+                      //                       formatNumber(yourFavorites.rating!),
+                      //                   image: yourFavorites.imagePath != null
+                      //                       ? Image.network(
+                      //                           '$baseUrl${yourFavorites.imagePath!}')
+                      //                       : Image.asset(
+                      //                           "assets/images/RekreacijaDefault.jpg"),
+                      //                 ),
+                      //               ),
+                      //             );
+                      //           },
+                      //         ),
+                      //       )
+                      //     : const Center(
+                      //         child: Padding(
+                      //           padding: EdgeInsets.all(16.0),
+                      //           child: Text(
+                      //             "",
+                      //             style: TextStyle(
+                      //                 color: Colors.white, fontSize: 16),
+                      //             textAlign: TextAlign.center,
+                      //           ),
+                      //         ),
+                      //       )
                     ],
                   ),
                 ),

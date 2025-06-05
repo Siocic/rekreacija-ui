@@ -138,7 +138,7 @@ class _HomePageScreen extends State<HomePageScreen> {
                                         child: HallCard(
                                           hallName: popular.name ?? '',
                                           hallAdress: popular.address ?? '',
-                                          rating: formatNumber(popular.rating!),
+                                          rating: formatNumber(popular.rating),
                                           image: popular.imagePath != null
                                               ? Image.network(
                                                   '$baseUrl${popular.imagePath!}')

@@ -274,18 +274,19 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                               itemBuilder: (context, index) {
                                 final reviews = reviewModel[index];
                                 return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ReviewCard(
-                                        rating: reviews.rating.toString(),
-                                        comment: reviews.comment!,
-                                        personName:
-                                            '${reviews.user!.firstName!} ${reviews.user!.lastName!}',
-                                        image: reviews.user!.profilePicture !=
-                                                null
-                                            ? imageFromString(
-                                                reviews.user!.profilePicture!)
-                                            : Image.asset(
-                                                "assets/images/RekreacijaDefaultProfilePicture.png")));
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ReviewCard(
+                                    rating: reviews.rating.toString(),
+                                    comment: reviews.comment ?? 'No comment',
+                                    personName: reviews.user != null
+                                        ? '${reviews.user!.firstName ?? ''} ${reviews.user!.lastName ?? ''}'
+                                        : 'Anonymous',
+                                    image: reviews.user?.profilePicture != null
+                                        ? imageFromString(reviews.user!.profilePicture!)
+                                        : Image.asset(
+                                            "assets/images/RekreacijaDefaultProfilePicture.png"),
+                                  ),
+                                );
                               },
                             ),
                           )

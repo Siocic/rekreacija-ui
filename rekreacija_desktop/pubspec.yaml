@@ -39,15 +39,15 @@ dependencies:
   syncfusion_flutter_datepicker: ^28.1.33
   http: ^1.2.2
   json_annotation: ^4.9.0
-  flutter_form_builder: ^9.7.0
+  flutter_form_builder: ^10.0.1
   form_builder_validators: ^11.1.1
   jwt_decoder: ^2.0.1
   flutter_secure_storage: ^9.2.4
   image_picker: ^1.1.2
   file_picker: ^8.1.7
-  intl: ^0.19.0
+  intl: ^0.20.2
   provider: ^6.1.2
-
+  signalr_netcore: ^1.1.1
 
 dev_dependencies:
   flutter_test:

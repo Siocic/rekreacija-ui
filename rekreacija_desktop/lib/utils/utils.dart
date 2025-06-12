@@ -27,6 +27,11 @@ Future<Map<String, String>> getAuthHeaders() async {
   };
 }
 
+Future<String?> getJwtToken() async {
+  const storage = FlutterSecureStorage();
+  return await storage.read(key: 'jwt_token');
+}
+
 Future<String> getUserFullName() async {
   const secureStorage = FlutterSecureStorage();
   final token = await secureStorage.read(key: 'jwt_token');

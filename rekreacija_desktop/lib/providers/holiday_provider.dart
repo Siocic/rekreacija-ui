@@ -2,45 +2,58 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rekreacija_desktop/models/holiday_model.dart';
 import 'package:rekreacija_desktop/models/object_holiday_model.dart';
-import 'package:rekreacija_desktop/providers/base_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 
-class HolidayProvider extends BaseProvder<HolidayModel> {
-  static String? _baseUrl;
-  HolidayProvider() : super("Holiday") {
-    _baseUrl = const String.fromEnvironment("baseUrl", defaultValue: "http://localhost:5246/");
-  }
+class HolidayProvider {
+  static String _baseUrl = const String.fromEnvironment("baseUrl", defaultValue: "http://localhost:5246/");
 
-  @override
-  HolidayModel fromJson(data) => HolidayModel.fromJson(data);
-
-  Future<HolidayModel> addHoliday(HolidayModel holiday) async {
-    var uri = Uri.parse("${_baseUrl}Holiday");
-    var headers = await getAuthHeaders();
-    var response = await http.post(
-      uri,
-      headers: headers,
-      body: jsonEncode(holiday.toJson()),
-    );
-
+  Future<List<HolidayModel>> getAllHolidays() async {
+    final url = Uri.parse("${_baseUrl}Holiday/GetAllHolidays");
+    final headers = await getAuthHeaders();
+    final response = await http.get(url, headers: headers);
     if (isValidResponse(response)) {
-      return HolidayModel.fromJson(jsonDecode(response.body));
+      final data = jsonDecode(response.body) as List;
+      return data.map((json) => HolidayModel.fromJson(json)).toList();
     } else {
-      throw Exception("Failed to add holiday");
+      throw Exception("Failed to load holidays");
     }
   }
 
-  Future<void> addObjectHoliday(ObjectHolidayModel objectHoliday) async {
-    var uri = Uri.parse("${_baseUrl}ObjectHoliday");
-    var headers = await getAuthHeaders();
-    var response = await http.post(
-      uri,
-      headers: headers,
-      body: jsonEncode(objectHoliday.toJson()),
-    );
+  Future<List<HolidayModel>> getObjectHolidays(int objectId) async {
+    final url = Uri.parse("${_baseUrl}Holiday/GetObjectHolidays/$objectId");
+    final headers = await getAuthHeaders();
+    final response = await http.get(url, headers: headers);
+    if (isValidResponse(response)) {
+      final data = jsonDecode(response.body) as List;
+      return data.map((json) => HolidayModel.fromJson(json)).toList();
+    } else {
+      throw Exception("Failed to load object holidays");
+    }
+  }
 
+  Future<void> addHoliday(HolidayModel holiday) async {
+    final url = Uri.parse("${_baseUrl}Holiday/AddHoliday");
+    final headers = await getAuthHeaders();
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(holiday.toJson()),
+    );
     if (!isValidResponse(response)) {
-      throw Exception("Failed to add object holiday");
+      throw Exception("Failed to create holiday");
+    }
+  }
+
+  Future<void> assignObjectHoliday(ObjectHolidayModel model) async {
+    final url = Uri.parse("${_baseUrl}Holiday/AddObjectHoliday");
+    final headers = await getAuthHeaders();
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(model.toJson()),
+    );
+    if (!isValidResponse(response)) {
+      throw Exception("Failed to assign holiday to object");
     }
   }
 }

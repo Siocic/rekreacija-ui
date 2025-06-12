@@ -42,7 +42,6 @@ class AppRoutes{
       pravnolice:(context)=>PravnoliceScreen(),
       fizickolice:(context)=>FizickoliceScreen(),
       roleselection:(context)=>const RoleSelectionScreen(),
-      hallmessage:(context)=>const HallMessageScreen(),
       changePassord:(context)=> ChangePassword(),
     };
   }

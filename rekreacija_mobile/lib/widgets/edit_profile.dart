@@ -128,6 +128,7 @@ class _EditProfileState extends State<EditProfile> {
                               final city = formData['City']?.value ?? '';
                               final address = formData['Address']?.value ?? '';
                               final phone = formData['Phone']?.value ?? '';
+                              final id = 'test';
 
                               UserModel userModel = UserModel(
                                   firstName,
@@ -136,7 +137,8 @@ class _EditProfileState extends State<EditProfile> {
                                   address,
                                   city,
                                   phone,
-                                  base64Image);
+                                  base64Image, 
+                                  id);
                               await _authProvider.editProfile(userModel);
 
                               ScaffoldMessenger.of(context).showSnackBar(

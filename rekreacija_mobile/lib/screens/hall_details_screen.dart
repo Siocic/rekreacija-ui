@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/object_model.dart';
 import 'package:rekreacija_mobile/models/review_model.dart';
 import 'package:rekreacija_mobile/providers/review_provider.dart';
+import 'package:rekreacija_mobile/screens/hall_message_screen.dart';
 import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/appointment_modal.dart';
 import 'package:rekreacija_mobile/widgets/custom_appbar.dart';
@@ -162,7 +163,14 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                             size: 25.0,
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/hallMessage');
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HallMessageScreen(
+                                          userId: widget.object.user_id ??
+                                              '',
+                                          hallName: objectName,
+                                        )));
                           },
                         )
                       ],
@@ -282,7 +290,8 @@ class _HallDetailsScreenState extends State<HallDetailsScreen> {
                                         ? '${reviews.user!.firstName ?? ''} ${reviews.user!.lastName ?? ''}'
                                         : 'Anonymous',
                                     image: reviews.user?.profilePicture != null
-                                        ? imageFromString(reviews.user!.profilePicture!)
+                                        ? imageFromString(
+                                            reviews.user!.profilePicture!)
                                         : Image.asset(
                                             "assets/images/RekreacijaDefaultProfilePicture.png"),
                                   ),

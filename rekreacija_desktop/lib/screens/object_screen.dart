@@ -32,13 +32,20 @@ class _ObjectScreen extends State<ObjectScreen> {
 
   Future<void> _loadObjectOfUser() async {
     try {
+      debugPrint("🔄 Fetching objects for logged-in user...");
       final userObject = await _objectProvider.getObjectOfLoggedUser();
+      debugPrint("✅ Received objects: ${userObject.length} found");
+      for (var obj in userObject) {
+        debugPrint("📦 Object: id=${obj.id}, name=${obj.name}, address=${obj.address}");
+      }
       setState(() {
         objects = userObject;
       });
     } catch (e) {
+      debugPrint("❌ ERROR: Failed to load user objects: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load user data: $e')));
+        SnackBar(content: Text('Failed to load user data: $e')),
+      );
     }
   }
 
@@ -75,10 +82,9 @@ class _ObjectScreen extends State<ObjectScreen> {
             ),
             onPressed: () async {
               final bool? result = await showDialog<bool>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ObjectModal();
-                  });
+                context: context,
+                builder: (BuildContext context) => ObjectModal(),
+              );
               if (result == true) {
                 _loadObjectOfUser();
               }
@@ -86,9 +92,10 @@ class _ObjectScreen extends State<ObjectScreen> {
             child: Text(
               'Add new object',
               style: GoogleFonts.suezOne(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20),
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+                fontSize: 20,
+              ),
             ),
           ),
         ),
@@ -101,12 +108,13 @@ class _ObjectScreen extends State<ObjectScreen> {
                     child: Text(
                       "You don't have any objects added yet",
                       style: GoogleFonts.suezOne(
-                          fontSize: 25, fontWeight: FontWeight.w400),
+                        fontSize: 25,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   )
                 : GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
@@ -120,20 +128,15 @@ class _ObjectScreen extends State<ObjectScreen> {
                         objectAddress: ourObjects.address ?? '',
                         image: ourObjects.imagePath != null
                             ? Image.network('$baseUrl${ourObjects.imagePath!}')
-                            : Image.asset(
-                                "assets/images/RekreacijaDefault.jpg"),
+                            : Image.asset("assets/images/RekreacijaDefault.jpg"),
                         deleteObject: () async {
                           _showDeleteDialog(ourObjects.id!);
                         },
                         editObject: () async {
                           final bool? result = await showDialog<bool>(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return EditObjectModal(
-                                  object: ourObjects,
-                                );
-                              });
-
+                            context: context,
+                            builder: (BuildContext context) => EditObjectModal(object: ourObjects),
+                          );
                           if (result == true) {
                             _loadObjectOfUser();
                           }
@@ -150,50 +153,54 @@ class _ObjectScreen extends State<ObjectScreen> {
 
   void _showDeleteDialog(int id) {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Confirm Deletion'),
-            content: const Text('Are you sure you want to delete this object?'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('No')),
-              ElevatedButton(
-                  onPressed: () async {
-                    bool isExpired = await isTokenExpired();
-                    if (isExpired) {
-                      showTokenExpiredDialog(context);
-                      return;
-                    }
-                    try {
-                      await _objectProvider.Delete(id);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                          'You successfully deleted the object',
-                          style: GoogleFonts.suezOne(),
-                        ),
-                        backgroundColor: Colors.green,
-                      ));
-                      Navigator.pop(context);
-                      _loadObjectOfUser();
-                    } catch (e) {
-                      String errorMessage = e.toString();
-
-                      if (errorMessage.startsWith("Exception:")) {
-                        errorMessage =
-                            errorMessage.replaceFirst("Exception:", "").trim();
-                      }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(errorMessage)),
-                      );
-                    }
-                  },
-                  child: const Text('Yes'))
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this object?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('No'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                bool isExpired = await isTokenExpired();
+                if (isExpired) {
+                  showTokenExpiredDialog(context);
+                  return;
+                }
+                try {
+                  await _objectProvider.Delete(id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'You successfully deleted the object',
+                        style: GoogleFonts.suezOne(),
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.pop(context);
+                  _loadObjectOfUser();
+                } catch (e) {
+                  String errorMessage = e.toString();
+                  if (errorMessage.startsWith("Exception:")) {
+                    errorMessage = errorMessage.replaceFirst("Exception:", "").trim();
+                  }
+                  debugPrint("❌ ERROR during delete: $errorMessage");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(errorMessage)),
+                  );
+                }
+              },
+              child: const Text('Yes'),
+            )
+          ],
+        );
+      },
+    );
   }
 }

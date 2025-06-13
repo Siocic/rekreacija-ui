@@ -35,16 +35,29 @@ class AppointmentProvider extends BaseProvider<AppointmentModel> {
     }
   }
 
+  Future<List<AppointmentModel>> getAppointments() async {
+    final url = Uri.parse("${_baseUrl}Appointment/GetAppointments");
+    final headers = await getAuthHeaders();
+
+    final response = await http.get(url, headers: headers);
+    if (!isValidResponse(response)) {
+      throw Exception("Failed to load appointments");
+    }
+
+    final data = jsonDecode(response.body);
+    return (data as List)
+        .map((json) => AppointmentModel.fromJson(json))
+        .toList();
+  }
+
   Future<bool> getReservedTimes(
       int objectId, DateTime startTime, DateTime endTime) async {
     var url = "${_baseUrl}Appointment/GetReservedTimes";
-    var uri = Uri.parse(url).replace(
-      queryParameters: {
-          "objectId": objectId.toString(),
+    var uri = Uri.parse(url).replace(queryParameters: {
+      "objectId": objectId.toString(),
       "startTime": startTime.toIso8601String(),
       "endTime": endTime.toIso8601String(),
-      }
-    );
+    });
     var headers = await getAuthHeaders();
     var response = await http.get(uri, headers: headers);
     if (isValidResponse(response)) {
@@ -53,5 +66,25 @@ class AppointmentProvider extends BaseProvider<AppointmentModel> {
     } else {
       throw Exception('Failed to check reserved time');
     }
+  }
+
+  Future<List<DateTime>> getObjectHolidays(int objectId) async {
+    final uri = Uri.parse("${_baseUrl}Holiday/GetByObject/$objectId");
+    final headers = await getAuthHeaders();
+    final response = await http.get(uri, headers: headers);
+
+    if (!isValidResponse(response)) throw Exception("Failed to fetch holidays");
+
+    final data = jsonDecode(response.body) as List;
+    return data
+        .map((e) {
+          final start = DateTime.parse(e['start_date']);
+          final end = DateTime.parse(e['end_date']);
+          // expand range into individual dates
+          return List.generate(end.difference(start).inDays + 1,
+              (i) => DateTime(start.year, start.month, start.day + i));
+        })
+        .expand((x) => x)
+        .toList();
   }
 }

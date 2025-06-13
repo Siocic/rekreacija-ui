@@ -50,7 +50,7 @@ dependencies:
   flutter_paypal_payment: ^1.0.8
   webview_flutter: ^4.10.0
   signalr_netcore: ^1.1.1
-
+  table_calendar: ^3.0.8
 
 dev_dependencies:
   flutter_test:

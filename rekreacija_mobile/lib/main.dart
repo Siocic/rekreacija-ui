@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/providers/appointment_provider.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
 import 'package:rekreacija_mobile/providers/favorites_provider.dart';
+import 'package:rekreacija_mobile/providers/holiday_provider.dart';
 import 'package:rekreacija_mobile/providers/notification_provider.dart';
 import 'package:rekreacija_mobile/providers/object_provider.dart';
 import 'package:rekreacija_mobile/providers/review_provider.dart';
@@ -18,6 +19,8 @@ void main() {
     ChangeNotifierProvider(create: (_) => FavoritesProvider()),
     ChangeNotifierProvider(create: (_) => NotificationProvider()),
     ChangeNotifierProvider(create: (_) => AppointmentProvider()),
+      Provider<HolidayProvider>(create: (_) => HolidayProvider()),
+
   ], child: const MyApp()));
 }
 

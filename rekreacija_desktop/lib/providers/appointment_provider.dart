@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:rekreacija_desktop/models/appointment_model.dart';
+import 'package:rekreacija_desktop/models/holiday_model.dart';
 import 'package:rekreacija_desktop/models/my_client_payments_model.dart';
 import 'package:rekreacija_desktop/models/my_clients_model.dart';
 import 'package:rekreacija_desktop/providers/base_provider.dart';
@@ -35,6 +36,20 @@ class AppointmentProvider extends BaseProvder<AppointmentModel> {
       throw new Exception("Unknow exception");
     }
   }
+
+  Future<List<HolidayModel>> getObjectHolidays() async {
+  final uri = Uri.parse("http://localhost:5246/Holiday/GetHolidaysForCurrentUserObjects");
+  final headers = await getAuthHeaders();
+  final response = await http.get(uri, headers: headers);
+
+  if (isValidResponse(response)) {
+    final data = jsonDecode(response.body) as List;
+    return data.map((e) => HolidayModel.fromJson(e)).toList();
+  } else {
+    throw Exception("Failed to fetch holidays");
+  }
+}
+
 
   Future<bool>approveAppointment(int id)async{
     var url = "${_baseUrl}Appointment/ApproveAppointment?id=${id}";

@@ -16,8 +16,13 @@ class HolidayModel {
     required this.endDate,
   });
 
-  factory HolidayModel.fromJson(Map<String, dynamic> json) =>
-      _$HolidayModelFromJson(json);
-
+  factory HolidayModel.fromJson(Map<String, dynamic> json) {
+    return HolidayModel(
+      id: json['id'] as int?,
+      name: json['name'] ?? '',
+      startDate: DateTime.tryParse(json['start_date'] ?? '') ?? DateTime(1970),
+      endDate: DateTime.tryParse(json['end_date'] ?? '') ?? DateTime(1970),
+    );
+  }
   Map<String, dynamic> toJson() => _$HolidayModelToJson(this);
 }

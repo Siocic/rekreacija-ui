@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/providers/appointment_provider.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
+import 'package:rekreacija_desktop/providers/holiday_provider.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/review_provider.dart';
@@ -16,7 +17,9 @@ void main() async {
       ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ChangeNotifierProvider(create: (_) => AuthProvider()),
       ChangeNotifierProvider(create: (_) => ReviewProvider()),
-      ChangeNotifierProvider(create: (_) => AppointmentProvider())
+      ChangeNotifierProvider(create: (_) => AppointmentProvider()),
+      Provider<HolidayProvider>(create: (_) => HolidayProvider()),
+
     ], child: const MyApp()),
   );
 }

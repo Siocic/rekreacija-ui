@@ -42,6 +42,7 @@ class HolidayProvider {
 
     final body = holiday.toJson();
     body.remove('id'); // ensure ID is not sent
+    print("📝 Sending Holiday JSON: ${jsonEncode(body)}");
 
     final response = await http.post(
       url,

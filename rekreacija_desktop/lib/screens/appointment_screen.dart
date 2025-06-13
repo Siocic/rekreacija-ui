@@ -27,7 +27,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   Map<DateTime, List<AppointmentModel>> _groupedAppointments = {};
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  
+
   @override
   void initState() {
     super.initState();
@@ -36,31 +36,30 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     _loadAppointmentsAndHolidays();
   }
 
-Future<void> _loadAppointmentsAndHolidays() async {
-  try {
-    final objectProvider = context.read<ObjectProvider>();
-    final objects = await objectProvider.getObjectOfLoggedUser();
+  Future<void> _loadAppointmentsAndHolidays() async {
+    try {
+      final objectProvider = context.read<ObjectProvider>();
+      final objects = await objectProvider.getObjectOfLoggedUser();
 
-    if (objects.isEmpty) {
-      throw Exception("No objects found for user.");
+      if (objects.isEmpty) {
+        throw Exception("No objects found for user.");
+      }
+
+      final objectId = objects.first.id!;
+      final appointments = await _appointmentProvider.getAppointments();
+      final holidays = await _holidayProvider.getObjectHolidays(objectId);
+
+      setState(() {
+        _allAppointments = appointments;
+        _holidays = holidays;
+        _groupAppointmentsByDate();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load data: $e')),
+      );
     }
-
-    final objectId = objects.first.id!;
-    final appointments = await _appointmentProvider.getAppointments();
-    final holidays = await _holidayProvider.getObjectHolidays(objectId);
-
-    setState(() {
-      _allAppointments = appointments;
-      _holidays = holidays;
-      _groupAppointmentsByDate();
-    });
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to load data: $e')),
-    );
   }
-}
-
 
   void _groupAppointmentsByDate() {
     _groupedAppointments.clear();
@@ -78,9 +77,24 @@ Future<void> _loadAppointmentsAndHolidays() async {
     return _groupedAppointments[DateTime(day.year, day.month, day.day)] ?? [];
   }
 
+  List<HolidayModel> _getHolidaysForDay(DateTime day) {
+    final date = DateTime(day.year, day.month, day.day);
+    return _holidays.where((h) {
+      final start =
+          DateTime(h.startDate.year, h.startDate.month, h.startDate.day);
+      final end = DateTime(h.endDate.year, h.endDate.month, h.endDate.day);
+      return !date.isBefore(start) && !date.isAfter(end);
+    }).toList();
+  }
+
   bool _isHoliday(DateTime day) {
-    return _holidays
-        .any((h) => !day.isBefore(h.startDate!) && !day.isAfter(h.endDate!));
+    final date = DateTime(day.year, day.month, day.day);
+    return _holidays.any((h) {
+      final start =
+          DateTime(h.startDate.year, h.startDate.month, h.startDate.day);
+      final end = DateTime(h.endDate.year, h.endDate.month, h.endDate.day);
+      return !date.isBefore(start) && !date.isAfter(end);
+    });
   }
 
   @override
@@ -116,6 +130,8 @@ Future<void> _loadAppointmentsAndHolidays() async {
           lastDay: DateTime.utc(2030, 12, 31),
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+          eventLoader: _getAppointmentsForDay,
+          holidayPredicate: _isHoliday,
           calendarStyle: CalendarStyle(
             todayDecoration: BoxDecoration(
               color: Colors.orange.shade300,
@@ -125,50 +141,94 @@ Future<void> _loadAppointmentsAndHolidays() async {
               color: Colors.green,
               shape: BoxShape.circle,
             ),
+            // 👇 Don't rely only on this
             holidayDecoration: BoxDecoration(
               color: Colors.red.shade300,
               shape: BoxShape.circle,
             ),
           ),
-          holidayPredicate: _isHoliday,
+          calendarBuilders: CalendarBuilders(
+            defaultBuilder: (context, day, focusedDay) {
+              final normalizedDay = DateTime(day.year, day.month, day.day);
+              final isHoliday = _isHoliday(normalizedDay);
+              if (isHoliday) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade300,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${day.day}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                );
+              }
+              return null;
+            },
+          ),
           onDaySelected: (selectedDay, focusedDay) {
             setState(() {
               _selectedDay = selectedDay;
               _focusedDay = focusedDay;
             });
           },
-          eventLoader: _getAppointmentsForDay,
         ),
         const SizedBox(height: 20),
+    
         Expanded(
           child: _selectedDay == null
               ? const Center(child: Text("Select a day to see appointments"))
               : ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  children: _getAppointmentsForDay(_selectedDay!).map((a) {
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: ListTile(
-                        title: Text(
-                          a.object_name ?? 'Unknown Object',
-                          style: GoogleFonts.suezOne(),
+                  children: [
+                    // Appointments
+                    ..._getAppointmentsForDay(_selectedDay!).map((a) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          title: Text(
+                            a.object_name ?? 'Unknown Object',
+                            style: GoogleFonts.suezOne(),
+                          ),
+                          subtitle: Text(
+                            'By ${a.fullname ?? 'Unknown'}\n'
+                            '${DateFormat.Hm().format(a.start_time!)} - '
+                            '${DateFormat.Hm().format(a.end_time!)}',
+                          ),
+                          trailing: Icon(
+                            a.is_approved == true
+                                ? Icons.check_circle
+                                : Icons.hourglass_empty,
+                            color: a.is_approved == true
+                                ? Colors.green
+                                : Colors.orange,
+                          ),
                         ),
-                        subtitle: Text(
-                          'By ${a.fullname ?? 'Unknown'}\n'
-                          '${DateFormat.Hm().format(a.start_time!)} - '
-                          '${DateFormat.Hm().format(a.end_time!)}',
+                      );
+                    }),
+
+                    // Holidays
+                    ..._getHolidaysForDay(_selectedDay!).map((h) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        color: Colors.red.shade50,
+                        child: ListTile(
+                          title: Text(
+                            "Holiday: ${h.name}",
+                            style:
+                                GoogleFonts.suezOne(color: Colors.red.shade800),
+                          ),
+                          subtitle: Text(
+                            '${DateFormat.yMMMd().format(h.startDate)}'
+                            '${h.startDate != h.endDate ? " to ${DateFormat.yMMMd().format(h.endDate)}" : ""}',
+                          ),
+                          leading:
+                              const Icon(Icons.beach_access, color: Colors.red),
                         ),
-                        trailing: Icon(
-                          a.is_approved == true
-                              ? Icons.check_circle
-                              : Icons.hourglass_empty,
-                          color: a.is_approved == true
-                              ? Colors.green
-                              : Colors.orange,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }),
+                  ],
                 ),
         ),
       ],

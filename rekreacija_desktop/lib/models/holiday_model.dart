@@ -6,7 +6,9 @@ part 'holiday_model.g.dart';
 class HolidayModel {
   int? id;
   String name;
+  @JsonKey(name: 'start_date')
   DateTime startDate;
+  @JsonKey(name: 'end_date')
   DateTime endDate;
 
   HolidayModel({
@@ -24,5 +26,6 @@ class HolidayModel {
       endDate: DateTime.tryParse(json['end_date'] ?? '') ?? DateTime(1970),
     );
   }
+
   Map<String, dynamic> toJson() => _$HolidayModelToJson(this);
 }

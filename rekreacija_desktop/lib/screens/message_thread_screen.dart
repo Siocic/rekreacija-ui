@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -127,9 +126,10 @@ class _MessageThreadScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat with ${widget.hallName}"),
+        title: Text("Chat with ${widget.hallName}",style: const TextStyle(color: Colors.white),),
         centerTitle: true,
-        backgroundColor: Colors.teal.shade800,
+        backgroundColor: Colors.teal.shade800,   
+        iconTheme: const IconThemeData(color: Colors.white),     
       ),
       body: _connecting
           ? const Center(child: CircularProgressIndicator())
@@ -184,8 +184,9 @@ class _MessageThreadScreenState
                         onPressed: _sendMessage,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.teal.shade700,
+                          iconColor: Colors.white
                         ),
-                        child: const Text("Send"),
+                        child: const Text("Send",style: TextStyle(color: Colors.white),),
                       )
                     ],
                   ),

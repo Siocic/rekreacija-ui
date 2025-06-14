@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:rekreacija_mobile/widgets/expired_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:rekreacija_mobile/models/user_model.dart';
 import 'package:rekreacija_mobile/providers/auth_provider.dart';
@@ -27,7 +28,7 @@ class HallMessageScreen extends StatefulWidget {
 }
 
 class _HallMessageScreenState extends State<HallMessageScreen> {
-  _HallMessageScreenState() { }
+  _HallMessageScreenState() {}
   HubConnection? _hubConnection;
   UserModel? _currentUser;
   final TextEditingController _controller = TextEditingController();
@@ -153,7 +154,8 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
     }
 
     try {
-      await _hubConnection!.invoke("SendMessage", args: [senderId, recipientId, content]);
+      await _hubConnection!
+          .invoke("SendMessage", args: [senderId, recipientId, content]);
       _controller.clear();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -161,8 +163,23 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
       );
     }
   }
+
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+  if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
+
+
     final userId = _currentUser?.id;
     return Scaffold(
       appBar: const CustomAppBar(title: 'Message'),
@@ -177,11 +194,11 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
                     children: [
                       Text("To : ",
                           style: GoogleFonts.suezOne(
-                              color: Colors.white, fontSize: 24)),
+                              color: Colors.white, fontSize: 17)),
                       const SizedBox(width: 5),
                       Text(widget.hallName,
                           style: GoogleFonts.suezOne(
-                              color: Colors.white, fontSize: 24)),
+                              color: Colors.white, fontSize: 17)),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -230,9 +247,26 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _sendMessage,
+                      onPressed: ()async{
+
+                      bool isExpired = await isTokenExpired();
+                      if(isExpired)
+                      {
+                          showTokenExpiredDialog(context);
+                          return;
+                      }
+                      else{
+                        await _sendMessage();
+                      }
+                      },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 219, 219, 219),
+                        backgroundColor: const Color.fromRGBO(14, 119, 62, 1.0),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(16.0)),
                       ),
                       child: const Text("Send Message",
                           style: TextStyle(fontSize: 18)),

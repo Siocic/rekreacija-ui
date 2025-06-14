@@ -37,6 +37,24 @@ class AppointmentProvider extends BaseProvder<AppointmentModel> {
     }
   }
 
+    Future<List<AppointmentModel>> getApprovedAppointments() async {
+    var url = "${_baseUrl}Appointment/GetApprovedAppointments";
+    var uri = Uri.parse(url);
+    var headers = await getAuthHeaders();
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<AppointmentModel> result = (data as List<dynamic>)
+          .map(
+              (json) => AppointmentModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return result;
+    } else {
+      throw new Exception("Unknow exception");
+    }
+  }
+
   Future<List<HolidayModel>> getObjectHolidays() async {
   final uri = Uri.parse("http://localhost:5246/Holiday/GetHolidaysForCurrentUserObjects");
   final headers = await getAuthHeaders();

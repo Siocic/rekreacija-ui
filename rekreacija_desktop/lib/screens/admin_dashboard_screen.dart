@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:rekreacija_desktop/models/object_count_per_user_model.dart';
 import 'package:rekreacija_desktop/models/review_model.dart';
 import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
@@ -26,6 +28,7 @@ class _AdminDashboard extends State<AdminDashboard> {
   bool isObjects = true;
   bool isUser = true;
   List<ReviewModel> reviewList = [];
+  List<ObjectCountPerUserModel> objectsPerUser = [];
 
   @override
   void initState() {
@@ -37,17 +40,20 @@ class _AdminDashboard extends State<AdminDashboard> {
   }
 
   Map<int, int> ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+  Map<String, int> countObjectPerUser = {};
 
   Future<void> fetchData() async {
     try {
       var objects = await objectProvider.Get();
       var users = await authProvider.getAllUser();
       var review = await reviewProvider.Get();
+      var countedObject = await objectProvider.getCountObjectPerUser();
 
       setState(() {
         numberOfObjects = objects.length;
         numberOfUsers = users.length;
         reviewList = review;
+        objectsPerUser = countedObject;
         isObjects = false;
         isUser = false;
 
@@ -56,6 +62,12 @@ class _AdminDashboard extends State<AdminDashboard> {
           if (ratingCounts.containsKey(rating)) {
             ratingCounts[rating] = ratingCounts[rating]! + 1;
           }
+        }
+        for (var c in objectsPerUser) {
+          final userName = c.fullName;
+          int count = c.objectCount ?? 0;
+          countObjectPerUser[userName.toString()] =
+              (countObjectPerUser[userName] ?? 0) + count;
         }
       });
     } catch (e) {
@@ -98,6 +110,40 @@ class _AdminDashboard extends State<AdminDashboard> {
       );
     }).toList();
     /* CHART FOR RATINGS --END */
+
+    /*PIE CHART FOR OBJECTS OF USERS --START*/
+    Color getRandomColor() {
+      final Random random = Random();
+      int r = 180 + random.nextInt(80);
+      int g = 180 + random.nextInt(80);
+      int b = 180 + random.nextInt(80);
+      return Color.fromARGB(255, r, g, b);
+    }
+
+    final double totalCount =
+        countObjectPerUser.values.fold(0, (a, b) => a + b);
+    List<PieChartSectionData> sections = [];
+    Map<String, Color> userColors = {};
+
+    int i = 0;
+    countObjectPerUser.forEach((userName, count) {
+      final percent = (count / totalCount * 100).toStringAsFixed(1);
+      final color = getRandomColor();
+      userColors[userName] = color;
+      sections.add(PieChartSectionData(
+        value: count.toDouble(),
+        title: '$percent%',
+        color: color,
+        radius: 70,
+        titleStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ));
+      i++;
+    });
+/*PIE CHART FOR OBJECTS OF USERS --END*/
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Padding(
@@ -177,6 +223,57 @@ class _AdminDashboard extends State<AdminDashboard> {
                 ),
               ],
             ),
+            const SizedBox(width: 80),
+            Column(
+              children: [
+                const Text(
+                  "Object by user",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 80),
+                SizedBox(
+                  height: 100,
+                  width: 200,
+                  child: PieChart(
+                    PieChartData(
+                      sections: sections,
+                      centerSpaceRadius: 40,
+                      sectionsSpace: 2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 50),
+            Padding(
+              padding: const EdgeInsets.only(top: 100),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: countObjectPerUser.keys
+                    .toList()
+                    .asMap()
+                    .entries
+                    .map((entry) {
+                  //int index = entry.key;
+                  final username = entry.value.toString();
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          color: userColors[username],
+                        ),
+                        const SizedBox(width: 8),
+                        Text(username),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            )
           ],
         ),
       ),

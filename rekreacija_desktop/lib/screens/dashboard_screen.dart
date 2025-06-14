@@ -33,6 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String? baseUrl = "http://localhost:5246";
   List<ReviewModel> reviewsOfMyObject = [];
   List<MyClientPaymentsModel> payments = [];
+  List<MyClientPaymentsModel> appointments = [];
 
   @override
   void initState() {
@@ -40,12 +41,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     objectProvider = context.read<ObjectProvider>();
     notificationProvider = context.read<NotificationProvider>();
     reviewProvider = context.read<ReviewProvider>();
-    appointmentProvider=context.read<AppointmentProvider>();
+    appointmentProvider = context.read<AppointmentProvider>();
     fetchData();
   }
 
   Map<int, int> ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
   Map<String, double> amountPerObject = {};
+  Map<String, double> monthlyCounts = {};
 
   Future<void> fetchData() async {
     try {
@@ -54,6 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           await notificationProvider.getNotificationsOfUser();
       final reviews = await reviewProvider.getReviewsForMyObjects();
       final paymentsList = await appointmentProvider.getMyClientPayments();
+      final appointmentList = await appointmentProvider.getMyClientPayments();
 
       setState(() {
         numberOfObjects = userObject.length;
@@ -62,6 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         reviewsOfMyObject = reviews;
         object = userObject.isNotEmpty ? userObject.first : null;
         payments = paymentsList;
+        appointments = appointmentList;
         isLoading = false;
         for (var r in reviewsOfMyObject) {
           int rating = r.rating?.round() ?? 0;
@@ -78,6 +82,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 amountPerObject[objectId]! + amount;
           } else {
             amountPerObject[objectId.toString()] = amount;
+          }
+        }
+        for (var appt in appointments) {
+          final date = DateTime.parse(appt.appointmentDate.toString());
+          final key = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+          //final objectName = appt.objectName;
+          if (!monthlyCounts.containsKey(key)) {
+            monthlyCounts[key] = 1;
+          } else {
+            monthlyCounts[key] = monthlyCounts[key]! + 1;
           }
         }
       });
@@ -143,71 +157,197 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
     /* RENEVUE PER OBJECT --END */
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Padding(
-        padding: EdgeInsets.all(40.0),
-        child: ContentHeader(title: 'Dashboard'),
-      ),
-      const SizedBox(height: 30),
-      Padding(
-        padding: const EdgeInsets.only(left: 40),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CardView(
-                icon: Icons.apartment,
-                num: numberOfObjects,
-                decription: "My objects",
-                isLoading: isLoading),
-            const SizedBox(width: 10),
-            CardView(
-                icon: Icons.reviews,
-                num: numberOfReviews,
-                decription: "Total reivews",
-                isLoading: isLoading),
+    /* APPOINTMENT COUNT PER MONTH --START */
+    final sortedKeys = monthlyCounts.keys.toList()
+      ..sort((a, b) => a.compareTo(b));
+    List<BarChartGroupData> barData = [];
+    int index = 0;
+    for (var key in sortedKeys) {
+      barData.add(
+        BarChartGroupData(
+          x: index,
+          barRods: [
+            BarChartRodData(
+              toY: monthlyCounts[key]!.toDouble(),
+              color: Colors.blue,
+              width: 20,
+              borderRadius: BorderRadius.circular(4),
+            )
           ],
         ),
-      ),
-      const SizedBox(height: 10),
-      Padding(
-        padding: const EdgeInsets.only(left: 40),
-        child: Row(
-          children: [
-            Column(
+      );
+      index++;
+    }
+    /* APPOINTMENT COUNT PER MONTH --END */
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(40.0),
+            child: ContentHeader(title: 'Dashboard'),
+          ),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (object != null) ...[
-                  const Text("Last added object"),
-                  objectCardView(
-                    object!.name!,
-                    object!.address!,
-                    object!.imagePath != null
-                        ? Image.network('$baseUrl${object!.imagePath!}')
-                        : Image.asset("assets/images/RekreacijaDefault.jpg"),
-                  ),
-                ]
+                CardView(
+                    icon: Icons.apartment,
+                    num: numberOfObjects,
+                    decription: "My objects",
+                    isLoading: isLoading),
+                const SizedBox(width: 10),
+                CardView(
+                    icon: Icons.reviews,
+                    num: numberOfReviews,
+                    decription: "Total reivews",
+                    isLoading: isLoading),
               ],
             ),
-            const SizedBox(width: 50),
-            Column(
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (object != null) ...[
+                      const Text("Last added object"),
+                      objectCardView(
+                        object!.name!,
+                        object!.address!,
+                        object!.imagePath != null
+                            ? Image.network('$baseUrl${object!.imagePath!}')
+                            : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                      ),
+                    ]
+                  ],
+                ),
+                const SizedBox(width: 50),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Reviews by rating",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      height: 300,
+                      width: 300,
+                      child: BarChart(
+                        BarChartData(
+                          alignment: BarChartAlignment.spaceAround,
+                          maxY: ratingCounts.values
+                                  .reduce((a, b) => a > b ? a : b)
+                                  .toDouble() +
+                              2,
+                          //barTouchData: const BarTouchData(enabled: true),
+                          barTouchData: BarTouchData(
+                            touchTooltipData: BarTouchTooltipData(
+                              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                return BarTooltipItem(
+                                  rod.toY.toInt().toString(),
+                                  const TextStyle(color: Colors.white),
+                                );
+                              },
+                            ),
+                          ),
+                          titlesData: FlTitlesData(
+                            leftTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                getTitlesWidget: (value, meta) =>
+                                    Text('${value.toInt()}★'),
+                              ),
+                            ),
+                          ),
+                          borderData: FlBorderData(show: false),
+                          barGroups: ratingBars,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 35),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Renevue per object",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      height: 300,
+                      width: 300,
+                      child: BarChart(
+                        BarChartData(
+                          barGroups: amountBars,
+                          barTouchData: BarTouchData(
+                            touchTooltipData: BarTouchTooltipData(
+                              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                                return BarTooltipItem(
+                                  rod.toY.toInt().toString(),
+                                  const TextStyle(color: Colors.white),
+                                );
+                              },
+                            ),
+                          ),
+                          titlesData: FlTitlesData(
+                            leftTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                getTitlesWidget: (value, meta) {
+                                  int index = value.toInt();
+                                  if (index >= 0 && index <= objectNames.length) {
+                                    return Text(objectNames[index]);
+                                  } else {
+                                    return const Text('');
+                                  }
+                                },
+                              ),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 50),
+              ],
+            ),
+          ),
+          const SizedBox(height: 15),
+          Padding(
+            padding: const EdgeInsets.only(left: 50),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Reviews by rating",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  "Appointments per month",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 300,
-                  width: 300,
                   child: BarChart(
                     BarChartData(
-                      alignment: BarChartAlignment.spaceAround,
-                      maxY: ratingCounts.values
-                              .reduce((a, b) => a > b ? a : b)
-                              .toDouble() +
-                          2,
-                      //barTouchData: const BarTouchData(enabled: true),
+                      barGroups: barData,
                       barTouchData: BarTouchData(
                         touchTooltipData: BarTouchTooltipData(
                           getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -225,74 +365,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
-                            getTitlesWidget: (value, meta) =>
-                                Text('${value.toInt()}★'),
+                            getTitlesWidget: (value, meta) {
+                              if (value.toInt() < sortedKeys.length) {
+                                final label = sortedKeys[value.toInt()];
+                                return Text(getMonthName(label));
+                              } else {
+                                return const Text('');
+                              }
+                            },
                           ),
                         ),
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
                       ),
-                      borderData: FlBorderData(show: false),
-                      barGroups: ratingBars,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(width: 35),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Renevue per object",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 5),
-                  SizedBox(
-                    height: 300,
-                    width: 300,
-                    child: BarChart(
-                      BarChartData(
-                        barGroups: amountBars,
-                        barTouchData: BarTouchData(
-                          touchTooltipData: BarTouchTooltipData(
-                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                              return BarTooltipItem(
-                                rod.toY.toInt().toString(),
-                                const TextStyle(color: Colors.white),
-                              );
-                            },
-                          ),
-                        ),
-                        titlesData: FlTitlesData(
-                          leftTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) {
-                                int index = value.toInt();
-                                if (index >= 0 && index <= objectNames.length) {
-                                  return Text(objectNames[index]);
-                                } else {
-                                  return const Text('');
-                                }
-                              },
-                            ),
-                          ),
-                          topTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-          ],
-        ),
-      )
-    ]);
+          )
+        ],
+      ),
+    );
   }
+}
+
+String getMonthName(String key) {
+  final parts = key.split('-');
+  final monthNum = int.tryParse(parts[1]) ?? 1;
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+  return monthNames[monthNum - 1];
 }
 
 Widget objectCardView(

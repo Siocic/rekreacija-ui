@@ -2,8 +2,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rekreacija_desktop/models/my_client_payments_model.dart';
 import 'package:rekreacija_desktop/models/object_model.dart';
 import 'package:rekreacija_desktop/models/review_model.dart';
+import 'package:rekreacija_desktop/providers/appointment_provider.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/review_provider.dart';
@@ -22,6 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late ObjectProvider objectProvider;
   late NotificationProvider notificationProvider;
   late ReviewProvider reviewProvider;
+  late AppointmentProvider appointmentProvider;
   int numberOfObjects = 0;
   int numberOfNotifications = 0;
   int numberOfReviews = 0;
@@ -29,6 +32,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   ObjectModel? object;
   String? baseUrl = "http://localhost:5246";
   List<ReviewModel> reviewsOfMyObject = [];
+  List<MyClientPaymentsModel> payments = [];
 
   @override
   void initState() {
@@ -36,10 +40,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     objectProvider = context.read<ObjectProvider>();
     notificationProvider = context.read<NotificationProvider>();
     reviewProvider = context.read<ReviewProvider>();
+    appointmentProvider=context.read<AppointmentProvider>();
     fetchData();
   }
 
   Map<int, int> ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+  Map<String, double> amountPerObject = {};
 
   Future<void> fetchData() async {
     try {
@@ -47,6 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final userNotification =
           await notificationProvider.getNotificationsOfUser();
       final reviews = await reviewProvider.getReviewsForMyObjects();
+      final paymentsList = await appointmentProvider.getMyClientPayments();
 
       setState(() {
         numberOfObjects = userObject.length;
@@ -54,11 +61,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         numberOfReviews = reviews.length;
         reviewsOfMyObject = reviews;
         object = userObject.isNotEmpty ? userObject.first : null;
+        payments = paymentsList;
         isLoading = false;
         for (var r in reviewsOfMyObject) {
           int rating = r.rating?.round() ?? 0;
           if (ratingCounts.containsKey(rating)) {
             ratingCounts[rating] = ratingCounts[rating]! + 1;
+          }
+        }
+        for (var appt in payments) {
+          final objectId = appt.objectName;
+          final amount = appt.amount?.toDouble() ?? 0;
+
+          if (amountPerObject.containsKey(objectId)) {
+            amountPerObject[objectId.toString()] =
+                amountPerObject[objectId]! + amount;
+          } else {
+            amountPerObject[objectId.toString()] = amount;
           }
         }
       });
@@ -102,6 +121,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }).toList();
     /* CHART FOR RATINGS --END */
+
+    /* RENEVUE PER OBJECT --START */
+    List<BarChartGroupData> amountBars = [];
+    List<String> objectNames = amountPerObject.keys.toList();
+    for (int i = 0; i < objectNames.length; i++) {
+      String name = objectNames[i];
+      double value = amountPerObject[name]!;
+      amountBars.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+                toY: value,
+                color: Colors.purple,
+                width: 20,
+                borderRadius: BorderRadius.circular(4)),
+          ],
+        ),
+      );
+    }
+    /* RENEVUE PER OBJECT --END */
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Padding(
@@ -197,6 +237,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ],
             ),
+            const SizedBox(width: 35),
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Renevue per object",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: BarChart(
+                      BarChartData(
+                        barGroups: amountBars,
+                        barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              return BarTooltipItem(
+                                rod.toY.toInt().toString(),
+                                const TextStyle(color: Colors.white),
+                              );
+                            },
+                          ),
+                        ),
+                        titlesData: FlTitlesData(
+                          leftTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                int index = value.toInt();
+                                if (index >= 0 && index <= objectNames.length) {
+                                  return Text(objectNames[index]);
+                                } else {
+                                  return const Text('');
+                                }
+                              },
+                            ),
+                          ),
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       )

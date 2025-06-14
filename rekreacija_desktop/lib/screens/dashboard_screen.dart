@@ -48,6 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Map<int, int> ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
   Map<String, double> amountPerObject = {};
   Map<String, double> monthlyCounts = {};
+  Map<String, double> reservationCounts = {};
 
   Future<void> fetchData() async {
     try {
@@ -87,11 +88,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
         for (var appt in appointments) {
           final date = DateTime.parse(appt.appointmentDate.toString());
           final key = "${date.year}-${date.month.toString().padLeft(2, '0')}";
-          //final objectName = appt.objectName;
+          final objectName = appt.objectName;
           if (!monthlyCounts.containsKey(key)) {
             monthlyCounts[key] = 1;
           } else {
             monthlyCounts[key] = monthlyCounts[key]! + 1;
+          }
+          if (reservationCounts.containsKey(objectName)) {
+            reservationCounts[objectName.toString()] =
+                reservationCounts[objectName]! + 1;
+          } else {
+            reservationCounts[objectName.toString()] = 1;
           }
         }
       });
@@ -179,6 +186,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
       index++;
     }
     /* APPOINTMENT COUNT PER MONTH --END */
+
+    /* BROJ REZERVACIJA PO OBJEKTU ---START */
+    final colors = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.brown
+    ];
+    double totalReservations =
+        reservationCounts.values.fold(0, (a, b) => a + b);
+
+    List<PieChartSectionData> sections = [];
+    int i = 0;
+    reservationCounts.forEach((objectName, count) {
+      final percent = (count / totalReservations * 100).toStringAsFixed(1);
+
+      sections.add(
+        PieChartSectionData(
+          value: count.toDouble(),
+          title: '$percent%',
+          color: colors[i % colors.length],
+          radius: 70,
+          titleStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      );
+      i++;
+    });
+    /* BROJ REZERVACIJA PO OBJEKTU ---END */
 
     return SingleChildScrollView(
       child: Column(
@@ -329,6 +370,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
                 const SizedBox(width: 50),
+                 Column(
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Appointments per object",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 80),
+                  SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: PieChart(
+                      PieChartData(
+                        sections: sections,
+                        centerSpaceRadius: 40,
+                        sectionsSpace: 2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 30),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: reservationCounts.keys
+                    .toList()
+                    .asMap()
+                    .entries
+                    .map((entry) {
+                  int index = entry.key;
+                  final objectId = entry.value.toString();
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          color: colors[index % colors.length],
+                        ),
+                        const SizedBox(width: 8),
+                        Text("$objectId"),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
               ],
             ),
           ),

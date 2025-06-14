@@ -1,7 +1,9 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_desktop/models/object_model.dart';
+import 'package:rekreacija_desktop/models/review_model.dart';
 import 'package:rekreacija_desktop/providers/notification_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/review_provider.dart';
@@ -26,6 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool isLoading = true;
   ObjectModel? object;
   String? baseUrl = "http://localhost:5246";
+  List<ReviewModel> reviewsOfMyObject = [];
 
   @override
   void initState() {
@@ -35,6 +38,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     reviewProvider = context.read<ReviewProvider>();
     fetchData();
   }
+
+  Map<int, int> ratingCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
 
   Future<void> fetchData() async {
     try {
@@ -47,8 +52,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         numberOfObjects = userObject.length;
         numberOfNotifications = userNotification.length;
         numberOfReviews = reviews.length;
+        reviewsOfMyObject = reviews;
         object = userObject.isNotEmpty ? userObject.first : null;
         isLoading = false;
+        for (var r in reviewsOfMyObject) {
+          int rating = r.rating?.round() ?? 0;
+          if (ratingCounts.containsKey(rating)) {
+            ratingCounts[rating] = ratingCounts[rating]! + 1;
+          }
+        }
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -74,6 +86,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       });
     }
+
+    /* CHART FOR RATINGS --START */
+    List<BarChartGroupData> ratingBars = ratingCounts.entries.map((entry) {
+      return BarChartGroupData(
+        x: entry.key,
+        barRods: [
+          BarChartRodData(
+            toY: entry.value.toDouble(),
+            color: Colors.orange,
+            width: 20,
+            borderRadius: BorderRadius.circular(4),
+          )
+        ],
+      );
+    }).toList();
+    /* CHART FOR RATINGS --END */
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const Padding(
         padding: EdgeInsets.all(40.0),
@@ -102,19 +131,72 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const SizedBox(height: 10),
       Padding(
         padding: const EdgeInsets.only(left: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            if (object != null) ...[
-              const Text("Last added object"),
-              objectCardView(
-                object!.name!,
-                object!.address!,
-                object!.imagePath != null
-                    ? Image.network('$baseUrl${object!.imagePath!}')
-                    : Image.asset("assets/images/RekreacijaDefault.jpg"),
-              ),
-            ]
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (object != null) ...[
+                  const Text("Last added object"),
+                  objectCardView(
+                    object!.name!,
+                    object!.address!,
+                    object!.imagePath != null
+                        ? Image.network('$baseUrl${object!.imagePath!}')
+                        : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                  ),
+                ]
+              ],
+            ),
+            const SizedBox(width: 50),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Reviews by rating",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: ratingCounts.values
+                              .reduce((a, b) => a > b ? a : b)
+                              .toDouble() +
+                          2,
+                      //barTouchData: const BarTouchData(enabled: true),
+                      barTouchData: BarTouchData(
+                        touchTooltipData: BarTouchTooltipData(
+                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                            return BarTooltipItem(
+                              rod.toY.toInt().toString(),
+                              const TextStyle(color: Colors.white),
+                            );
+                          },
+                        ),
+                      ),
+                      titlesData: FlTitlesData(
+                        leftTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) =>
+                                Text('${value.toInt()}★'),
+                          ),
+                        ),
+                      ),
+                      borderData: FlBorderData(show: false),
+                      barGroups: ratingBars,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       )

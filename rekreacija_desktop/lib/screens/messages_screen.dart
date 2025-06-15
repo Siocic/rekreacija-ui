@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:rekreacija_desktop/utils/utils.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
-import 'package:rekreacija_desktop/screens/message_thread_screen.dart'; // You will create this
+import 'package:rekreacija_desktop/screens/message_thread_screen.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -37,13 +38,27 @@ class _MessagesScreenState extends State<MessagesScreen> {
       setState(() => _conversations = data);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load conversations (${response.statusCode})')),
+        SnackBar(
+            content:
+                Text('Failed to load conversations')),
       );
     }
   }
 
+  bool _hasCheckedToken = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,7 +70,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40.0),
             child: _conversations.isEmpty
-                ? const Center(child: Text("No conversations yet", style: TextStyle(fontSize: 16)))
+                ? const Center(
+                    child: Text("No conversations yet",
+                        style: TextStyle(fontSize: 16)))
                 : ListView.builder(
                     itemCount: _conversations.length,
                     itemBuilder: (context, index) {
@@ -72,7 +89,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 .toString()
                                 .substring(0, 16)
                                 .replaceAll('T', ' '),
-                            style: const TextStyle(color: Colors.white38, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.white38, fontSize: 12),
                           ),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(

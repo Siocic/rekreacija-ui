@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rekreacija_desktop/utils/utils.dart';
+import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 class MessageThreadScreen extends StatefulWidget {
@@ -15,12 +16,10 @@ class MessageThreadScreen extends StatefulWidget {
   });
 
   @override
-  State<MessageThreadScreen> createState() =>
-      _MessageThreadScreenState();
+  State<MessageThreadScreen> createState() => _MessageThreadScreenState();
 }
 
-class _MessageThreadScreenState
-    extends State<MessageThreadScreen> {
+class _MessageThreadScreenState extends State<MessageThreadScreen> {
   HubConnection? _hubConnection;
   final TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> _messages = [];
@@ -76,9 +75,7 @@ class _MessageThreadScreenState
     try {
       await _hubConnection!.start();
       await _hubConnection!.invoke("RegisterUser", args: [senderId]);
-    } catch (e) {
-      // handle connection error
-    }
+    } catch (e) {}
   }
 
   Future<void> _loadMessageHistory(String senderId) async {
@@ -113,23 +110,38 @@ class _MessageThreadScreenState
         _hubConnection?.state != HubConnectionState.Connected) return;
 
     try {
-      await _hubConnection!.invoke("SendMessage", args: [senderId, recipientId, content]);
+      await _hubConnection!
+          .invoke("SendMessage", args: [senderId, recipientId, content]);
       _controller.clear();
-    } catch (e) {
-      // handle send error
-    }
+    } catch (e) {}
   }
+
+  bool _hasCheckedToken = false;
 
   @override
   Widget build(BuildContext context) {
+    if (!_hasCheckedToken) {
+      _hasCheckedToken = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool isExpired = await isTokenExpired();
+        if (isExpired) {
+          showTokenExpiredDialog(context);
+          return;
+        }
+      });
+    }
+
     final userId = _currentUserId;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat with ${widget.hallName}",style: const TextStyle(color: Colors.white),),
+        title: Text(
+          "Chat with ${widget.hallName}",
+          style: const TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.teal.shade800,   
-        iconTheme: const IconThemeData(color: Colors.white),     
+        backgroundColor: Colors.teal.shade800,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _connecting
           ? const Center(child: CircularProgressIndicator())
@@ -142,9 +154,8 @@ class _MessageThreadScreenState
                       final msg = _messages[i];
                       final isMe = msg["senderId"] == userId;
                       return Align(
-                        alignment: isMe
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
+                        alignment:
+                            isMe ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
                           margin: const EdgeInsets.all(8),
                           padding: const EdgeInsets.all(10),
@@ -181,12 +192,22 @@ class _MessageThreadScreenState
                       ),
                       const SizedBox(width: 10),
                       ElevatedButton(
-                        onPressed: _sendMessage,
+                        onPressed: () async {
+                          bool isExpired = await isTokenExpired();
+                          if (isExpired) {
+                            showTokenExpiredDialog(context);
+                            return;
+                          } else {
+                            await _sendMessage();
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal.shade700,
-                          iconColor: Colors.white
+                            backgroundColor: Colors.teal.shade700,
+                            iconColor: Colors.white),
+                        child: const Text(
+                          "Send",
+                          style: TextStyle(color: Colors.white),
                         ),
-                        child: const Text("Send",style: TextStyle(color: Colors.white),),
                       )
                     ],
                   ),

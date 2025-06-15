@@ -221,261 +221,259 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     /* BROJ REZERVACIJA PO OBJEKTU ---END */
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(40.0),
-            child: ContentHeader(title: 'Dashboard'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(40.0),
+          child: ContentHeader(title: 'Dashboard'),
+        ),
+        const SizedBox(height: 30),
+        Padding(
+          padding: const EdgeInsets.only(left: 40),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CardView(
+                  icon: Icons.apartment,
+                  num: numberOfObjects,
+                  decription: "My objects",
+                  isLoading: isLoading),
+              const SizedBox(width: 10),
+              CardView(
+                  icon: Icons.reviews,
+                  num: numberOfReviews,
+                  decription: "Total reivews",
+                  isLoading: isLoading),
+            ],
           ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.only(left: 40),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CardView(
-                    icon: Icons.apartment,
-                    num: numberOfObjects,
-                    decription: "My objects",
-                    isLoading: isLoading),
-                const SizedBox(width: 10),
-                CardView(
-                    icon: Icons.reviews,
-                    num: numberOfReviews,
-                    decription: "Total reivews",
-                    isLoading: isLoading),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(left: 40),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (object != null) ...[
-                      const Text("Last added object"),
-                      objectCardView(
-                        object!.name!,
-                        object!.address!,
-                        object!.imagePath != null
-                            ? Image.network('$baseUrl${object!.imagePath!}')
-                            : Image.asset("assets/images/RekreacijaDefault.jpg"),
-                      ),
-                    ]
-                  ],
-                ),
-                const SizedBox(width: 50),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Reviews by rating",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.only(left: 40),
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (object != null) ...[
+                    const Text("Last added object"),
+                    objectCardView(
+                      object!.name!,
+                      object!.address!,
+                      object!.imagePath != null
+                          ? Image.network('$baseUrl${object!.imagePath!}')
+                          : Image.asset("assets/images/RekreacijaDefault.jpg"),
                     ),
-                    const SizedBox(height: 30),
-                    SizedBox(
-                      height: 300,
-                      width: 300,
-                      child: BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceAround,
-                          maxY: ratingCounts.values
-                                  .reduce((a, b) => a > b ? a : b)
-                                  .toDouble() +
-                              2,
-                          //barTouchData: const BarTouchData(enabled: true),
-                          barTouchData: BarTouchData(
-                            touchTooltipData: BarTouchTooltipData(
-                              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                                return BarTooltipItem(
-                                  rod.toY.toInt().toString(),
-                                  const TextStyle(color: Colors.white),
-                                );
-                              },
-                            ),
-                          ),
-                          titlesData: FlTitlesData(
-                            leftTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) =>
-                                    Text('${value.toInt()}★'),
-                              ),
-                            ),
-                          ),
-                          borderData: FlBorderData(show: false),
-                          barGroups: ratingBars,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 35),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Renevue per object",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      height: 300,
-                      width: 300,
-                      child: BarChart(
-                        BarChartData(
-                          barGroups: amountBars,
-                          barTouchData: BarTouchData(
-                            touchTooltipData: BarTouchTooltipData(
-                              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                                return BarTooltipItem(
-                                  rod.toY.toInt().toString(),
-                                  const TextStyle(color: Colors.white),
-                                );
-                              },
-                            ),
-                          ),
-                          titlesData: FlTitlesData(
-                            leftTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) {
-                                  int index = value.toInt();
-                                  if (index >= 0 && index <= objectNames.length) {
-                                    return Text(objectNames[index]);
-                                  } else {
-                                    return const Text('');
-                                  }
-                                },
-                              ),
-                            ),
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 50),
-                 Column(
-                //crossAxisAlignment: CrossAxisAlignment.start,
+                  ]
+                ],
+              ),
+              const SizedBox(width: 50),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Appointments per object",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    "Reviews by rating",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 30),
                   SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: PieChart(
-                      PieChartData(
-                        sections: sections,
-                        centerSpaceRadius: 40,
-                        sectionsSpace: 2,
+                    height: 300,
+                    width: 300,
+                    child: BarChart(
+                      BarChartData(
+                        alignment: BarChartAlignment.spaceAround,
+                        maxY: ratingCounts.values
+                                .reduce((a, b) => a > b ? a : b)
+                                .toDouble() +
+                            2,
+                        //barTouchData: const BarTouchData(enabled: true),
+                        barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              return BarTooltipItem(
+                                rod.toY.toInt().toString(),
+                                const TextStyle(color: Colors.white),
+                              );
+                            },
+                          ),
+                        ),
+                        titlesData: FlTitlesData(
+                          leftTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) =>
+                                  Text('${value.toInt()}★'),
+                            ),
+                          ),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        barGroups: ratingBars,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: 30),
+              const SizedBox(width: 35),
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: reservationCounts.keys
-                    .toList()
-                    .asMap()
-                    .entries
-                    .map((entry) {
-                  int index = entry.key;
-                  final objectId = entry.value.toString();
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 12,
-                          height: 12,
-                          color: colors[index % colors.length],
-                        ),
-                        const SizedBox(width: 8),
-                        Text("$objectId"),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 15),
-          Padding(
-            padding: const EdgeInsets.only(left: 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Appointments per month",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 300,
-                  child: BarChart(
-                    BarChartData(
-                      barGroups: barData,
-                      barTouchData: BarTouchData(
-                        touchTooltipData: BarTouchTooltipData(
-                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                            return BarTooltipItem(
-                              rod.toY.toInt().toString(),
-                              const TextStyle(color: Colors.white),
-                            );
-                          },
-                        ),
-                      ),
-                      titlesData: FlTitlesData(
-                        leftTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) {
-                              if (value.toInt() < sortedKeys.length) {
-                                final label = sortedKeys[value.toInt()];
-                                return Text(getMonthName(label));
-                              } else {
-                                return const Text('');
-                              }
+                children: [
+                  const Text(
+                    "Renevue per object",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: BarChart(
+                      BarChartData(
+                        barGroups: amountBars,
+                        barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              return BarTooltipItem(
+                                rod.toY.toInt().toString(),
+                                const TextStyle(color: Colors.white),
+                              );
                             },
                           ),
                         ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
+                        titlesData: FlTitlesData(
+                          leftTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                int index = value.toInt();
+                                if (index >= 0 && index <= objectNames.length) {
+                                  return Text(objectNames[index]);
+                                } else {
+                                  return const Text('');
+                                }
+                              },
+                            ),
+                          ),
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
                         ),
                       ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 50),
+               Column(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Appointments per object",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 80),
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: PieChart(
+                    PieChartData(
+                      sections: sections,
+                      centerSpaceRadius: 40,
+                      sectionsSpace: 2,
                     ),
                   ),
                 ),
               ],
             ),
-          )
-        ],
-      ),
+            const SizedBox(width: 30),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: reservationCounts.keys
+                  .toList()
+                  .asMap()
+                  .entries
+                  .map((entry) {
+                int index = entry.key;
+                final objectId = entry.value.toString();
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        color: colors[index % colors.length],
+                      ),
+                      const SizedBox(width: 8),
+                      Text("$objectId"),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 15),
+        Padding(
+          padding: const EdgeInsets.only(left: 50),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Appointments per month",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 300,
+                child: BarChart(
+                  BarChartData(
+                    barGroups: barData,
+                    barTouchData: BarTouchData(
+                      touchTooltipData: BarTouchTooltipData(
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          return BarTooltipItem(
+                            rod.toY.toInt().toString(),
+                            const TextStyle(color: Colors.white),
+                          );
+                        },
+                      ),
+                    ),
+                    titlesData: FlTitlesData(
+                      leftTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            if (value.toInt() < sortedKeys.length) {
+                              final label = sortedKeys[value.toInt()];
+                              return Text(getMonthName(label));
+                            } else {
+                              return const Text('');
+                            }
+                          },
+                        ),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

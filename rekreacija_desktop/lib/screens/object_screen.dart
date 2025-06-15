@@ -21,7 +21,9 @@ class _ObjectScreen extends State<ObjectScreen> {
   late ObjectProvider _objectProvider;
   List<ObjectModel>? objects;
   Image? image;
-  String? baseUrl = "http://localhost:5246";
+  //String? baseUrl = "http://localhost:5246";
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
+
 
   @override
   void initState() {

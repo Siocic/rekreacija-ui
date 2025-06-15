@@ -12,7 +12,7 @@ class AuthProvider extends ChangeNotifier {
   static String? _baseUrl;
   final _secureStorage = const FlutterSecureStorage();
   AuthProvider() {
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://localhost:5246/");
   }
 

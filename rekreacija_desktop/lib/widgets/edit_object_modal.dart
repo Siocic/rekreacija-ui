@@ -34,7 +34,9 @@ class _EditObjectModalState extends State<EditObjectModal> {
   String? base64Image;
   List<SportCategory> sports = [];
   String userId = '';
-  String? baseUrl = "http://localhost:5246";
+  //String? baseUrl = "http://localhost:5246";
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246");
+
 
   @override
   void initState() {

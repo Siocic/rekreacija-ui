@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 class AppointmentProvider extends BaseProvder<AppointmentModel> {
   static String? _baseUrl;
   AppointmentProvider() : super("Appointment") {
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://localhost:5246/");
   }
 
@@ -56,7 +56,7 @@ class AppointmentProvider extends BaseProvder<AppointmentModel> {
   }
 
   Future<List<HolidayModel>> getObjectHolidays() async {
-  final uri = Uri.parse("http://localhost:5246/Holiday/GetHolidaysForCurrentUserObjects");
+  final uri = Uri.parse("${_baseUrl}Holiday/GetHolidaysForCurrentUserObjects");
   final headers = await getAuthHeaders();
   final response = await http.get(uri, headers: headers);
 

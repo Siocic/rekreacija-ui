@@ -5,7 +5,7 @@ import 'package:rekreacija_desktop/models/object_holiday_model.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
 
 class HolidayProvider {
-  static String _baseUrl = const String.fromEnvironment("baseUrl",
+  static String _baseUrl = const String.fromEnvironment("BASE_URL",
       defaultValue: "http://localhost:5246/");
 
   Future<List<HolidayModel>> getAllHolidays() async {

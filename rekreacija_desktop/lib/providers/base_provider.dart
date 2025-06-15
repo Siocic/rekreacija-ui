@@ -9,7 +9,7 @@ abstract class BaseProvder<T> with ChangeNotifier {
 
   BaseProvder(String endpoint) {
     _endpoint = endpoint;
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://localhost:5246/");
   }
   T fromJson(data) {

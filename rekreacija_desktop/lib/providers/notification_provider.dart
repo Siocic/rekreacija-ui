@@ -8,7 +8,7 @@ class NotificationProvider extends BaseProvder<NotificationModel>{
  static String? _baseUrl;
  
   NotificationProvider():super("Notification"){
-      _baseUrl = const String.fromEnvironment("baseUrl",
+      _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://localhost:5246/");
   }
    @override

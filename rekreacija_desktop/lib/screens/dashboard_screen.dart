@@ -30,7 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int numberOfReviews = 0;
   bool isLoading = true;
   ObjectModel? object;
-  String? baseUrl = "http://localhost:5246";
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
   List<ReviewModel> reviewsOfMyObject = [];
   List<MyClientPaymentsModel> payments = [];
   List<MyClientPaymentsModel> appointments = [];

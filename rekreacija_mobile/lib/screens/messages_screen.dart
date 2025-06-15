@@ -30,8 +30,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
     final userId = await getUserId();
 
     setState(() => _userId = userId);
-    //final url = "http://10.0.2.2:5246/chat/conversations/$userId";
-    final url = "${baseUrl}chat/conversations/$userId";
+    final url = "http://10.0.2.2:7271/chat/conversations/$userId";
+    //final url = "${baseUrl}chat/conversations/$userId";
     try {
       final headers = await getAuthHeaders();
 

@@ -21,7 +21,6 @@ Korisnici koji se registruju kao fizička lica imaju pristup sljedećim funkcion
 📅 Pregled prethodnih rezervacija
 📰 Pregled novosti koje dvorane objavljuju
 💬 Komunikacija sa vlasnicima dvorana putem poruka
-⏳ Status rezervacije (termin mora biti odobren)
 
 ---
 
@@ -82,7 +81,7 @@ Za desktop aplikaciju važe slijedeći kredencijali
 `password: 123Pa$$word`
 
 ### Pravno lice
-`email: superadmin.@email.com`
+`email: pravnolice.@email.com`
 `password: 123Pa$$word`
 
 ### Za mobilnu aplikaciju su sljedeći kredencijali

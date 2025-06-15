@@ -61,29 +61,44 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
               ),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              scrollDirection: Axis.vertical,
-              itemCount: reservationModel.length,
-              itemBuilder: (context, index) {
-                final reservation = reservationModel[index];
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ReservationCard(
-                      objectName: reservation.objectName!,
-                      objectAddress: reservation.objectAdress!,
-                      objectImage: reservation.objectImage != null
-                          ? Image.network('$baseUrl${reservation.objectImage!}')
-                          : Image.asset("assets/images/RekreacijaDefault.jpg"),
-                      appointmentDate: DateFormat('d/M/y')
-                          .format(reservation.appointmentDate!),
-                      appointmentTime: DateFormat('Hm')
-                          .format(reservation.appointmentDate!)),
-                );
-              },
-            ),
-          )
+          if(reservationModel.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  SizedBox(height: 10),
+                  Text(
+                    "No reservations found.",
+                    style: TextStyle(color: Colors.white, fontSize: 17),
+                  ),
+                ],
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                scrollDirection: Axis.vertical,
+                itemCount: reservationModel.length,
+                itemBuilder: (context, index) {
+                  final reservation = reservationModel[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ReservationCard(
+                        objectName: reservation.objectName!,
+                        objectAddress: reservation.objectAdress!,
+                        objectImage: reservation.objectImage != null
+                            ? Image.network('$baseUrl${reservation.objectImage!}')
+                            : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                        appointmentDate: DateFormat('d/M/y')
+                            .format(reservation.appointmentDate!),
+                        appointmentTime: DateFormat('Hm')
+                            .format(reservation.appointmentDate!)),
+                  );
+                },
+              ),
+            )
         ],
       ),
     );

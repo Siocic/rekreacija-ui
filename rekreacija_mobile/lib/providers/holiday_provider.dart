@@ -5,7 +5,7 @@ import 'package:rekreacija_mobile/utils/utils.dart';
 
 class HolidayProvider {
   static String _baseUrl = const String.fromEnvironment(
-    "baseUrl",
+    "BASE_URL",
     defaultValue: "http://10.0.2.2:5246/",
   );
 

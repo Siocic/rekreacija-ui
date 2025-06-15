@@ -17,6 +17,8 @@ class MessagesScreen extends StatefulWidget {
 class _MessagesScreenState extends State<MessagesScreen> {
   List<dynamic> _conversations = [];
   String? _userId;
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
+
 
   @override
   void initState() {
@@ -28,7 +30,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
     final userId = await getUserId();
 
     setState(() => _userId = userId);
-    final url = "http://10.0.2.2:5246/chat/conversations/$userId";
+    //final url = "http://10.0.2.2:5246/chat/conversations/$userId";
+    final url = "${baseUrl}chat/conversations/$userId";
     try {
       final headers = await getAuthHeaders();
 

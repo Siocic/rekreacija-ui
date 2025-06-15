@@ -9,7 +9,7 @@ class AppointmentProvider extends BaseProvider<AppointmentModel> {
   static String? _baseUrl;
 
   AppointmentProvider() : super("Appointment") {
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://10.0.2.2:5246/");
   }
 

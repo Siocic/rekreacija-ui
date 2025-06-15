@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class ObjectProvider extends BaseProvider<ObjectModel> {
   static String? _baseUrl;
   ObjectProvider() : super("Object") {
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://10.0.2.2:5246/");
   }
 

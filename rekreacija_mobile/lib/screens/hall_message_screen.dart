@@ -34,6 +34,8 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> _messages = [];
   bool _connecting = true;
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
+
 
   @override
   void initState() {
@@ -81,13 +83,15 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
-          "http://10.0.2.2:5246/chat?userId=$senderId",
+           "http://10.0.2.2:7271/chat?userId=$senderId",
+          //"${baseUrl}/chat?userId=$senderId",
           options: HttpConnectionOptions(
             accessTokenFactory: () async => jwt,
           ),
         )
         .build();
-
+        
+      print("${baseUrl}/chat?userId=$senderId");
     _hubConnection!.on("ReceiveMessage", (args) {
       final msg = args?.first;
       print("📥 Received: $msg");
@@ -118,11 +122,10 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
     }
     final headers = await getAuthHeaders();
 
-    final response = await http.get(
-      Uri.parse("http://10.0.2.2:5246/Chat/$senderId/$recipientId"),
-      headers: headers,
-    );
+    final response = await http.get(Uri.parse("http://10.0.2.2:7271/Chat/$senderId/$recipientId"),headers: headers,  );
+    //final response = await http.get(Uri.parse("${baseUrl}Chat/$senderId/$recipientId"),headers: headers,  );
 
+    print("${baseUrl}Chat/$senderId/$recipientId");
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List;
       setState(() {

@@ -8,7 +8,7 @@ class ReviewProvider extends BaseProvider<ReviewModel> {
   static String? _baseUrl;
 
   ReviewProvider() : super("Review") {
-    _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("BASE_URL",
         defaultValue: "http://10.0.2.2:5246/");
   }
 

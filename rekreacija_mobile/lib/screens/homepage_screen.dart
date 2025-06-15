@@ -21,7 +21,7 @@ class _HomePageScreen extends State<HomePageScreen> {
   List<ObjectModel> recentAppointments = [];
   List<ObjectModel> favoritesObject = [];
   List<ObjectModel> popularObject = [];
-  static String? baseUrl = "http://10.0.2.2:5246";
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
 
   @override
   void initState() {

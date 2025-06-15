@@ -31,7 +31,7 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   List<ObjectModel> objects = [];
   List<ObjectModel> filteredObjects = [];
   String userId = '';
-  static String? baseUrl = "http://10.0.2.2:5246";
+  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
 
   @override
   void initState() {

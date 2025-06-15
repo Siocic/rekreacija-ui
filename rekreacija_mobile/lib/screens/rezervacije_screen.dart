@@ -17,7 +17,7 @@ class RezervacijeScreen extends StatefulWidget {
 class _RezervacijaScreen extends State<RezervacijeScreen> {
   late AppointmentProvider appointmentProvider;
   List<MyReservationModel> reservationModel = [];
-  static String? baseUrl = "http://10.0.2.2:5246";
+    static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
 
   @override
   void initState() {

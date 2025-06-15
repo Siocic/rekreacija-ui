@@ -58,6 +58,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   errorText: 'Minimum 2 characters'),
               FormBuilderValidators.maxLength(50,
                   errorText: 'Maximum 50 characters'),
+              FormBuilderValidators.match(
+                RegExp(r"^[a-zA-ZčćžšđČĆŽŠĐ\s-]+$"),
+                errorText: 'Only letters, spaces, and hyphens are allowed',
+              ),
             ]),
           ),
           const SizedBox(height: 10),
@@ -76,6 +80,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   errorText: 'Minimum 2 characters'),
               FormBuilderValidators.maxLength(50,
                   errorText: 'Maximum 50 characters'),
+              FormBuilderValidators.match(
+                RegExp(r"^[a-zA-ZčćžšđČĆŽŠĐ\s-]+$"),
+                errorText: 'Only letters, spaces, and hyphens are allowed',
+              ),
             ]),
           ),
           const SizedBox(height: 10),
@@ -107,6 +115,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   errorText: 'Minimum 2 characters'),
               FormBuilderValidators.maxLength(50,
                   errorText: 'Maximum 50 characters'),
+              FormBuilderValidators.match(
+                RegExp(r"^[a-zA-ZčćžšđČĆŽŠĐ\s-]+$"),
+                errorText:
+                    'City name can only contain letters, spaces, and hyphens',
+              ),
             ]),
           ),
           const SizedBox(height: 10),
@@ -135,7 +148,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               filled: true,
               prefixIcon: Icon(Icons.phone, color: Colors.black),
             ),
-            keyboardType:TextInputType.phone,
+            keyboardType: TextInputType.phone,
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(),
               FormBuilderValidators.phoneNumber()

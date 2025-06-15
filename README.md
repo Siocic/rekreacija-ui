@@ -72,7 +72,7 @@ Aplikacija pruža efikasan sistem za upravljanje rezervacijama sportskih objekat
 - Instalirajte potrebne dependencies:
 - `flutter pub get`
 - Pokrenite aplikaciju
-- `flutter run -d windows`
+- `flutter run`
 
 ## Kredencijali
 Za desktop aplikaciju važe slijedeći kredencijali

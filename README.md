@@ -89,3 +89,7 @@ Za desktop aplikaciju važe slijedeći kredencijali
 ### Fizičko lice
 `email: fizickolice@email.com`
 `password: 123Pa$$word`
+
+## Paypal kredencijali
+`email: rsrekreacija@email.com`
+`password: 5L5r/0GL`

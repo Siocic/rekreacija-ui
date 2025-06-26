@@ -7,11 +7,12 @@ class AppointmentInsertModel {
   DateTime? appointment_date;
   DateTime? start_time;
   DateTime? end_time;
+  int? number_of_players;
   int? object_id;
   String? user_id;
   double? amount;
 
-AppointmentInsertModel(this.appointment_date, this.start_time, this.end_time, this.object_id, this.user_id, this.amount);
+AppointmentInsertModel(this.appointment_date, this.start_time, this.end_time,this.number_of_players ,this.object_id, this.user_id, this.amount);
 
   factory AppointmentInsertModel.fromJson(Map<String, dynamic> json) => _$AppointmentInsertModelFromJson(json);
 

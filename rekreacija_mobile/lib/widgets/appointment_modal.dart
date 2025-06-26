@@ -30,6 +30,7 @@ class _AppointmentModalState extends State<AppointmentModal> {
   late HolidayProvider _holidayProvider;
 
   double totalPrice = 0.0;
+  int players = 0;
   List<DateTime> holidayDates = [];
   List<AppointmentModel> allAppointments = [];
   bool _isChecking = false;
@@ -170,6 +171,53 @@ class _AppointmentModalState extends State<AppointmentModal> {
                   Text("Price ${totalPrice.toStringAsFixed(2)} KM/h"),
                   const SizedBox(height: 10),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Number of players: "),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: () {
+                          if (players > 0) {
+                            setState(() {
+                              players--;
+                            });
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(50),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.green,
+                          radius: 12,
+                          child: Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text("${players}"),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            players++;
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(50),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.green,
+                          radius: 12,
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
@@ -177,6 +225,22 @@ class _AppointmentModalState extends State<AppointmentModal> {
                           bool isExpired = await isTokenExpired();
                           if (isExpired) {
                             showTokenExpiredDialog(context);
+                            return;
+                          }
+                          if (players <= 0) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Error'),
+                                content: const Text(
+                                    "You must have at least 1 player."),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('OK'))
+                                ],
+                              ),
+                            );
                             return;
                           }
 
@@ -234,6 +298,7 @@ class _AppointmentModalState extends State<AppointmentModal> {
                                       startDate,
                                       startDate,
                                       endDate,
+                                      players,
                                       widget.object_id,
                                       widget.userId,
                                       totalPrice);

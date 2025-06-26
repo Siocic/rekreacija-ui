@@ -18,6 +18,7 @@ AppointmentInsertModel _$AppointmentInsertModelFromJson(
       json['end_time'] == null
           ? null
           : DateTime.parse(json['end_time'] as String),
+      (json['number_of_players'] as num?)?.toInt(),
       (json['object_id'] as num?)?.toInt(),
       json['user_id'] as String?,
       (json['amount'] as num?)?.toDouble(),
@@ -29,6 +30,7 @@ Map<String, dynamic> _$AppointmentInsertModelToJson(
       'appointment_date': instance.appointment_date?.toIso8601String(),
       'start_time': instance.start_time?.toIso8601String(),
       'end_time': instance.end_time?.toIso8601String(),
+      'number_of_players': instance.number_of_players,
       'object_id': instance.object_id,
       'user_id': instance.user_id,
       'amount': instance.amount,

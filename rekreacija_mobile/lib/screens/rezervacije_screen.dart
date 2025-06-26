@@ -17,7 +17,8 @@ class RezervacijeScreen extends StatefulWidget {
 class _RezervacijaScreen extends State<RezervacijeScreen> {
   late AppointmentProvider appointmentProvider;
   List<MyReservationModel> reservationModel = [];
-    static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
+  static String? baseUrl =
+      String.fromEnvironment("BASE_URL", defaultValue: "http://10.0.2.2:5246/");
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
               ),
             ],
           ),
-          if(reservationModel.isEmpty)
+          if (reservationModel.isEmpty)
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -86,17 +87,21 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
                   return Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ReservationCard(
-                        objectName: reservation.objectName!,
-                        objectAddress: reservation.objectAdress!,
-                        objectImage: reservation.objectImage != null
-                            ? Image.network('$baseUrl${reservation.objectImage!}')
-                            : Image.asset("assets/images/RekreacijaDefault.jpg"),
-                        appointmentDate: DateFormat('d/M/y')
-                            .format(reservation.appointmentDate!),
-                        appointmentTime: DateFormat('Hm')
-                            .format(reservation.appointmentDate!),
-                            status: reservation.is_approved!,
-                            ),
+                      objectName: reservation.objectName!,
+                      objectAddress: reservation.objectAdress!,
+                      objectImage: reservation.objectImage != null
+                          ? Image.network('$baseUrl${reservation.objectImage!}')
+                          : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                      appointmentDate: DateFormat('d/M/y')
+                          .format(reservation.appointmentDate!),
+                      appointmentTime:
+                          DateFormat('Hm').format(reservation.appointmentDate!),
+                      status: reservation.is_approved!,
+                      appointmentEndTime: DateFormat('Hm')
+                          .format(reservation.appointmentEndDate!),
+                      numberOfPlayers: reservation.number_of_players!,
+                      price: reservation.price!,
+                    ),
                   );
                 },
               ),

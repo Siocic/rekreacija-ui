@@ -9,10 +9,22 @@ class MyReservationModel {
   String? objectImage;
   DateTime? appointmentDate;
   bool? is_approved;
+  DateTime? appointmentEndDate;
+  int? number_of_players;
+  double? price;
 
-  MyReservationModel(this.objectName, this.objectAdress, this.objectImage,this.appointmentDate,this.is_approved);
+  MyReservationModel(
+      this.objectName,
+      this.objectAdress,
+      this.objectImage,
+      this.appointmentDate,
+      this.is_approved,
+      this.appointmentEndDate,
+      this.number_of_players,
+      this.price);
 
-  factory MyReservationModel.fromJson(Map<String, dynamic> json) => _$MyReservationModelFromJson(json);
+  factory MyReservationModel.fromJson(Map<String, dynamic> json) =>
+      _$MyReservationModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$MyReservationModelToJson(this);
 }

@@ -8,6 +8,9 @@ class ReservationCard extends StatefulWidget {
   final String appointmentDate;
   final String appointmentTime;
   final bool status;
+  final String appointmentEndTime;
+  final int numberOfPlayers;
+  final double price;
 
   ReservationCard({
     super.key,
@@ -17,6 +20,9 @@ class ReservationCard extends StatefulWidget {
     required this.appointmentDate,
     required this.appointmentTime,
     required this.status,
+    required this.appointmentEndTime,
+    required this.numberOfPlayers,
+    required this.price,
   });
 
   @override
@@ -74,31 +80,21 @@ class _ReservationCardState extends State<ReservationCard> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        widget.appointmentTime,
+                        '${widget.appointmentTime}-${widget.appointmentEndTime}',
                         style: GoogleFonts.suezOne(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
                             fontSize: 16),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (widget.status == false)
-                        Text(
-                          "Status: Pending",
-                          style: GoogleFonts.suezOne(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      else
-                        Text(
-                          "Status: Approved",
-                          style: GoogleFonts.suezOne(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      Text(
+                        "Satus: ${widget.status ? "Approved" : "Pending"}",
+                        style: GoogleFonts.suezOne(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
@@ -109,15 +105,55 @@ class _ReservationCardState extends State<ReservationCard> {
               right: 0,
               child: IconButton(
                 icon: const Icon(
-                  Icons.near_me_sharp,
+                  Icons.info,
                   color: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: _showDetailsDialog,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _showDetailsDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              backgroundColor: const Color.fromRGBO(49, 49, 49, 1),
+              title: Text(
+                widget.objectName,
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Adresa: ${widget.objectAddress}',
+                      style: const TextStyle(color: Colors.white)),
+                  Text('Datum: ${widget.appointmentDate}',
+                      style: const TextStyle(color: Colors.white)),
+                  Text(
+                      'Vrijme: ${widget.appointmentTime}-${widget.appointmentEndTime}',
+                      style: const TextStyle(color: Colors.white)),
+                  Text('Broj igraca: ${widget.numberOfPlayers}',
+                      style: const TextStyle(color: Colors.white)),
+                  Text('Cijena: ${widget.price} KM',
+                      style: const TextStyle(color: Colors.white)),
+                  Text('Status: ${widget.status ? "Approved" : "Pending"}',
+                      style: const TextStyle(color: Colors.white)),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "Close",
+                      style: TextStyle(color: Colors.white),
+                    ))
+              ],
+            ));
   }
 }

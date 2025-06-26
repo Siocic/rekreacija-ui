@@ -15,6 +15,11 @@ MyReservationModel _$MyReservationModelFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['appointmentDate'] as String),
       json['is_approved'] as bool?,
+      json['appointmentEndDate'] == null
+          ? null
+          : DateTime.parse(json['appointmentEndDate'] as String),
+      (json['number_of_players'] as num?)?.toInt(),
+      (json['price'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$MyReservationModelToJson(MyReservationModel instance) =>
@@ -24,4 +29,7 @@ Map<String, dynamic> _$MyReservationModelToJson(MyReservationModel instance) =>
       'objectImage': instance.objectImage,
       'appointmentDate': instance.appointmentDate?.toIso8601String(),
       'is_approved': instance.is_approved,
+      'appointmentEndDate': instance.appointmentEndDate?.toIso8601String(),
+      'number_of_players': instance.number_of_players,
+      'price': instance.price,
     };

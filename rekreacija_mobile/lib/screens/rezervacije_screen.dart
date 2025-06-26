@@ -94,7 +94,9 @@ class _RezervacijaScreen extends State<RezervacijeScreen> {
                         appointmentDate: DateFormat('d/M/y')
                             .format(reservation.appointmentDate!),
                         appointmentTime: DateFormat('Hm')
-                            .format(reservation.appointmentDate!)),
+                            .format(reservation.appointmentDate!),
+                            status: reservation.is_approved!,
+                            ),
                   );
                 },
               ),

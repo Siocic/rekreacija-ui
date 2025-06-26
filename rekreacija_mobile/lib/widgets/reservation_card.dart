@@ -7,6 +7,7 @@ class ReservationCard extends StatefulWidget {
   final Image objectImage;
   final String appointmentDate;
   final String appointmentTime;
+  final bool status;
 
   ReservationCard({
     super.key,
@@ -15,6 +16,7 @@ class ReservationCard extends StatefulWidget {
     required this.objectImage,
     required this.appointmentDate,
     required this.appointmentTime,
+    required this.status,
   });
 
   @override
@@ -79,6 +81,24 @@ class _ReservationCardState extends State<ReservationCard> {
                             fontSize: 16),
                         overflow: TextOverflow.ellipsis,
                       ),
+                      if (widget.status == false)
+                        Text(
+                          "Status: Pending",
+                          style: GoogleFonts.suezOne(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      else
+                        Text(
+                          "Status: Approved",
+                          style: GoogleFonts.suezOne(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                     ],
                   ),
                 ),

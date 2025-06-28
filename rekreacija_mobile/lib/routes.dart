@@ -5,6 +5,7 @@ import 'package:rekreacija_mobile/screens/fizickolice_screen.dart';
 import 'package:rekreacija_mobile/screens/homepage_screen.dart';
 import 'package:rekreacija_mobile/screens/login_screen.dart';
 import 'package:rekreacija_mobile/screens/messages_screen.dart';
+import 'package:rekreacija_mobile/screens/my_reservations.dart';
 import 'package:rekreacija_mobile/screens/notifications_screen.dart';
 import 'package:rekreacija_mobile/screens/objekti_screen.dart';
 import 'package:rekreacija_mobile/screens/pravnolice_screen.dart';
@@ -29,6 +30,7 @@ class AppRoutes{
   static const String hallmessage='/hallMessage';
   static const String changePassord='/changePassword';
   static const String myFavorites='/myFavorites';
+  static const String myReservation='/myReservation';
 
   static Map<String,WidgetBuilder>getRoutes(){
     return{
@@ -45,6 +47,7 @@ class AppRoutes{
       roleselection:(context)=>const RoleSelectionScreen(),
       changePassord:(context)=> ChangePassword(),
       myFavorites:(context)=>FavoriteScreen(),
+      myReservation:(context)=>MyReservationHistory(),
     };
   }
 }

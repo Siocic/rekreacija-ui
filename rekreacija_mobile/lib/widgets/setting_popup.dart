@@ -20,27 +20,39 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
       color: const Color.fromARGB(225, 49, 49, 49),
       onSelected: (int value) async {
         switch (value) {
-          case 0:           
+          case 0:
             Navigator.pushNamed(context, AppRoutes.changePassord);
             break;
-          case 1:           
+          case 1:
             await _logout(context);
           case 2:
             Navigator.pushNamed(context, AppRoutes.myFavorites);
+          case 3:
+            Navigator.pushNamed(context, AppRoutes.myReservation);
           default:
             print('Invalid');
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
         const PopupMenuItem<int>(
-            value: 2,
-            child: Row(
-              children: [
-                Icon(Icons.favorite, color: Colors.red),
-                SizedBox(width: 8),
-                Text("My favorites",style: TextStyle(color: Colors.white)),
-              ],
-            ),
+          value: 2,
+          child: Row(
+            children: [
+              Icon(Icons.favorite, color: Colors.red),
+              SizedBox(width: 8),
+              Text("My favorites", style: TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
+        const PopupMenuItem<int>(
+          value: 3,
+          child: Row(
+            children: [
+              Icon(Icons.history_rounded, color: Colors.white),
+              SizedBox(width: 8),
+              Text("My reservations", style: TextStyle(color: Colors.white)),
+            ],
+          ),
         ),
         const PopupMenuItem<int>(
           value: 0,

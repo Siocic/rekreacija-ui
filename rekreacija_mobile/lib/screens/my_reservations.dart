@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -76,7 +75,7 @@ class _MyReservationHistoryState extends State<MyReservationHistory> {
                           appointmentDate: DateFormat('d/M/y')
                               .format(myReservation.appointmentDate!),
                           appointmentTime: DateFormat('Hm')
-                              .format(myReservation.appointmentDate!),
+                              .format(myReservation.appointmentStartDate!),
                           status: myReservation.is_approved!,
                           appointmentEndTime: DateFormat('Hm')
                               .format(myReservation.appointmentEndDate!),

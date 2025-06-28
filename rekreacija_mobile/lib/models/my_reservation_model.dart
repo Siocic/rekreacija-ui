@@ -9,6 +9,7 @@ class MyReservationModel {
   String? objectImage;
   DateTime? appointmentDate;
   bool? is_approved;
+  DateTime? appointmentStartDate;
   DateTime? appointmentEndDate;
   int? number_of_players;
   double? price;
@@ -19,6 +20,7 @@ class MyReservationModel {
       this.objectImage,
       this.appointmentDate,
       this.is_approved,
+      this.appointmentStartDate,
       this.appointmentEndDate,
       this.number_of_players,
       this.price);

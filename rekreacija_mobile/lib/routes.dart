@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rekreacija_mobile/screens/change_password_screen.dart';
+import 'package:rekreacija_mobile/screens/favorite_screen.dart';
 import 'package:rekreacija_mobile/screens/fizickolice_screen.dart';
-import 'package:rekreacija_mobile/screens/hall_message_screen.dart';
 import 'package:rekreacija_mobile/screens/homepage_screen.dart';
 import 'package:rekreacija_mobile/screens/login_screen.dart';
 import 'package:rekreacija_mobile/screens/messages_screen.dart';
@@ -28,6 +28,7 @@ class AppRoutes{
   static const String roleselection='/roleselction';
   static const String hallmessage='/hallMessage';
   static const String changePassord='/changePassword';
+  static const String myFavorites='/myFavorites';
 
   static Map<String,WidgetBuilder>getRoutes(){
     return{
@@ -43,6 +44,7 @@ class AppRoutes{
       fizickolice:(context)=>FizickoliceScreen(),
       roleselection:(context)=>const RoleSelectionScreen(),
       changePassord:(context)=> ChangePassword(),
+      myFavorites:(context)=>FavoriteScreen(),
     };
   }
 }

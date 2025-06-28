@@ -25,11 +25,23 @@ class _SettingsPopupMenuState extends State<SettingsPopupMenu> {
             break;
           case 1:           
             await _logout(context);
+          case 2:
+            Navigator.pushNamed(context, AppRoutes.myFavorites);
           default:
             print('Invalid');
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+        const PopupMenuItem<int>(
+            value: 2,
+            child: Row(
+              children: [
+                Icon(Icons.favorite, color: Colors.red),
+                SizedBox(width: 8),
+                Text("My favorites",style: TextStyle(color: Colors.white)),
+              ],
+            ),
+        ),
         const PopupMenuItem<int>(
           value: 0,
           child: Row(

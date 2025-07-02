@@ -102,7 +102,7 @@ class _EditObjectModalState extends State<EditObjectModal> {
       child: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: 500,
+            maxWidth: 540,
           ),
           child: Padding(
             padding: const EdgeInsets.all(10.0),

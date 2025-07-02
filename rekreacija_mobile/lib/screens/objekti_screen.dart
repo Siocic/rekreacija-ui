@@ -31,7 +31,8 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
   List<ObjectModel> objects = [];
   List<ObjectModel> filteredObjects = [];
   String userId = '';
-  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
+  static String? baseUrl =
+      String.fromEnvironment("BASE_URL", defaultValue: "http://10.0.2.2:5246/");
 
   @override
   void initState() {
@@ -46,13 +47,19 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
     getIdOfUser();
   }
 
-  Future<void> _loadSports() async {
+  Future<void> _loadSports({SportCategory? preserveSports}) async {
     try {
       final categories = await _sportCategoryProvider.Get();
       setState(() {
         sports = categories;
         if (sports.isNotEmpty) {
-          selectedSport = sports.first;
+          if (preserveSports != null &&
+              sports.any((s) => s.id == preserveSports.id)) {
+            selectedSport = sports.firstWhere((s) => s.id == preserveSports.id);
+          } else {
+            selectedSport = sports.first;
+          }
+
           fetchObjects();
         }
         isLoadingSports = false;
@@ -234,7 +241,8 @@ class _ObjektiScreenState extends State<ObjektiScreen> {
                                     await _favoritesProvider.Insert(
                                         requestInsert);
 
-                                    await _loadSports();
+                                    await _loadSports(
+                                        preserveSports: selectedSport);
                                   } catch (e) {
                                     String errorMessage = e.toString();
 

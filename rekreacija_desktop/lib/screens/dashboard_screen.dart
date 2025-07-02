@@ -391,50 +391,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 80),
-                    SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: PieChart(
-                        PieChartData(
-                          sections: sections,
-                          centerSpaceRadius: 40,
-                          sectionsSpace: 2,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    const SizedBox(height: 30),
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: reservationCounts.keys
-                          .toList()
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                        int index = entry.key;
-                        final objectId = entry.value.toString();
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 12,
-                                height: 12,
-                                color: colors[index % colors.length],
-                              ),
-                              const SizedBox(width: 8),
-                              Text("$objectId"),
-                            ],
+                      children: [
+                        SizedBox(
+                          height: 180,
+                          width: 180,
+                          child: PieChart(
+                            PieChartData(
+                              sections: sections,
+                              centerSpaceRadius: 40,
+                              sectionsSpace: 2,
+                            ),
                           ),
-                        );
-                      }).toList(),
+                        ),
+                        const SizedBox(width: 30),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: reservationCounts.keys
+                              .toList()
+                              .asMap()
+                              .entries
+                              .map((entry) {
+                            int index = entry.key;
+                            final objectName = entry.value.toString();
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 12,
+                                    height: 12,
+                                    color: colors[index % colors.length],
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(objectName),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
                     ),
                   ] else ...[
                     const Text(""),
                   ]
                 ],
-              ),
+              )
             ],
           ),
         ),

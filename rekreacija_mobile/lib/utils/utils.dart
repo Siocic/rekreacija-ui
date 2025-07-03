@@ -6,6 +6,9 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+String? baseUrl = const String.fromEnvironment("BASE_URL",defaultValue:"http://10.0.2.2:5246/");
+
+
 String formatNumber(double? number) {
   var f = NumberFormat("#,##0.0");
   return f.format(number ?? 0.0);

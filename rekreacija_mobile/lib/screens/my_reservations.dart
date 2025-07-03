@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekreacija_mobile/models/my_reservation_model.dart';
 import 'package:rekreacija_mobile/providers/appointment_provider.dart';
+import 'package:rekreacija_mobile/utils/utils.dart';
 import 'package:rekreacija_mobile/widgets/custom_decoration.dart';
 import 'package:rekreacija_mobile/widgets/reservation_card.dart';
 
@@ -16,8 +17,7 @@ class MyReservationHistory extends StatefulWidget {
 class _MyReservationHistoryState extends State<MyReservationHistory> {
   late AppointmentProvider appointmentProvider;
   List<MyReservationModel> reservationModel = [];
-  static String? baseUrl =
-      String.fromEnvironment("BASE_URL", defaultValue: "http://10.0.2.2:5246/");
+  //static String? baseUrl = String.fromEnvironment("BASE_URL", defaultValue: "http://10.0.2.2:5246/");
 
   @override
   void initState() {

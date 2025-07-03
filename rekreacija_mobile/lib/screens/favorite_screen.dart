@@ -16,8 +16,7 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  static String? baseUrl =
-      String.fromEnvironment("BASE_URL", defaultValue: "http://10.0.2.2:5246/");
+  //static String? baseUrl = String.fromEnvironment("BASE_URL", defaultValue: "http://10.0.2.2:5246/");
   late ObjectProvider _objectProvider;
   List<ObjectModel> favoritesObject = [];
 

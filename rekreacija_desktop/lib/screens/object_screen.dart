@@ -22,7 +22,7 @@ class _ObjectScreen extends State<ObjectScreen> {
   List<ObjectModel>? objects;
   Image? image;
   //String? baseUrl = "http://localhost:5246";
-  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
+  //static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
 
 
   @override

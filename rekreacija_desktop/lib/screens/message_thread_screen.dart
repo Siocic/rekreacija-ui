@@ -25,7 +25,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   List<Map<String, dynamic>> _messages = [];
   bool _connecting = true;
   String? _currentUserId;
-  static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
+  //static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
 
 
   @override
@@ -55,8 +55,8 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
-          "http://localhost:7271/chat?userId=$senderId",
-          //"${baseUrl}chat?userId=$senderId",
+          //"http://localhost:7271/chat?userId=$senderId",
+          "${baseUrl}chat?userId=$senderId",
           options: HttpConnectionOptions(
             accessTokenFactory: () async => jwt,
           ),
@@ -84,8 +84,8 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   Future<void> _loadMessageHistory(String senderId) async {
     final recipientId = widget.userId;
     final headers = await getAuthHeaders();
-    final response = await http.get(Uri.parse("http://localhost:7271/chat/$senderId/$recipientId"),headers: headers,);
-    //final response = await http.get(Uri.parse("${baseUrl}chat/$senderId/$recipientId"),headers: headers,);
+    //final response = await http.get(Uri.parse("http://localhost:7271/chat/$senderId/$recipientId"),headers: headers,);
+    final response = await http.get(Uri.parse("${baseUrl}chat/$senderId/$recipientId"),headers: headers,);
 
 
     if (response.statusCode == 200) {

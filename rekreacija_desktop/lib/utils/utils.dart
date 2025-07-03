@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-String? baseUrl = String.fromEnvironment("BASE_URL", defaultValue: "http://localhost:5246/");
+String? baseUrl = const String.fromEnvironment("BASE_URL", defaultValue: "http://localhost:5246/");
 
 String formatNumber(dynamic) {
   var f = NumberFormat('##,00');

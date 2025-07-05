@@ -80,11 +80,11 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
       print("DEBUG: Could not get senderId from JWT.");
       return;
     }
-
+    debugPrint("${baseUrl}/Chat?userId=$senderId");
     _hubConnection = HubConnectionBuilder()
         .withUrl(
-           "http://10.0.2.2:7271/chat?userId=$senderId",
-          //"${baseUrl}/chat?userId=$senderId",
+           //"http://10.0.2.2:5246/chat?userId=$senderId",
+          "${baseUrl}chat?userId=$senderId",
           options: HttpConnectionOptions(
             accessTokenFactory: () async => jwt,
           ),
@@ -122,10 +122,10 @@ class _HallMessageScreenState extends State<HallMessageScreen> {
     }
     final headers = await getAuthHeaders();
 
-    final response = await http.get(Uri.parse("http://10.0.2.2:7271/Chat/$senderId/$recipientId"),headers: headers,  );
-    //final response = await http.get(Uri.parse("${baseUrl}Chat/$senderId/$recipientId"),headers: headers,  );
+    //final response = await http.get(Uri.parse("http://10.0.2.2:7271/Chat/$senderId/$recipientId"),headers: headers,  );
+    final response = await http.get(Uri.parse("${baseUrl}chat/$senderId/$recipientId"),headers: headers,  );
 
-    print("${baseUrl}Chat/$senderId/$recipientId");
+    debugPrint("${baseUrl}Chat/$senderId/$recipientId");
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List;
       setState(() {

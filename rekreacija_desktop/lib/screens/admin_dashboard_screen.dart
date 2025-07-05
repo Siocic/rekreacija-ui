@@ -10,9 +10,10 @@ import 'package:rekreacija_desktop/providers/auth_provider.dart';
 import 'package:rekreacija_desktop/providers/object_provider.dart';
 import 'package:rekreacija_desktop/providers/review_provider.dart';
 import 'package:rekreacija_desktop/utils/utils.dart';
-import 'package:rekreacija_desktop/widgets/card_view.dart';
+import 'package:rekreacija_desktop/widgets/build_card.dart';
 import 'package:rekreacija_desktop/widgets/content_header.dart';
 import 'package:rekreacija_desktop/widgets/expired_dialog.dart';
+import 'package:rekreacija_desktop/widgets/stat_card.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -101,7 +102,6 @@ class _AdminDashboard extends State<AdminDashboard> {
   }
 
   bool _hasCheckedToken = false;
-
   @override
   Widget build(BuildContext context) {
     if (!_hasCheckedToken) {
@@ -114,57 +114,164 @@ class _AdminDashboard extends State<AdminDashboard> {
         }
       });
     }
-    /* CHART FOR RATINGS --START */
-    List<BarChartGroupData> ratingBars = ratingCounts.entries.map((entry) {
-      return BarChartGroupData(
-        x: entry.key,
-        barRods: [
-          BarChartRodData(
-            toY: entry.value.toDouble(),
-            color: Colors.orange,
-            width: 20,
-            borderRadius: BorderRadius.circular(4),
-          )
-        ],
-      );
-    }).toList();
-    /* CHART FOR RATINGS --END */
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(40),
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ContentHeader(title: 'Dashboard'),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                children: [
+                  StatCard(
+                    icon: Icons.apartment,
+                    label: "My objects",
+                    value: numberOfObjects,
+                  ),
+                  StatCard(
+                    icon: Icons.people_alt,
+                    label: "Total users",
+                    value: numberOfUsers,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                children: [
+                  BuildCard(
+                      title: "Reviews by Rating",
+                      child: _buildRatingChart(),
+                      screenWidth: screenWidth),
+                  BuildCard(
+                      title: "Object per user",
+                      child: _buildPieChart(),
+                      screenWidth: screenWidth),
+                ],
+              ),
+              const SizedBox(height: 30),
+              _buildLineChart()
+            ],
+          );
+        }),
+      ),
+    );
+  }
 
-    /*PIE CHART FOR OBJECTS OF USERS --START*/
+  Widget _buildRatingChart() {
+    List<BarChartGroupData> bars = ratingCounts.entries.map((e) {
+      return BarChartGroupData(x: e.key, barRods: [
+        BarChartRodData(
+            toY: e.value.toDouble(), color: Colors.orange, width: 16),
+      ]);
+    }).toList();
+
+    return BarChart(
+      BarChartData(
+        barGroups: bars,
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, _) => Text('${value.toInt()}★'),
+            ),
+          ),
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: false),
+      ),
+    );
+  }
+
+  Widget _buildPieChart() {
+    // Funkcija za generisanje nasumične pastelne boje (da ne bude previše jarko)
     Color getRandomColor() {
       final Random random = Random();
-      int r = 180 + random.nextInt(80);
-      int g = 180 + random.nextInt(80);
-      int b = 180 + random.nextInt(80);
+      int r = 180 + random.nextInt(75);
+      int g = 180 + random.nextInt(75);
+      int b = 180 + random.nextInt(75);
       return Color.fromARGB(255, r, g, b);
     }
 
-    final double totalCount =
-        countObjectPerUser.values.fold(0, (a, b) => a + b);
+    final double total = countObjectPerUser.values.fold(0, (a, b) => a + b);
     List<PieChartSectionData> sections = [];
     Map<String, Color> userColors = {};
 
-    int i = 0;
-    countObjectPerUser.forEach((userName, count) {
-      final percent = (count / totalCount * 100).toStringAsFixed(1);
+    countObjectPerUser.forEach((name, count) {
+      final percent = (count / total) * 100;
       final color = getRandomColor();
-      userColors[userName] = color;
+      userColors[name] = color;
       sections.add(PieChartSectionData(
         value: count.toDouble(),
-        title: '$percent%',
+        title: '${percent.toStringAsFixed(1)}%',
         color: color,
-        radius: 70,
+        radius: 60,
         titleStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
           color: Colors.black,
         ),
       ));
-      i++;
     });
-/*PIE CHART FOR OBJECTS OF USERS --END*/
 
-/* LINE CHART ZA UKUPNE APPOINTMNETE --START */
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Pie chart zauzima fiksno 180x180
+          SizedBox(
+            height: 180,
+            width: 180,
+            child: PieChart(
+              PieChartData(
+                sections: sections,
+                centerSpaceRadius: 40,
+                sectionsSpace: 2,
+              ),
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: SizedBox(
+              height: 180,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: countObjectPerUser.keys.map((objectName) {
+                    final color = userColors[objectName] ?? Colors.grey;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Row(
+                        children: [
+                          Container(width: 8, height: 8, color: color),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(objectName),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLineChart() {
     final sortedKeys = totalCounts.keys
         .toSet()
         .union(approvedCounts.keys.toSet())
@@ -181,233 +288,92 @@ class _AdminDashboard extends State<AdminDashboard> {
           .add(FlSpot(i.toDouble(), (approvedCounts[key] ?? 0).toDouble()));
     }
 
-/* LINE CHART ZA UKUPNE APPOINTMNETE --END */
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(40.0),
-          child: ContentHeader(title: 'Dashboard'),
-        ),
-        const SizedBox(height: 30),
-        Padding(
-          padding: const EdgeInsets.only(left: 40),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CardView(
-                  icon: Icons.apartment,
-                  num: numberOfObjects,
-                  decription: "Total objects",
-                  isLoading: isObjects),
-              const SizedBox(width: 10),
-              CardView(
-                  icon: Icons.people_alt,
-                  num: numberOfUsers,
-                  decription: "Total users",
-                  isLoading: isUser),
-            ],
+        const Text(
+          "Reservation Trends",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 30),
-        Padding(
-          padding: const EdgeInsets.only(left: 40, top: 30, bottom: 10),
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Reviews by rating",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 250,
+          width: double.infinity,
+          child: LineChart(
+            LineChartData(
+              titlesData: FlTitlesData(
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, _) {
+                      int index = value.toInt();
+                      if (index < sortedKeys.length) {
+                        return Text(
+                          sortedKeys[index].substring(5),
+                          style: const TextStyle(fontSize: 12),
+                        );
+                      }
+                      return const Text('');
+                    },
                   ),
-                  const SizedBox(height: 30),
-                  SizedBox(
-                    height: 300,
-                    width: 300,
-                    child: BarChart(
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: ratingCounts.values
-                                .reduce((a, b) => a > b ? a : b)
-                                .toDouble() +
-                            2,
-                        //barTouchData: const BarTouchData(enabled: true),
-                        barTouchData: BarTouchData(
-                          touchTooltipData: BarTouchTooltipData(
-                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                              return BarTooltipItem(
-                                rod.toY.toInt().toString(),
-                                const TextStyle(color: Colors.white),
-                              );
-                            },
-                          ),
-                        ),
-                        titlesData: FlTitlesData(
-                          leftTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) =>
-                                  Text('${value.toInt()}★'),
-                            ),
-                          ),
-                        ),
-                        borderData: FlBorderData(show: false),
-                        barGroups: ratingBars,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 80),
-              Column(
-                children: [
-                  const Text(
-                    "Object by user",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 80),
-                  SizedBox(
-                    height: 100,
-                    width: 200,
-                    child: PieChart(
-                      PieChartData(
-                        sections: sections,
-                        centerSpaceRadius: 40,
-                        sectionsSpace: 2,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 50),
-              Padding(
-                padding: const EdgeInsets.only(top: 100),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: countObjectPerUser.keys
-                      .toList()
-                      .asMap()
-                      .entries
-                      .map((entry) {
-                    //int index = entry.key;
-                    final username = entry.value.toString();
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 12,
-                            height: 12,
-                            color: userColors[username],
-                          ),
-                          const SizedBox(width: 8),
-                          Text(username),
-                        ],
-                      ),
-                    );
-                  }).toList(),
                 ),
-              )
-            ],
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, _) => Text(
+                      value.toInt().toString(),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ),
+                topTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+              gridData: FlGridData(show: true),
+              borderData: FlBorderData(show: true),
+              lineBarsData: [
+                LineChartBarData(
+                  spots: allSpots,
+                  isCurved: true,
+                  barWidth: 3,
+                  color: Colors.blue,
+                  dotData: FlDotData(show: true),
+                ),
+                LineChartBarData(
+                  spots: approvedSpots,
+                  isCurved: true,
+                  barWidth: 3,
+                  color: Colors.red,
+                  dotData: FlDotData(show: true),
+                ),
+              ],
+            ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 40, top: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Reservation Trends",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 250,
-                width: double.infinity,
-                child: LineChart(
-                  LineChartData(
-                    titlesData: FlTitlesData(
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, _) {
-                            int index = value.toInt();
-                            if (index < sortedKeys.length) {
-                              return Text(
-                                sortedKeys[index].substring(5), // Month part
-                                style: const TextStyle(fontSize: 12),
-                              );
-                            }
-                            return const Text('');
-                          },
-                        ),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, _) => Text(
-                              value.toInt().toString(),
-                              style: const TextStyle(fontSize: 12)),
-                        ),
-                      ),
-                      topTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    ),
-                    gridData: FlGridData(show: true),
-                    borderData: FlBorderData(show: true),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: allSpots, // All reservations
-                        isCurved: true,
-                        barWidth: 3,
-                        color: Colors.blue,
-                        dotData: FlDotData(show: true),
-                      ),
-                      LineChartBarData(
-                        spots: approvedSpots, // Approved reservations
-                        isCurved: true,
-                        barWidth: 3,
-                        color: Colors.red,
-                        dotData: FlDotData(show: true),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Legend
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Container(width: 12, height: 12, color: Colors.blue),
-                      const SizedBox(width: 6),
-                      const Text("All Reservations"),
-                    ],
-                  ),
-                  const SizedBox(width: 20),
-                  Row(
-                    children: [
-                      Container(width: 12, height: 12, color: Colors.red),
-                      const SizedBox(width: 6),
-                      const Text("Approved Reservations"),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Row(
+              children: [
+                Container(width: 12, height: 12, color: Colors.blue),
+                const SizedBox(width: 6),
+                const Text("All Reservations"),
+              ],
+            ),
+            const SizedBox(width: 20),
+            Row(
+              children: [
+                Container(width: 12, height: 12, color: Colors.red),
+                const SizedBox(width: 6),
+                const Text("Approved Reservations"),
+              ],
+            ),
+          ],
         ),
       ],
     );

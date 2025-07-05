@@ -132,7 +132,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.all(40),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            //bool isWide = constraints.maxWidth > 800;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -141,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Wrap(
                   spacing: 20,
                   runSpacing: 20,
-                  children: [
+                  children: [                    
                     StatCard(
                       icon: Icons.apartment,
                       label: "My objects",
@@ -173,30 +172,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                     ],
-                    BuildCard(
-                        title: "Reviews by Rating",
-                        child: _buildRatingChart(),
-                        screenWidth: screenWidth),
-                    BuildCard(
-                        title: "Revenue per Object",
-                        child: _buildRevenueChart(),
-                        screenWidth: screenWidth),
-                    BuildCard(
-                        title: "Appointments per Object",
-                        child: _buildPieChart(),
-                        screenWidth: screenWidth),
+                    if (reviewsOfMyObject.isNotEmpty) ...[
+                      BuildCard(
+                          title: "Reviews by Rating",
+                          child: _buildRatingChart(),
+                          screenWidth: screenWidth),
+                    ] else ...[
+                      const Text(""),
+                    ],
+                    if (amountPerObject.isNotEmpty) ...[
+                      BuildCard(
+                          title: "Revenue per Object",
+                          child: _buildRevenueChart(),
+                          screenWidth: screenWidth),
+                    ] else ...[
+                      const Text(""),
+                    ],
+                    if (amountPerObject.isNotEmpty) ...[
+                      BuildCard(
+                          title: "Appointments per Object",
+                          child: _buildPieChart(),
+                          screenWidth: screenWidth),
+                    ] else ...[
+                      const Text(""),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 30),
-                const Text("Appointments per Month",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 300,
-                  child: _buildMonthlyChart(),
-                )
-              ],
+                if(reservationCounts.isNotEmpty)...[
+                  const Text("Appointments per Month",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 300,
+                    child: _buildMonthlyChart(),
+                  )
+                ]else...[
+                    const Text(""),
+                ]
+
+                ]
             );
           },
         ),

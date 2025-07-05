@@ -24,7 +24,6 @@ class _ObjectScreen extends State<ObjectScreen> {
   //String? baseUrl = "http://localhost:5246";
   //static String? baseUrl = String.fromEnvironment("BASE_URL",defaultValue:"http://localhost:5246/");
 
-
   @override
   void initState() {
     super.initState();
@@ -38,7 +37,8 @@ class _ObjectScreen extends State<ObjectScreen> {
       final userObject = await _objectProvider.getObjectOfLoggedUser();
       debugPrint("✅ Received objects: ${userObject.length} found");
       for (var obj in userObject) {
-        debugPrint("📦 Object: id=${obj.id}, name=${obj.name}, address=${obj.address}");
+        debugPrint(
+            "📦 Object: id=${obj.id}, name=${obj.name}, address=${obj.address}");
       }
       setState(() {
         objects = userObject;
@@ -116,11 +116,12 @@ class _ObjectScreen extends State<ObjectScreen> {
                     ),
                   )
                 : GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      childAspectRatio: 5.3 / 3,
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 360,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 1,
                     ),
                     itemCount: objects!.length,
                     itemBuilder: (context, index) {
@@ -130,14 +131,16 @@ class _ObjectScreen extends State<ObjectScreen> {
                         objectAddress: ourObjects.address ?? '',
                         image: ourObjects.imagePath != null
                             ? Image.network('$baseUrl${ourObjects.imagePath!}')
-                            : Image.asset("assets/images/RekreacijaDefault.jpg"),
+                            : Image.asset(
+                                "assets/images/RekreacijaDefault.jpg"),
                         deleteObject: () async {
                           _showDeleteDialog(ourObjects.id!);
                         },
                         editObject: () async {
                           final bool? result = await showDialog<bool>(
                             context: context,
-                            builder: (BuildContext context) => EditObjectModal(object: ourObjects),
+                            builder: (BuildContext context) =>
+                                EditObjectModal(object: ourObjects),
                           );
                           if (result == true) {
                             _loadObjectOfUser();
@@ -190,7 +193,8 @@ class _ObjectScreen extends State<ObjectScreen> {
                 } catch (e) {
                   String errorMessage = e.toString();
                   if (errorMessage.startsWith("Exception:")) {
-                    errorMessage = errorMessage.replaceFirst("Exception:", "").trim();
+                    errorMessage =
+                        errorMessage.replaceFirst("Exception:", "").trim();
                   }
                   debugPrint("❌ ERROR during delete: $errorMessage");
                   ScaffoldMessenger.of(context).showSnackBar(

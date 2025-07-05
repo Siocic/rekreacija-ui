@@ -60,92 +60,97 @@ class _UserScreenState extends State<UserScreen> {
         }
       });
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(40.0),
-          child: ContentHeader(title: 'Users'),
-        ),
-        const SizedBox(height: 10),
-        if (isLoading)
-          const Center(child: CircularProgressIndicator())
-        else if (pravnoLiceList.isEmpty && fizickoLiceList.isEmpty)
-          const Center(
-            child: Text("There are not users yet"),
-          )
-        else
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (pravnoLiceList.isNotEmpty) ...[
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      "Pravno Lice Users",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Center(
-                  child: SizedBox(
-                    width: 1200.0,
-                    child: PaginatedDataTable(
-                      columns: [
-                        dataColumn("First Name"),
-                        dataColumn("Last Name"),
-                        dataColumn("Email"),
-                        dataColumn("Address"),
-                        dataColumn("City"),
-                        dataColumn("Phone number"),
-                      ],
-                      source: pravnoLiceSource!,
-                      rowsPerPage: 5,
-                      showEmptyRows: false,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-              if (fizickoLiceList.isNotEmpty) ...[
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      "Fizicko Lice Users",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Center(
-                  child: SizedBox(
-                    width: 1200.0,
-                    child: PaginatedDataTable(
-                      columns: [
-                        dataColumn("First Name"),
-                        dataColumn("Last Name"),
-                        dataColumn("Email"),
-                        dataColumn("Address"),
-                        dataColumn("City"),
-                        dataColumn("Phone number"),
-                      ],
-                      source: fizikoLiceSource!,
-                      rowsPerPage: 5,
-                      showEmptyRows: false,
-                    ),
-                  ),
-                ),
-              ],
-            ],
+    return Scaffold(
+      body: SingleChildScrollView(
+child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(40.0),
+            child: ContentHeader(title: 'Users'),
           ),
-      ],
+          const SizedBox(height: 10),
+          if (isLoading)
+            const Center(child: CircularProgressIndicator())
+          else if (pravnoLiceList.isEmpty && fizickoLiceList.isEmpty)
+            const Center(
+              child: Text("There are not users yet"),
+            )
+          else
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (pravnoLiceList.isNotEmpty) ...[
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        "Pravno Lice Users",
+                        style:
+                            TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Center(
+                    child: SizedBox(
+                      width: 1200.0,
+                      child: PaginatedDataTable(
+                        columns: [
+                          dataColumn("First Name"),
+                          dataColumn("Last Name"),
+                          dataColumn("Email"),
+                          dataColumn("Address"),
+                          dataColumn("City"),
+                          dataColumn("Phone number"),
+                        ],
+                        source: pravnoLiceSource!,
+                        rowsPerPage: 5,
+                        showEmptyRows: false,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+                if (fizickoLiceList.isNotEmpty) ...[
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        "Fizicko Lice Users",
+                        style:
+                            TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Center(
+                    child: SizedBox(
+                      width: 1200.0,
+                      child: PaginatedDataTable(
+                        columns: [
+                          dataColumn("First Name"),
+                          dataColumn("Last Name"),
+                          dataColumn("Email"),
+                          dataColumn("Address"),
+                          dataColumn("City"),
+                          dataColumn("Phone number"),
+                        ],
+                        source: fizikoLiceSource!,
+                        rowsPerPage: 5,
+                        showEmptyRows: false,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+        ],
+      ),
+      ),
+      
     );
   }
 }

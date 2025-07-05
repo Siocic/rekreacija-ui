@@ -77,11 +77,11 @@ Aplikacija pruža efikasan sistem za upravljanje rezervacijama sportskih objekat
 ## Kredencijali
 Za desktop aplikaciju važe slijedeći kredencijali
 ### Superadmin
-`email: superadmin.@email.com`
+`email: superadmin@email.com`
 `password: 123Pa$$word`
 
 ### Pravno lice
-`email: pravnolice.@email.com`
+`email: pravnolice@email.com`
 `password: 123Pa$$word`
 
 ### Za mobilnu aplikaciju su sljedeći kredencijali
